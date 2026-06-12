@@ -67,7 +67,11 @@ class CorpusIngestRequest(BaseModel):
     )
     source_ref: str = Field(min_length=1, max_length=500, description="Unique document reference")
     version: str | None = None
-    chunks: list[ChunkInput] = Field(min_length=1, max_length=500, description="Text chunks to embed and index (max 500)")
+    chunks: list[ChunkInput] = Field(
+        min_length=1,
+        max_length=500,
+        description="Text chunks to embed and index (max 500)",
+    )
 
 
 class CorpusIngestResponse(BaseModel):

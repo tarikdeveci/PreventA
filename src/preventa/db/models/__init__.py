@@ -7,7 +7,7 @@ __all__ = [
 ]
 
 
-def _load_rag_models() -> tuple:
+def _load_rag_models() -> tuple[type, type, type, type]:
     """Lazy-load RAG models to avoid importing pgvector at module level.
 
     pgvector requires a native C extension that is not available on Vercel's

@@ -97,7 +97,13 @@ class WorkspaceRepository:
                 ),
             )
             audit(database, "node", node_id, "created")
-        return {**payload.model_dump(), "id": node_id, "study_id": study_id, "state": "empty", "scenario_count": 0}
+        return {
+            **payload.model_dump(),
+            "id": node_id,
+            "study_id": study_id,
+            "state": "empty",
+            "scenario_count": 0,
+        }
 
     def update_node(self, node_id: str, payload: NodeUpdate) -> dict[str, Any] | None:
         values = payload.model_dump(exclude_none=True)
@@ -168,7 +174,10 @@ class WorkspaceRepository:
         values = payload.model_dump(exclude_none=True)
         if not values:
             return self.get_row(row_id)
-        _ALLOWED_ROW_FIELDS = {"guideword", "deviation", "cause", "consequence", "safeguard", "severity", "likelihood", "status"}
+        _ALLOWED_ROW_FIELDS = {
+            "guideword", "deviation", "cause", "consequence",
+            "safeguard", "severity", "likelihood", "status",
+        }
         values = {k: v for k, v in values.items() if k in _ALLOWED_ROW_FIELDS}
         if not values:
             return self.get_row(row_id)

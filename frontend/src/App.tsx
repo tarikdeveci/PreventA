@@ -748,7 +748,7 @@ function RiskMatrix() {
           {[5, 4, 3, 2, 1].map((likelihood) =>
             [1, 2, 3, 4, 5].map((severity) => {
               const score = likelihood * severity;
-              const level = score >= 16 ? "critical" : score >= 9 ? "high" : score >= 4 ? "medium" : "low";
+              const level = score >= 12 ? "critical" : score >= 8 ? "high" : score >= 4 ? "medium" : "low";
               return (
                 <button
                   key={`${likelihood}-${severity}`}

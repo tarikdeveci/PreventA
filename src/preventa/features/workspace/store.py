@@ -201,11 +201,14 @@ def _seed(database: sqlite3.Connection) -> None:
 
 
 def risk_label(severity: int, likelihood: int) -> str:
-    """Risk boundaries aligned with 5×5 matrix: >=16 Kritik, >=9 Yüksek, >=4 Orta."""
+    """Risk boundaries aligned with the ACWA 5×5 matrix: >=12 Kritik, >=8 Yüksek, >=4 Orta.
+
+    Must stay in sync with the frontend matrix zoning in frontend/src/App.tsx.
+    """
     score = severity * likelihood
-    if score >= 16:
+    if score >= 12:
         return "Kritik"
-    if score >= 9:
+    if score >= 8:
         return "Yüksek"
     if score >= 4:
         return "Orta"
