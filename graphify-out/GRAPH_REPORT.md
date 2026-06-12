@@ -1,16 +1,16 @@
 # Graph Report - PreventA  (2026-06-12)
 
 ## Corpus Check
-- 35 files · ~3,721 words
+- 48 files · ~7,168 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 164 nodes · 412 edges · 24 communities (14 shown, 10 thin omitted)
-- Extraction: 44% EXTRACTED · 56% INFERRED · 0% AMBIGUOUS · INFERRED: 232 edges (avg confidence: 0.52)
+- 270 nodes · 512 edges · 33 communities (23 shown, 10 thin omitted)
+- Extraction: 55% EXTRACTED · 45% INFERRED · 0% AMBIGUOUS · INFERRED: 232 edges (avg confidence: 0.52)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d579d7ae`
+- Built from commit: `8f12cf90`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -34,6 +34,13 @@
 - [[_COMMUNITY_Community 18|Community 18]]
 - [[_COMMUNITY_Community 19|Community 19]]
 - [[_COMMUNITY_Community 20|Community 20]]
+- [[_COMMUNITY_Community 24|Community 24]]
+- [[_COMMUNITY_Community 25|Community 25]]
+- [[_COMMUNITY_Community 26|Community 26]]
+- [[_COMMUNITY_Community 27|Community 27]]
+- [[_COMMUNITY_Community 28|Community 28]]
+- [[_COMMUNITY_Community 29|Community 29]]
+- [[_COMMUNITY_Community 30|Community 30]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `DeviationAssistRequest` - 31 edges
@@ -63,11 +70,11 @@
 - 1-file cycle: `src/preventa/main.py -> src/preventa/main.py`
 - 1-file cycle: `src/preventa/features/rag/guardrails.py -> src/preventa/features/rag/guardrails.py`
 
-## Communities (24 total, 10 thin omitted)
+## Communities (33 total, 10 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.25
-Nodes (31): BaseModel, BaseSettings, Settings, DeviationAssistServiceDep, DraftGenerator, Embedder, Protocol, UngroundedSuggestionError (+23 more)
+Cohesion: 0.22
+Nodes (32): BaseSettings, Settings, DeviationAssistServiceDep, DraftGenerator, Embedder, Protocol, UngroundedSuggestionError, DraftGenerator (+24 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.29
@@ -86,8 +93,8 @@ Cohesion: 0.22
 Nodes (5): get_settings(), configure_logging(), FastAPI, create_app(), lifespan()
 
 ### Community 5 - "Community 5"
-Cohesion: 0.27
-Nodes (8): Collection, require_citations(), Candidate, Citation, GeneratedDraft, test_accepts_candidate_with_source_citation(), test_rejects_citation_outside_retrieved_context(), test_rejects_empty_generation()
+Cohesion: 0.26
+Nodes (9): BaseModel, Collection, require_citations(), Candidate, Citation, GeneratedDraft, test_accepts_candidate_with_source_citation(), test_rejects_citation_outside_retrieved_context() (+1 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.42
@@ -98,11 +105,39 @@ Cohesion: 0.33
 Nodes (5): Module boundaries, Planned extensions, PreventA Architecture, Retrieval lifecycle, Safety invariants
 
 ### Community 8 - "Community 8"
-Cohesion: 0.33
-Nodes (5): Current API, PreventA, Run locally, Stack, Verification
+Cohesion: 0.29
+Nodes (6): Current API, PreventA, Product UI, Run locally, Stack, Verification
+
+### Community 11 - "Community 11"
+Cohesion: 0.08
+Nodes (25): dependencies, lucide-react, react, react-dom, devDependencies, eslint, @eslint/js, eslint-plugin-react-hooks (+17 more)
+
+### Community 24 - "Community 24"
+Cohesion: 0.10
+Nodes (8): WorkspaceTab, workspaceTabs, HazopRow, initialRows, nodes, RiskLevel, Suggestion, suggestions
+
+### Community 25 - "Community 25"
+Cohesion: 0.11
+Nodes (17): compilerOptions, allowJs, allowSyntheticDefaultImports, esModuleInterop, forceConsistentCasingInFileNames, isolatedModules, jsx, lib (+9 more)
+
+### Community 26 - "Community 26"
+Cohesion: 0.17
+Nodes (11): compilerOptions, allowImportingTsExtensions, lib, module, moduleDetection, moduleResolution, noEmit, skipLibCheck (+3 more)
+
+### Community 27 - "Community 27"
+Cohesion: 0.22
+Nodes (8): Accessibility & Inclusion, Anti-references, Brand Personality, Design Principles, Product, Product Purpose, Register, Users
+
+### Community 28 - "Community 28"
+Cohesion: 0.25
+Nodes (7): Color, Components, Design System, Direction, Layout, Motion, Typography
+
+### Community 29 - "Community 29"
+Cohesion: 0.50
+Nodes (3): Answer, Q: PreventA HAZOP deviation assist hybrid retrieval citation guardrail API database architecture, Source Nodes
 
 ## Knowledge Gaps
-- **12 isolated node(s):** `Any`, `AsyncSession`, `ItemId`, `Stack`, `Run locally` (+7 more)
+- **82 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+77 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **10 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -110,11 +145,11 @@ Nodes (5): Current API, PreventA, Run locally, Stack, Verification
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `UUID` connect `Community 1` to `Community 0`, `Community 5`?**
-  _High betweenness centrality (0.145) - this node is a cross-community bridge._
+  _High betweenness centrality (0.053) - this node is a cross-community bridge._
 - **Why does `GeneratedDraft` connect `Community 0` to `Community 1`, `Community 2`, `Community 5`?**
-  _High betweenness centrality (0.133) - this node is a cross-community bridge._
-- **Why does `HybridRetrievalRepository` connect `Community 0` to `Community 3`, `Community 11`?**
-  _High betweenness centrality (0.082) - this node is a cross-community bridge._
+  _High betweenness centrality (0.049) - this node is a cross-community bridge._
+- **Why does `HybridRetrievalRepository` connect `Community 0` to `Community 3`?**
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._
 - **Are the 29 inferred relationships involving `DeviationAssistRequest` (e.g. with `DeviationAssistServiceDep` and `DraftGenerator`) actually correct?**
   _`DeviationAssistRequest` has 29 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 26 inferred relationships involving `RetrievedChunk` (e.g. with `DraftGenerator` and `Embedder`) actually correct?**

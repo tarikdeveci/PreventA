@@ -9,6 +9,8 @@ remain pending until a qualified engineer accepts, edits, or rejects them.
 
 ## Stack
 
+- React 19, TypeScript, and Vite
+- Product UI designed around a keyboard-efficient HAZOP worksheet
 - FastAPI and Pydantic
 - SQLAlchemy 2 async and Alembic
 - PostgreSQL full-text search and pgvector
@@ -25,9 +27,35 @@ docker compose exec ollama ollama pull nomic-embed-text
 python -m pip install -e ".[dev]"
 alembic upgrade head
 uvicorn preventa.main:app --reload
+Set-Location frontend
+pnpm install
+pnpm run dev
 ```
 
 OpenAPI is available at `http://localhost:8000/docs`.
+The React workspace is available at `http://localhost:5173`.
+
+To run the complete containerized stack:
+
+```powershell
+docker compose up --build
+```
+
+The frontend container proxies `/api` requests to FastAPI.
+
+## Product UI
+
+The initial UI includes:
+
+- study and node navigation,
+- an editable HAZOP worksheet with risk and review states,
+- source-cited AI suggestions that can be added to the selected draft row,
+- LOPA and IPL assessment,
+- a configurable risk matrix view,
+- controlled-source inventory,
+- responsive navigation and evidence drawers.
+
+Product and visual decisions are recorded in `PRODUCT.md` and `DESIGN.md`.
 
 ## Current API
 
@@ -49,5 +77,7 @@ See `docs/architecture.md` for boundaries and safety invariants, and
 ruff check .
 pytest
 python -m compileall src scripts
+Set-Location frontend
+pnpm run lint
+pnpm run build
 ```
-
