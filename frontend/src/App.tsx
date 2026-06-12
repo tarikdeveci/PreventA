@@ -1231,7 +1231,7 @@ function WorkspaceApp() {
   }, []);
 
   // Keyboard shortcut: Ctrl+Enter to add row
-  const addRowRef = useRef<() => Promise<void>>();
+  const addRowRef = useRef<(() => Promise<void>) | undefined>(undefined);
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
