@@ -82,15 +82,14 @@ def initialize_store() -> None:
             );
             """
         )
-        existing = database.execute("SELECT COUNT(*) AS count FROM mvp_studies").fetchone()
-        if existing and existing["count"] == 0:
-            _seed(database)
+        # Use INSERT OR IGNORE to be safe in multi-process deployments
+        _seed(database)
 
 
 def _seed(database: sqlite3.Connection) -> None:
     database.execute(
         """
-        INSERT INTO mvp_studies (id, title, client, facility, status)
+        INSERT OR IGNORE INTO mvp_studies (id, title, client, facility, status)
         VALUES (?, ?, ?, ?, ?)
         """,
         ("study-reactor-2026", "Ünite 200 HAZOP", "ACWA Power", "Konya", "in_review"),
@@ -142,7 +141,7 @@ def _seed(database: sqlite3.Connection) -> None:
     ]
     database.executemany(
         """
-        INSERT INTO mvp_nodes
+        INSERT OR IGNORE INTO mvp_nodes
             (id, study_id, code, name, equipment_type, design_intent, state)
         VALUES (?, 'study-reactor-2026', ?, ?, ?, ?, ?)
         """,
@@ -202,10 +201,11 @@ def _seed(database: sqlite3.Connection) -> None:
 
 
 def risk_label(severity: int, likelihood: int) -> str:
+    """Risk boundaries aligned with 5×5 matrix: >=16 Kritik, >=9 Yüksek, >=4 Orta."""
     score = severity * likelihood
-    if score >= 12:
+    if score >= 16:
         return "Kritik"
-    if score >= 8:
+    if score >= 9:
         return "Yüksek"
     if score >= 4:
         return "Orta"

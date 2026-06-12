@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     app_env: str = "development"
     api_v1_prefix: str = "/api/v1"
     database_url: str = "postgresql+asyncpg://preventa:preventa@localhost:5432/preventa"
+    allowed_origins: str = ""  # Comma-separated; overrides default CORS list when set
 
     ollama_base_url: str = "http://localhost:11434"
     ollama_chat_model: str = "qwen2.5:7b"

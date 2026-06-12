@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
@@ -24,7 +26,7 @@ class NodeUpdate(BaseModel):
     name: str | None = None
     equipment_type: str | None = None
     design_intent: str | None = None
-    state: str | None = None
+    state: Literal["empty", "active", "review", "complete"] | None = None
 
 
 class RowCreate(BaseModel):

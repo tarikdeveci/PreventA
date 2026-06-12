@@ -5,8 +5,8 @@ from pydantic import BaseModel, Field
 
 
 class DeviationAssistRequest(BaseModel):
-    study_id: UUID
-    node_id: UUID
+    study_id: str = Field(min_length=1, max_length=100)
+    node_id: str = Field(min_length=1, max_length=100)
     equipment_type: str = Field(min_length=1, max_length=100)
     design_intent: str = Field(min_length=1)
     parameter: str = Field(min_length=1, max_length=100)
@@ -56,7 +56,7 @@ class GeneratedDraft(BaseModel):
 class ChunkInput(BaseModel):
     ordinal: int = Field(ge=0)
     section_ref: str | None = None
-    content: str = Field(min_length=1)
+    content: str = Field(min_length=1, max_length=8000)
 
 
 class CorpusIngestRequest(BaseModel):
@@ -67,7 +67,7 @@ class CorpusIngestRequest(BaseModel):
     )
     source_ref: str = Field(min_length=1, max_length=500, description="Unique document reference")
     version: str | None = None
-    chunks: list[ChunkInput] = Field(min_length=1, description="Text chunks to embed and index")
+    chunks: list[ChunkInput] = Field(min_length=1, max_length=500, description="Text chunks to embed and index (max 500)")
 
 
 class CorpusIngestResponse(BaseModel):

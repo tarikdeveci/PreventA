@@ -97,19 +97,24 @@ class WorkspaceRepository:
                 ),
             )
             audit(database, "node", node_id, "created")
-        return {**payload.model_dump(), "id": node_id, "study_id": study_id, "state": "empty"}
+        return {**payload.model_dump(), "id": node_id, "study_id": study_id, "state": "empty", "scenario_count": 0}
 
     def update_node(self, node_id: str, payload: NodeUpdate) -> dict[str, Any] | None:
         values = payload.model_dump(exclude_none=True)
         if not values:
             return self.get_node(node_id)
+        _ALLOWED_NODE_FIELDS = {"name", "equipment_type", "design_intent", "state"}
+        values = {k: v for k, v in values.items() if k in _ALLOWED_NODE_FIELDS}
+        if not values:
+            return self.get_node(node_id)
         assignments = ", ".join(f"{field} = ?" for field in values)
         with connection() as database:
-            database.execute(
+            cursor = database.execute(
                 f"UPDATE mvp_nodes SET {assignments} WHERE id = ?",  # noqa: S608
                 (*values.values(), node_id),
             )
-            audit(database, "node", node_id, "updated")
+            if cursor.rowcount:
+                audit(database, "node", node_id, "updated")
         return self.get_node(node_id)
 
     def get_node(self, node_id: str) -> dict[str, Any] | None:
@@ -163,9 +168,13 @@ class WorkspaceRepository:
         values = payload.model_dump(exclude_none=True)
         if not values:
             return self.get_row(row_id)
+        _ALLOWED_ROW_FIELDS = {"guideword", "deviation", "cause", "consequence", "safeguard", "severity", "likelihood", "status"}
+        values = {k: v for k, v in values.items() if k in _ALLOWED_ROW_FIELDS}
+        if not values:
+            return self.get_row(row_id)
         assignments = ", ".join(f"{field} = ?" for field in values)
         with connection() as database:
-            database.execute(
+            cursor = database.execute(
                 f"""
                 UPDATE mvp_rows
                 SET {assignments}, updated_at = CURRENT_TIMESTAMP
@@ -173,7 +182,8 @@ class WorkspaceRepository:
                 """,  # noqa: S608
                 (*values.values(), row_id),
             )
-            audit(database, "row", str(row_id), "updated")
+            if cursor.rowcount:
+                audit(database, "row", str(row_id), "updated")
         return self.get_row(row_id)
 
     def get_row(self, row_id: int) -> dict[str, Any] | None:

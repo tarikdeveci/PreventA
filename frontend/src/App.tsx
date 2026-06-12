@@ -148,8 +148,8 @@ function AppRail({
         <button className="rail-button" aria-label="Ayarlar" title="Ayarlar">
           <Settings size={20} />
         </button>
-        <button className="avatar-button" aria-label="Tarık Deveci hesabı" title="Tarık Deveci">
-          TD
+        <button className="avatar-button" aria-label="Kullanıcı hesabı" title="Kullanıcı">
+          P
         </button>
       </div>
     </aside>
@@ -254,7 +254,7 @@ function StudyNavigator({
             {filteredNodes.map((node) => (
               <button
                 className={`node-row ${node.id === activeNodeId ? "is-active" : ""}`}
-                key={node.code}
+                key={node.id}
                 onClick={() => onSelectNode(node.id)}
               >
                 <span className={`node-state node-state-${node.state}`} aria-hidden="true" />
@@ -289,11 +289,13 @@ function TopBar({
   onOpenNav,
   onExport,
   activeNode,
+  studyTitle,
   apiConnected,
 }: {
   onOpenNav: () => void;
   onExport: () => void;
   activeNode: WorkspaceNode;
+  studyTitle: string;
   apiConnected: boolean;
 }) {
   return (
@@ -306,7 +308,7 @@ function TopBar({
           <div className="breadcrumb">
             <span>Çalışmalar</span>
             <ChevronRight size={13} />
-            <span>Ünite 200 HAZOP</span>
+            <span>{studyTitle}</span>
           </div>
           <div className="title-line">
             <h1>{activeNode.name}</h1>
@@ -361,7 +363,7 @@ function WorksheetToolbar({
           <Trash2 size={16} />
           Satırı sil
         </button>
-        <button className="secondary-button compact">
+        <button className="secondary-button compact" disabled title="Yakında">
           <Archive size={16} />
           Kütüphaneden ekle
         </button>
@@ -1048,10 +1050,12 @@ function CreateStudyDialog({
   open,
   onClose,
   onCreated,
+  onError,
 }: {
   open: boolean;
   onClose: () => void;
   onCreated: (study: StudyListItem) => void;
+  onError: (msg: string) => void;
 }) {
   const [values, setValues] = useState({ title: "", client: "", facility: "" });
   const [saving, setSaving] = useState(false);
@@ -1066,6 +1070,8 @@ function CreateStudyDialog({
           try {
             const created = await createStudy(values);
             onCreated(created);
+          } catch {
+            onError("Çalışma oluşturulamadı. API bağlantısını kontrol edin.");
           } finally {
             setSaving(false);
           }
@@ -1092,13 +1098,16 @@ function CreateNodeDialog({
   studyId,
   onClose,
   onCreated,
+  onError,
 }: {
   open: boolean;
   studyId: string;
   onClose: () => void;
   onCreated: (node: WorkspaceNode) => void;
+  onError: (msg: string) => void;
 }) {
   const [values, setValues] = useState({ code: "", name: "", equipment_type: "", design_intent: "" });
+  const [saving, setSaving] = useState(false);
   if (!open) return null;
   return (
     <div className="modal-backdrop" role="presentation">
@@ -1106,7 +1115,14 @@ function CreateNodeDialog({
         className="form-dialog"
         onSubmit={async (event) => {
           event.preventDefault();
-          onCreated(await createNode(studyId, values));
+          setSaving(true);
+          try {
+            onCreated(await createNode(studyId, values));
+          } catch {
+            onError("Node oluşturulamadı. API bağlantısını kontrol edin.");
+          } finally {
+            setSaving(false);
+          }
         }}
       >
         <div className="dialog-heading">
@@ -1119,7 +1135,7 @@ function CreateNodeDialog({
         <label>Tasarım niyeti<textarea required value={values.design_intent} onChange={(e) => setValues({...values, design_intent: e.target.value})} /></label>
         <div className="dialog-actions">
           <button type="button" className="secondary-button" onClick={onClose}>Vazgeç</button>
-          <button className="primary-button">Node oluştur</button>
+          <button className="primary-button" disabled={saving}>{saving ? "Oluşturuluyor" : "Node oluştur"}</button>
         </div>
       </form>
     </div>
@@ -1144,7 +1160,7 @@ function WorkspaceApp() {
   const [selectedRow, setSelectedRow] = useState(1);
   const [evidenceOpen, setEvidenceOpen] = useState(true);
   const [navOpen, setNavOpen] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const saveTimers = useRef<Record<string, number>>({});
 
   const selected = useMemo(
@@ -1227,8 +1243,8 @@ function WorkspaceApp() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  const notify = (message: string) => {
-    setToast(message);
+  const notify = (message: string, type: "success" | "error" = "success") => {
+    setToast({ message, type });
     window.setTimeout(() => setToast(null), 2800);
   };
 
@@ -1251,14 +1267,14 @@ function WorkspaceApp() {
         setApiConnected(true);
       } catch {
         setApiConnected(false);
-        notify("Değişiklik yerel taslakta kaldı. API bağlantısını kontrol edin.");
+        notify("Değişiklik yerel taslakta kaldı. API bağlantısını kontrol edin.", "error");
       }
     }, 550);
   };
 
   const addRow = async () => {
     if (!activeNodeId) {
-      notify("Satır eklemek için önce bir node oluşturun.");
+      notify("Satır eklemek için önce bir node oluşturun.", "error");
       return;
     }
     try {
@@ -1267,7 +1283,7 @@ function WorkspaceApp() {
       setSelectedRow(created.id);
       notify("Yeni HAZOP satırı veritabanına eklendi.");
     } catch {
-      notify("Satır oluşturulamadı. API bağlantısını kontrol edin.");
+      notify("Satır oluşturulamadı. API bağlantısını kontrol edin.", "error");
     }
   };
 
@@ -1284,7 +1300,7 @@ function WorkspaceApp() {
       setSelectedRow(remaining[0]?.id ?? 0);
       notify("HAZOP satırı silindi.");
     } catch {
-      notify("Satır silinemedi.");
+      notify("Satır silinemedi.", "error");
     }
   };
 
@@ -1335,7 +1351,7 @@ function WorkspaceApp() {
       setWorkspaceNodes([]);
       setActiveNodeId("");
       setApiConnected(false);
-      notify("Çalışma yüklenemedi. API bağlantısını kontrol edin.");
+      notify("Çalışma yüklenemedi. API bağlantısını kontrol edin.", "error");
     } finally {
       setLoadingRows(false);
     }
@@ -1374,6 +1390,7 @@ function WorkspaceApp() {
             window.location.href = reportUrl(study.id, activeNode.id);
           }}
           activeNode={activeNode}
+          studyTitle={study.title}
           apiConnected={apiConnected}
         />
 
@@ -1425,7 +1442,6 @@ function WorkspaceApp() {
                 {activeNode.design_intent}
               </p>
             </div>
-            <button className="text-button">Node bilgilerini düzenle</button>
           </div>
 
           <div className="tab-bar" role="tablist" aria-label="Node çalışma alanları">
@@ -1498,20 +1514,20 @@ function WorkspaceApp() {
           </div>
           <div className="shortcut-hints">
             <span><kbd>Ctrl</kbd><kbd>Enter</kbd> Satır ekle</span>
-            <span><kbd>⌘</kbd><kbd>K</kbd> Komutlar</span>
           </div>
         </footer>
       </div>
 
       {toast && (
-        <div className="toast" role="status">
-          <CheckCircle2 size={18} />
-          {toast}
+        <div className={`toast toast-${toast.type}`} role={toast.type === "error" ? "alert" : "status"}>
+          {toast.type === "error" ? <AlertTriangle size={18} /> : <CheckCircle2 size={18} />}
+          {toast.message}
         </div>
       )}
       <CreateStudyDialog
         open={studyDialogOpen}
         onClose={() => setStudyDialogOpen(false)}
+        onError={(msg) => notify(msg, "error")}
         onCreated={(created) => {
           setStudyOptions((current) => [created, ...current]);
           setStudy({
@@ -1531,6 +1547,7 @@ function WorkspaceApp() {
         open={nodeDialogOpen}
         studyId={study.id}
         onClose={() => setNodeDialogOpen(false)}
+        onError={(msg) => notify(msg, "error")}
         onCreated={(created) => {
           setWorkspaceNodes((current) => [...current, created]);
           setActiveNodeId(created.id);
