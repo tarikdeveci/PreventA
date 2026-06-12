@@ -41,6 +41,13 @@ async def create_study(payload: StudyCreate) -> dict[str, object]:
     return repository.create_study(payload)
 
 
+@router.delete("/studies/{study_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_study(study_id: str) -> Response:
+    if not repository.delete_study(study_id):
+        raise HTTPException(status_code=404, detail="Study not found")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
 @router.get("/studies/{study_id}/nodes")
 async def list_nodes(study_id: str) -> list[dict[str, object]]:
     return repository.list_nodes(study_id)
@@ -59,6 +66,13 @@ async def update_node(node_id: str, payload: NodeUpdate) -> dict[str, object]:
     if node is None:
         raise HTTPException(status_code=404, detail="Node not found")
     return node
+
+
+@router.delete("/nodes/{node_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_node(node_id: str) -> Response:
+    if not repository.delete_node(node_id):
+        raise HTTPException(status_code=404, detail="Node not found")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.get("/nodes/{node_id}/rows")
@@ -98,6 +112,13 @@ async def add_lopa_layer(row_id: int, payload: LopaLayerCreate) -> dict[str, obj
     if repository.get_row(row_id) is None:
         raise HTTPException(status_code=404, detail="HAZOP row not found")
     return repository.add_lopa_layer(row_id, payload)
+
+
+@router.delete("/lopa/{layer_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_lopa_layer(layer_id: str) -> Response:
+    if not repository.delete_lopa_layer(layer_id):
+        raise HTTPException(status_code=404, detail="LOPA layer not found")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.get("/studies/{study_id}/nodes/{node_id}/report.docx")

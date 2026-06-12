@@ -2,9 +2,15 @@ from sqlalchemy import Select, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from preventa.db.models.rag import KnowledgeChunk
+from preventa.db.models.rag import KnowledgeChunk, KnowledgeDocument, SourceType
 from preventa.features.rag.fusion import reciprocal_rank_fusion
-from preventa.features.rag.schemas import DeviationAssistRequest, RetrievedChunk
+from preventa.features.rag.providers import Embedder
+from preventa.features.rag.schemas import (
+    ChunkInput,
+    CorpusIngestResponse,
+    DeviationAssistRequest,
+    RetrievedChunk,
+)
 
 
 class HybridRetrievalRepository:
@@ -99,3 +105,46 @@ def build_retrieval_query(request: DeviationAssistRequest) -> str:
         request.deviation,
     )
     return "\n".join(str(field) for field in fields)
+
+
+class CorpusIngestionRepository:
+    def __init__(self, session: AsyncSession, embedder: Embedder) -> None:
+        self._session = session
+        self._embedder = embedder
+
+    async def ingest(
+        self,
+        *,
+        title: str,
+        source_type: str,
+        source_ref: str,
+        version: str | None,
+        chunks: list[ChunkInput],
+    ) -> CorpusIngestResponse:
+        document = KnowledgeDocument(
+            title=title,
+            source_type=SourceType(source_type),
+            source_ref=source_ref,
+            version=version,
+            is_active=True,
+        )
+        self._session.add(document)
+        await self._session.flush()  # populate document.id
+
+        for chunk_input in chunks:
+            embedding = await self._embedder.embed(chunk_input.content)
+            chunk = KnowledgeChunk(
+                document_id=document.id,
+                ordinal=chunk_input.ordinal,
+                section_ref=chunk_input.section_ref,
+                content=chunk_input.content,
+                embedding=embedding,
+            )
+            self._session.add(chunk)
+
+        await self._session.commit()
+        return CorpusIngestResponse(
+            document_id=document.id,
+            chunks_indexed=len(chunks),
+            source_ref=source_ref,
+        )

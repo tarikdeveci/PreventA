@@ -32,27 +32,27 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  addLopaLayer,
   createHazopRow,
   createNode,
   createStudy,
   deleteHazopRow,
+  deleteLopaLayer,
+  fetchLopaLayers,
   fetchNodes,
   fetchProductStatus,
   fetchRows,
   fetchStudies,
-  fetchWorkspace,
   reportUrl,
   updateHazopRow,
 } from "./api";
 import {
   fallbackStatus,
   fallbackStudy,
-  initialRows,
-  nodes as fallbackNodes,
-  suggestions as fallbackSuggestions,
   type HazopRow,
+  type LopaLayer,
   type ProductStatus,
   type StudyListItem,
   type Suggestion,
@@ -62,13 +62,15 @@ import {
 
 type WorkspaceTab = "HAZOP" | "LOPA" | "Risk matrisi" | "Kaynaklar" | "Ürün durumu";
 
-const workspaceTabs: { label: WorkspaceTab; count?: number }[] = [
-  { label: "HAZOP", count: 24 },
-  { label: "LOPA", count: 3 },
-  { label: "Risk matrisi" },
-  { label: "Kaynaklar", count: 12 },
-  { label: "Ürün durumu" },
-];
+function workspaceTabs(rowCount: number, lopaCount: number): { label: WorkspaceTab; count?: number }[] {
+  return [
+    { label: "HAZOP", count: rowCount || undefined },
+    { label: "LOPA", count: lopaCount || undefined },
+    { label: "Risk matrisi" },
+    { label: "Kaynaklar" },
+    { label: "Ürün durumu" },
+  ];
+}
 
 function RiskBadge({ level }: { level: HazopRow["risk"] }) {
   return <span className={`risk-badge risk-${level.toLocaleLowerCase("tr")}`}>{level}</span>;
@@ -237,7 +239,7 @@ function StudyNavigator({
         <div className="nav-section nodes-section">
           <div className="nav-section-title">
             <span>Node'lar</span>
-            <span className="nav-count">5</span>
+            <span className="nav-count">{nodes.length}</span>
           </div>
           <label className="node-search">
             <Search size={15} aria-hidden="true" />
@@ -474,13 +476,38 @@ function HazopTable({
                   onChange={(event) => onUpdateRow(row.id, "safeguard", event.target.value)}
                 />
               </td>
-              <td className="score-cell">{row.severity}</td>
-              <td className="score-cell">{row.likelihood}</td>
+              <td className="score-cell">
+                <select
+                  aria-label={`${index + 1}. satır şiddet`}
+                  value={row.severity}
+                  onChange={(event) => onUpdateRow(row.id, "severity", event.target.value)}
+                >
+                  {[1, 2, 3, 4, 5].map((v) => <option key={v} value={v}>{v}</option>)}
+                </select>
+              </td>
+              <td className="score-cell">
+                <select
+                  aria-label={`${index + 1}. satır olasılık`}
+                  value={row.likelihood}
+                  onChange={(event) => onUpdateRow(row.id, "likelihood", event.target.value)}
+                >
+                  {[1, 2, 3, 4, 5].map((v) => <option key={v} value={v}>{v}</option>)}
+                </select>
+              </td>
               <td>
                 <RiskBadge level={row.risk} />
               </td>
               <td>
-                <StatusBadge status={row.status} />
+                <select
+                  aria-label={`${index + 1}. satır inceleme durumu`}
+                  value={row.status}
+                  className={`status-select status-${row.status.toLocaleLowerCase("tr")}`}
+                  onChange={(event) => onUpdateRow(row.id, "status", event.target.value)}
+                >
+                  <option>Eksik</option>
+                  <option>Taslak</option>
+                  <option>İncelendi</option>
+                </select>
               </td>
             </tr>
           ))}
@@ -561,67 +588,147 @@ function EvidencePanel({
   );
 }
 
-function LopaWorkspace() {
-  const layers = [
-    { name: "BPCS yüksek sıcaklık alarmı", pfd: "1.0E-1", valid: false, note: "Operatör müdahalesi bağımsızlık koşulunu karşılamıyor." },
-    { name: "TSHH-204 bağımsız trip", pfd: "1.0E-2", valid: true, note: "Bağımsız sensör, logic solver ve son eleman." },
-    { name: "Basınç tahliye vanası PSV-204", pfd: "1.0E-2", valid: true, note: "Yıllık test kaydı mevcut." },
-  ];
+function LopaWorkspace({ selectedRow }: { selectedRow: HazopRow | undefined }) {
+  const [layers, setLayers] = useState<LopaLayer[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
+  const [form, setForm] = useState({ description: "", pfd: "1.0e-2", is_valid: true, note: "" });
+
+  useEffect(() => {
+    if (!selectedRow) {
+      setLayers([]);
+      return;
+    }
+    setLoading(true);
+    fetchLopaLayers(selectedRow.id)
+      .then(setLayers)
+      .catch(() => setLayers([]))
+      .finally(() => setLoading(false));
+  }, [selectedRow?.id]);
+
+  const handleAdd = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!selectedRow) return;
+    const layer = await addLopaLayer(selectedRow.id, {
+      description: form.description,
+      pfd: parseFloat(form.pfd),
+      is_valid: form.is_valid,
+      note: form.note,
+    });
+    setLayers((current) => [...current, layer]);
+    setForm({ description: "", pfd: "1.0e-2", is_valid: true, note: "" });
+    setAddOpen(false);
+  };
+
+  const handleDelete = async (layerId: string) => {
+    if (!window.confirm("Bu IPL kaydı silinsin mi?")) return;
+    await deleteLopaLayer(layerId);
+    setLayers((current) => current.filter((l) => l.id !== layerId));
+  };
+
+  const initiatorFreq = 0.1;
+  const totalReduction = layers.filter((l) => l.is_valid).reduce((acc, l) => acc * l.pfd, 1);
+  const outcomeFreq = initiatorFreq * totalReduction;
+
   return (
     <section className="lopa-workspace">
       <div className="lopa-summary">
         <div>
           <span>Başlatıcı olay sıklığı</span>
-          <strong className="mono">1.0E-1 /yıl</strong>
+          <strong className="mono">{initiatorFreq.toExponential(1)} /yıl</strong>
         </div>
         <ChevronRight size={18} />
         <div>
           <span>Toplam risk azaltma</span>
-          <strong className="mono">1.0E-4</strong>
+          <strong className="mono">{totalReduction.toExponential(1)}</strong>
         </div>
         <ChevronRight size={18} />
         <div>
           <span>Sonuç sıklığı</span>
-          <strong className="mono">1.0E-5 /yıl</strong>
+          <strong className="mono">{outcomeFreq.toExponential(1)} /yıl</strong>
         </div>
         <div className="sil-result">
-          <span>Gerekli hedef</span>
-          <strong>SIL 2</strong>
+          <span>Seçili senaryo</span>
+          <strong>{selectedRow ? `Satır ${selectedRow.id}` : "—"}</strong>
         </div>
       </div>
       <div className="section-heading">
         <div>
           <h2>Bağımsız koruma katmanları</h2>
-          <p>Senaryo 02 · Yüksek akış sonucu reaktör sıcaklık yükselmesi</p>
+          <p>
+            {selectedRow
+              ? `Senaryo: ${selectedRow.deviation || "Sapmayı tanımlayın"}`
+              : "HAZOP sekmesinden bir satır seçin."}
+          </p>
         </div>
-        <button className="secondary-button">
+        <button className="secondary-button" onClick={() => setAddOpen(true)} disabled={!selectedRow}>
           <Plus size={16} />
           IPL ekle
         </button>
       </div>
-      <div className="ipl-table">
-        <div className="ipl-header">
-          <span>Koruma katmanı</span>
-          <span>Tipik PFD</span>
-          <span>IPL uygunluğu</span>
-          <span>Değerlendirme</span>
+
+      {loading ? (
+        <div className="table-loading">IPL katmanları yükleniyor...</div>
+      ) : layers.length === 0 ? (
+        <div className="table-empty">
+          <CheckCircle2 size={28} />
+          <strong>Bu senaryo için henüz IPL kaydı yok</strong>
+          <p>Koruma katmanını eklemek için "IPL ekle" düğmesini kullanın.</p>
         </div>
-        {layers.map((layer) => (
-          <div className="ipl-row" key={layer.name}>
-            <strong>{layer.name}</strong>
-            <span className="mono">{layer.pfd}</span>
-            <span className={layer.valid ? "ipl-valid" : "ipl-invalid"}>
-              {layer.valid ? <CheckCircle2 size={15} /> : <AlertTriangle size={15} />}
-              {layer.valid ? "Uygun" : "Kredi verilmedi"}
-            </span>
-            <p>{layer.note}</p>
+      ) : (
+        <div className="ipl-table">
+          <div className="ipl-header">
+            <span>Koruma katmanı</span>
+            <span>Tipik PFD</span>
+            <span>IPL uygunluğu</span>
+            <span>Değerlendirme</span>
+            <span />
           </div>
-        ))}
-      </div>
+          {layers.map((layer) => (
+            <div className="ipl-row" key={layer.id}>
+              <strong>{layer.description}</strong>
+              <span className="mono">{layer.pfd.toExponential(1)}</span>
+              <span className={layer.is_valid ? "ipl-valid" : "ipl-invalid"}>
+                {layer.is_valid ? <CheckCircle2 size={15} /> : <AlertTriangle size={15} />}
+                {layer.is_valid ? "Uygun" : "Kredi verilmedi"}
+              </span>
+              <p>{layer.note}</p>
+              <button
+                className="icon-button"
+                aria-label="IPL sil"
+                onClick={() => handleDelete(layer.id)}
+              >
+                <Trash2 size={15} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {addOpen && (
+        <div className="modal-backdrop" role="presentation">
+          <form className="form-dialog" onSubmit={handleAdd}>
+            <div className="dialog-heading">
+              <div><h2>IPL ekle</h2><p>Bağımsız koruma katmanı bilgilerini girin.</p></div>
+              <button type="button" className="icon-button" onClick={() => setAddOpen(false)} aria-label="Kapat"><X size={18} /></button>
+            </div>
+            <label>Tanım<input required value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></label>
+            <label>PFD (örn: 1e-2)<input required value={form.pfd} onChange={(e) => setForm({ ...form, pfd: e.target.value })} /></label>
+            <label>
+              <input type="checkbox" checked={form.is_valid} onChange={(e) => setForm({ ...form, is_valid: e.target.checked })} />
+              {" "}IPL uygunluk kriterini karşılıyor
+            </label>
+            <label>Not<textarea value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} /></label>
+            <div className="dialog-actions">
+              <button type="button" className="secondary-button" onClick={() => setAddOpen(false)}>Vazgeç</button>
+              <button className="primary-button">Kaydet</button>
+            </div>
+          </form>
+        </div>
+      )}
     </section>
   );
 }
-
 function RiskMatrix() {
   const labels = ["Çok düşük", "Düşük", "Olası", "Yüksek", "Çok yüksek"];
   return (
@@ -1022,14 +1129,15 @@ function CreateNodeDialog({
 function WorkspaceApp() {
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("HAZOP");
   const [railSection, setRailSection] = useState<RailSection>("studies");
-  const [rows, setRows] = useState(initialRows);
-  const [workspaceNodes, setWorkspaceNodes] = useState(fallbackNodes);
+  const [rows, setRows] = useState<HazopRow[]>([]);
+  const [lopaLayerCount, setLopaLayerCount] = useState(0);
+  const [workspaceNodes, setWorkspaceNodes] = useState<WorkspaceNode[]>([]);
   const [study, setStudy] = useState(fallbackStudy);
   const [studyOptions, setStudyOptions] = useState<StudyListItem[]>([]);
-  const [workspaceSuggestions, setWorkspaceSuggestions] = useState(fallbackSuggestions);
+  const [workspaceSuggestions] = useState<Suggestion[]>([]);
   const [productStatus, setProductStatus] = useState(fallbackStatus);
   const [apiConnected, setApiConnected] = useState(false);
-  const [activeNodeId, setActiveNodeId] = useState("node-p101");
+  const [activeNodeId, setActiveNodeId] = useState("");
   const [studyDialogOpen, setStudyDialogOpen] = useState(false);
   const [nodeDialogOpen, setNodeDialogOpen] = useState(false);
   const [loadingRows, setLoadingRows] = useState(false);
@@ -1037,7 +1145,7 @@ function WorkspaceApp() {
   const [evidenceOpen, setEvidenceOpen] = useState(true);
   const [navOpen, setNavOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  const saveTimers = useRef<Record<number, number>>({});
+  const saveTimers = useRef<Record<string, number>>({});
 
   const selected = useMemo(
     () => rows.find((row) => row.id === selectedRow) ?? rows[0],
@@ -1047,26 +1155,54 @@ function WorkspaceApp() {
     () =>
       workspaceNodes.find((node) => node.id === activeNodeId) ??
       workspaceNodes[0] ??
-      fallbackNodes[1],
+      {
+        id: "",
+        code: "",
+        name: "Node seçilmedi",
+        equipment_type: "Çalışma bekleniyor",
+        design_intent: "Başlamak için bir çalışma ve node seçin.",
+        scenario_count: 0,
+        state: "empty" as const,
+      },
     [activeNodeId, workspaceNodes],
   );
 
   useEffect(() => {
     let active = true;
-    Promise.all([fetchWorkspace(), fetchProductStatus(), fetchStudies()])
-      .then(([workspace, status, studies]) => {
+    Promise.all([fetchProductStatus(), fetchStudies()])
+      .then(async ([status, studies]) => {
         if (!active) return;
-        setRows(workspace.rows);
-        setWorkspaceNodes(workspace.nodes);
-        setStudy(workspace.study);
-        setWorkspaceSuggestions(workspace.suggestions);
-        setActiveNodeId(workspace.active_node_id);
         setProductStatus(status);
         setApiConnected(status.api_connected);
         setStudyOptions(studies);
-        if (studies.length > 0) {
-          setStudy((current) => ({ ...current, ...studies[0] }));
+        const firstStudy = studies[0];
+        if (!firstStudy) {
+          setRows([]);
+          setWorkspaceNodes([]);
+          setActiveNodeId("");
+          return;
         }
+
+        setStudy({
+          ...firstStudy,
+          progress: 0,
+          reviewed_scenarios: 0,
+          total_scenarios: 0,
+        });
+        const studyNodes = await fetchNodes(firstStudy.id);
+        if (!active) return;
+        setWorkspaceNodes(studyNodes);
+        const firstNode = studyNodes[0];
+        if (!firstNode) {
+          setRows([]);
+          setActiveNodeId("");
+          return;
+        }
+        setActiveNodeId(firstNode.id);
+        const nodeRows = await fetchRows(firstNode.id);
+        if (!active) return;
+        setRows(nodeRows);
+        setSelectedRow(nodeRows[0]?.id ?? 0);
       })
       .catch(() => {
         if (!active) return;
@@ -1078,6 +1214,19 @@ function WorkspaceApp() {
     };
   }, []);
 
+  // Keyboard shortcut: Ctrl+Enter to add row
+  const addRowRef = useRef<() => Promise<void>>();
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+        event.preventDefault();
+        addRowRef.current?.();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
   const notify = (message: string) => {
     setToast(message);
     window.setTimeout(() => setToast(null), 2800);
@@ -1087,10 +1236,18 @@ function WorkspaceApp() {
     setRows((current) =>
       current.map((row) => (row.id === id ? { ...row, [field]: value } : row)),
     );
-    window.clearTimeout(saveTimers.current[id]);
-    saveTimers.current[id] = window.setTimeout(async () => {
+    const timerKey = `${id}:${field}`;
+    window.clearTimeout(saveTimers.current[timerKey]);
+    saveTimers.current[timerKey] = window.setTimeout(async () => {
       try {
-        await updateHazopRow(id, { [field]: value });
+        const saved = await updateHazopRow(id, { [field]: value });
+        setRows((current) =>
+          current.map((row) =>
+            row.id === id
+              ? { ...row, [field]: saved[field], risk: saved.risk }
+              : row,
+          ),
+        );
         setApiConnected(true);
       } catch {
         setApiConnected(false);
@@ -1100,6 +1257,10 @@ function WorkspaceApp() {
   };
 
   const addRow = async () => {
+    if (!activeNodeId) {
+      notify("Satır eklemek için önce bir node oluşturun.");
+      return;
+    }
     try {
       const created = await createHazopRow(activeNodeId);
       setRows((current) => [...current, created]);
@@ -1110,8 +1271,12 @@ function WorkspaceApp() {
     }
   };
 
+  // Keep ref in sync so keyboard handler can call latest addRow
+  useEffect(() => { addRowRef.current = addRow; });
+
   const removeSelectedRow = async () => {
     if (!selected) return;
+    if (!window.confirm("Seçili HAZOP satırı kalıcı olarak silinsin mi?")) return;
     try {
       await deleteHazopRow(selected.id);
       const remaining = rows.filter((row) => row.id !== selected.id);
@@ -1164,6 +1329,13 @@ function WorkspaceApp() {
         setRows([]);
         setActiveNodeId("");
       }
+      setApiConnected(true);
+    } catch {
+      setRows([]);
+      setWorkspaceNodes([]);
+      setActiveNodeId("");
+      setApiConnected(false);
+      notify("Çalışma yüklenemedi. API bağlantısını kontrol edin.");
     } finally {
       setLoadingRows(false);
     }
@@ -1257,7 +1429,7 @@ function WorkspaceApp() {
           </div>
 
           <div className="tab-bar" role="tablist" aria-label="Node çalışma alanları">
-            {workspaceTabs.map((tab) => (
+            {workspaceTabs(rows.length, lopaLayerCount).map((tab) => (
               <button
                 key={tab.label}
                 role="tab"
@@ -1304,7 +1476,7 @@ function WorkspaceApp() {
               </div>
             </>
           )}
-          {activeTab === "LOPA" && <LopaWorkspace />}
+          {activeTab === "LOPA" && <LopaWorkspace selectedRow={selected} />}
           {activeTab === "Risk matrisi" && <RiskMatrix />}
           {activeTab === "Kaynaklar" && <SourcesWorkspace />}
           {activeTab === "Ürün durumu" && <ProductStatusWorkspace status={productStatus} />}
@@ -1317,7 +1489,7 @@ function WorkspaceApp() {
             <Activity size={14} />
             <span>{rows.length} satır</span>
             <span className="status-separator" />
-            <span>3 açık aksiyon</span>
+            <span>{rows.filter((r) => r.status === "Eksik").length} eksik</span>
             <span className="status-separator" />
             <span className="local-data">
               <ShieldCheck size={14} />

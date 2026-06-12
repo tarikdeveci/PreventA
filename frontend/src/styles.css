@@ -47,7 +47,8 @@ body,
 
 body {
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 button,
@@ -503,7 +504,9 @@ select:focus-visible {
 .app-shell {
   display: grid;
   grid-template-columns: 64px 248px minmax(0, 1fr);
-  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
   background: var(--surface);
 }
 
@@ -2321,10 +2324,6 @@ kbd {
 }
 
 @media (max-width: 860px) {
-  body {
-    overflow: hidden;
-  }
-
   .app-shell {
     grid-template-columns: 54px minmax(0, 1fr);
   }
@@ -2594,7 +2593,7 @@ kbd {
 
   .workspace-shell {
     grid-column: 1;
-    height: calc(100vh - 54px);
+    height: calc(100dvh - 54px);
   }
 
   .study-nav {

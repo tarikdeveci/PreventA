@@ -1,5 +1,14 @@
 export type RiskLevel = "Düşük" | "Orta" | "Yüksek" | "Kritik";
 
+export type LopaLayer = {
+  id: string;
+  row_id: number;
+  description: string;
+  pfd: number;
+  is_valid: boolean;
+  note: string;
+};
+
 export type HazopRow = {
   id: number;
   guideword: string;

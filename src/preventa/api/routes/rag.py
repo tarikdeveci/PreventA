@@ -1,8 +1,13 @@
 from fastapi import APIRouter, HTTPException, status
 
-from preventa.api.dependencies import DeviationAssistServiceDep
+from preventa.api.dependencies import CorpusRepositoryDep, DeviationAssistServiceDep
 from preventa.features.rag.guardrails import UngroundedSuggestionError
-from preventa.features.rag.schemas import DeviationAssistRequest, DeviationAssistResponse
+from preventa.features.rag.schemas import (
+    CorpusIngestRequest,
+    CorpusIngestResponse,
+    DeviationAssistRequest,
+    DeviationAssistResponse,
+)
 
 router = APIRouter()
 
@@ -26,4 +31,23 @@ async def deviation_assist(
                 "message": str(exc),
             },
         ) from exc
+
+
+@router.post(
+    "/corpus/documents",
+    response_model=CorpusIngestResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Ingest a document and its text chunks into the knowledge corpus",
+)
+async def ingest_corpus_document(
+    payload: CorpusIngestRequest,
+    corpus: CorpusRepositoryDep,
+) -> CorpusIngestResponse:
+    return await corpus.ingest(
+        title=payload.title,
+        source_type=payload.source_type,
+        source_ref=payload.source_ref,
+        version=payload.version,
+        chunks=payload.chunks,
+    )
 

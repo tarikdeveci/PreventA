@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from preventa.core.config import Settings, get_settings
 from preventa.core.database import get_db_session
 from preventa.features.rag.providers import OllamaClient, PassthroughReranker
+from preventa.features.rag.repository import CorpusIngestionRepository
 from preventa.features.rag.service import DeviationAssistService
 
 SessionDep = Annotated[AsyncSession, Depends(get_db_session)]
@@ -30,7 +31,24 @@ def get_deviation_assist_service(
     )
 
 
+def get_corpus_repository(
+    session: SessionDep,
+    settings: SettingsDep,
+) -> CorpusIngestionRepository:
+    ollama = OllamaClient(
+        base_url=settings.ollama_base_url,
+        chat_model=settings.ollama_chat_model,
+        embed_model=settings.ollama_embed_model,
+    )
+    return CorpusIngestionRepository(session=session, embedder=ollama)
+
+
 DeviationAssistServiceDep = Annotated[
     DeviationAssistService,
     Depends(get_deviation_assist_service),
+]
+
+CorpusRepositoryDep = Annotated[
+    CorpusIngestionRepository,
+    Depends(get_corpus_repository),
 ]

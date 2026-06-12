@@ -52,3 +52,26 @@ class RetrievedChunk(BaseModel):
 class GeneratedDraft(BaseModel):
     candidates: list[Candidate]
 
+
+class ChunkInput(BaseModel):
+    ordinal: int = Field(ge=0)
+    section_ref: str | None = None
+    content: str = Field(min_length=1)
+
+
+class CorpusIngestRequest(BaseModel):
+    title: str = Field(min_length=2, max_length=500)
+    source_type: str = Field(
+        default="past_study",
+        description="standard | past_study | incident | public_example | synthetic",
+    )
+    source_ref: str = Field(min_length=1, max_length=500, description="Unique document reference")
+    version: str | None = None
+    chunks: list[ChunkInput] = Field(min_length=1, description="Text chunks to embed and index")
+
+
+class CorpusIngestResponse(BaseModel):
+    document_id: UUID
+    chunks_indexed: int
+    source_ref: str
+

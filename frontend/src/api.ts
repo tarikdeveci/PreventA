@@ -1,5 +1,6 @@
 import type {
   HazopRow,
+  LopaLayer,
   ProductStatus,
   StudyListItem,
   WorkspaceNode,
@@ -92,6 +93,29 @@ export function updateHazopRow(
 
 export function deleteHazopRow(rowId: number): Promise<void> {
   return sendJson(`/api/v1/rows/${rowId}`, "DELETE");
+}
+
+export function fetchLopaLayers(rowId: number): Promise<LopaLayer[]> {
+  return getJson(`/api/v1/rows/${rowId}/lopa`);
+}
+
+export function addLopaLayer(
+  rowId: number,
+  payload: { description: string; pfd: number; is_valid: boolean; note: string },
+): Promise<LopaLayer> {
+  return sendJson(`/api/v1/rows/${rowId}/lopa`, "POST", payload);
+}
+
+export function deleteLopaLayer(layerId: string): Promise<void> {
+  return sendJson(`/api/v1/lopa/${layerId}`, "DELETE");
+}
+
+export function deleteStudy(studyId: string): Promise<void> {
+  return sendJson(`/api/v1/studies/${studyId}`, "DELETE");
+}
+
+export function deleteNode(nodeId: string): Promise<void> {
+  return sendJson(`/api/v1/nodes/${nodeId}`, "DELETE");
 }
 
 export function reportUrl(studyId: string, nodeId: string): string {

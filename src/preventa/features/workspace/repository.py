@@ -56,6 +56,13 @@ class WorkspaceRepository:
             ).fetchone()
             return row_dict(row) if row else None
 
+    def delete_study(self, study_id: str) -> bool:
+        with connection() as database:
+            cursor = database.execute("DELETE FROM mvp_studies WHERE id = ?", (study_id,))
+            if cursor.rowcount:
+                audit(database, "study", study_id, "deleted")
+            return bool(cursor.rowcount)
+
     def list_nodes(self, study_id: str) -> list[dict[str, Any]]:
         with connection() as database:
             rows = database.execute(
@@ -109,6 +116,13 @@ class WorkspaceRepository:
         with connection() as database:
             row = database.execute("SELECT * FROM mvp_nodes WHERE id = ?", (node_id,)).fetchone()
             return row_dict(row) if row else None
+
+    def delete_node(self, node_id: str) -> bool:
+        with connection() as database:
+            cursor = database.execute("DELETE FROM mvp_nodes WHERE id = ?", (node_id,))
+            if cursor.rowcount:
+                audit(database, "node", node_id, "deleted")
+            return bool(cursor.rowcount)
 
     def list_rows(self, node_id: str) -> list[dict[str, Any]]:
         with connection() as database:
@@ -205,6 +219,13 @@ class WorkspaceRepository:
                 {**row_dict(row), "is_valid": bool(row["is_valid"])}
                 for row in rows
             ]
+
+    def delete_lopa_layer(self, layer_id: str) -> bool:
+        with connection() as database:
+            cursor = database.execute("DELETE FROM mvp_lopa_layers WHERE id = ?", (layer_id,))
+            if cursor.rowcount:
+                audit(database, "lopa_layer", layer_id, "deleted")
+            return bool(cursor.rowcount)
 
     @staticmethod
     def _serialize_row(row: Any) -> dict[str, Any]:
