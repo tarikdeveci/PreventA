@@ -1,16 +1,16 @@
-# Graph Report - PreventA  (2026-06-12)
+# Graph Report - PreventA  (2026-06-13)
 
 ## Corpus Check
-- 48 files · ~7,168 words
+- 58 files · ~8,708 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 270 nodes · 512 edges · 33 communities (23 shown, 10 thin omitted)
-- Extraction: 55% EXTRACTED · 45% INFERRED · 0% AMBIGUOUS · INFERRED: 232 edges (avg confidence: 0.52)
+- 312 nodes · 573 edges · 37 communities (24 shown, 13 thin omitted)
+- Extraction: 58% EXTRACTED · 42% INFERRED · 0% AMBIGUOUS · INFERRED: 238 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8f12cf90`
+- Built from commit: `330c4f3e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -41,6 +41,9 @@
 - [[_COMMUNITY_Community 28|Community 28]]
 - [[_COMMUNITY_Community 29|Community 29]]
 - [[_COMMUNITY_Community 30|Community 30]]
+- [[_COMMUNITY_Community 33|Community 33]]
+- [[_COMMUNITY_Community 34|Community 34]]
+- [[_COMMUNITY_Community 35|Community 35]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `DeviationAssistRequest` - 31 edges
@@ -61,24 +64,24 @@
   tests/unit/test_fusion.py → src/preventa/features/rag/fusion.py
 - `test_rejects_empty_generation()` --calls--> `require_citations()`  [INFERRED]
   tests/unit/test_guardrails.py → src/preventa/features/rag/guardrails.py
+- `test_workspace_exposes_api_seed_transparently()` --calls--> `get_workspace()`  [INFERRED]
+  tests/unit/test_workspace.py → src/preventa/features/workspace/service.py
 - `test_accepts_candidate_with_source_citation()` --calls--> `require_citations()`  [INFERRED]
-  tests/unit/test_guardrails.py → src/preventa/features/rag/guardrails.py
-- `test_rejects_citation_outside_retrieved_context()` --calls--> `require_citations()`  [INFERRED]
   tests/unit/test_guardrails.py → src/preventa/features/rag/guardrails.py
 
 ## Import Cycles
 - 1-file cycle: `src/preventa/main.py -> src/preventa/main.py`
 - 1-file cycle: `src/preventa/features/rag/guardrails.py -> src/preventa/features/rag/guardrails.py`
 
-## Communities (33 total, 10 thin omitted)
+## Communities (37 total, 13 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.22
 Nodes (32): BaseSettings, Settings, DeviationAssistServiceDep, DraftGenerator, Embedder, Protocol, UngroundedSuggestionError, DraftGenerator (+24 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.29
-Nodes (17): Base, TimestampMixin, UUIDPrimaryKeyMixin, DeclarativeBase, HazopNode, HazopWorksheetRow, ReviewStatus, Study (+9 more)
+Cohesion: 0.16
+Nodes (25): Collection, Base, TimestampMixin, UUIDPrimaryKeyMixin, DeclarativeBase, HazopNode, HazopWorksheetRow, ReviewStatus (+17 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.19
@@ -89,12 +92,12 @@ Cohesion: 0.20
 Nodes (8): ItemId, KnowledgeChunk, Fuse ordered result lists while retaining candidates unique to one retriever., reciprocal_rank_fusion(), Select, RetrievedChunk, test_rrf_is_deterministic_for_tied_scores(), test_rrf_rewards_items_returned_by_both_retrievers()
 
 ### Community 4 - "Community 4"
-Cohesion: 0.22
+Cohesion: 0.20
 Nodes (5): get_settings(), configure_logging(), FastAPI, create_app(), lifespan()
 
 ### Community 5 - "Community 5"
-Cohesion: 0.26
-Nodes (9): BaseModel, Collection, require_citations(), Candidate, Citation, GeneratedDraft, test_accepts_candidate_with_source_citation(), test_rejects_citation_outside_retrieved_context() (+1 more)
+Cohesion: 0.13
+Nodes (18): BaseModel, product_status(), workspace(), ProductStatusResponse, WorkspaceResponse, ProductStatusResponse, WorkspaceResponse, test_product_status_reports_unfinished_persistence() (+10 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.42
@@ -113,8 +116,8 @@ Cohesion: 0.08
 Nodes (25): dependencies, lucide-react, react, react-dom, devDependencies, eslint, @eslint/js, eslint-plugin-react-hooks (+17 more)
 
 ### Community 24 - "Community 24"
-Cohesion: 0.10
-Nodes (8): WorkspaceTab, workspaceTabs, HazopRow, initialRows, nodes, RiskLevel, Suggestion, suggestions
+Cohesion: 0.09
+Nodes (18): fetchProductStatus(), fetchWorkspace(), getJson(), WorkspaceTab, workspaceTabs, DeliveryModule, fallbackStatus, fallbackStudy (+10 more)
 
 ### Community 25 - "Community 25"
 Cohesion: 0.11
@@ -137,19 +140,19 @@ Cohesion: 0.50
 Nodes (3): Answer, Q: PreventA HAZOP deviation assist hybrid retrieval citation guardrail API database architecture, Source Nodes
 
 ## Knowledge Gaps
-- **82 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+77 more)
+- **89 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+84 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **10 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **13 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `UUID` connect `Community 1` to `Community 0`, `Community 5`?**
-  _High betweenness centrality (0.053) - this node is a cross-community bridge._
 - **Why does `GeneratedDraft` connect `Community 0` to `Community 1`, `Community 2`, `Community 5`?**
+  _High betweenness centrality (0.053) - this node is a cross-community bridge._
+- **Why does `UUID` connect `Community 1` to `Community 0`?**
   _High betweenness centrality (0.049) - this node is a cross-community bridge._
-- **Why does `HybridRetrievalRepository` connect `Community 0` to `Community 3`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+- **Why does `DeviationAssistRequest` connect `Community 0` to `Community 2`, `Community 3`, `Community 5`?**
+  _High betweenness centrality (0.028) - this node is a cross-community bridge._
 - **Are the 29 inferred relationships involving `DeviationAssistRequest` (e.g. with `DeviationAssistServiceDep` and `DraftGenerator`) actually correct?**
   _`DeviationAssistRequest` has 29 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 26 inferred relationships involving `RetrievedChunk` (e.g. with `DraftGenerator` and `Embedder`) actually correct?**

@@ -4,6 +4,16 @@
   "graph": {},
   "nodes": [
     {
+      "label": "index.py",
+      "file_type": "code",
+      "source_file": "api/index.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "api_index",
+      "community": 4,
+      "norm_label": "index.py"
+    },
+    {
       "label": "eslint.config.js",
       "file_type": "code",
       "source_file": "frontend/eslint.config.js",
@@ -287,7 +297,7 @@
       "label": "WorkspaceTab",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L35",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "src_app_workspacetab",
       "community": 24,
@@ -297,7 +307,7 @@
       "label": "workspaceTabs",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L37",
+      "source_location": "L51",
       "_origin": "ast",
       "id": "src_app_workspacetabs",
       "community": 24,
@@ -307,7 +317,7 @@
       "label": "RiskBadge()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L44",
+      "source_location": "L59",
       "_origin": "ast",
       "id": "src_app_riskbadge",
       "community": 24,
@@ -317,7 +327,7 @@
       "label": "StatusBadge()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L48",
+      "source_location": "L63",
       "_origin": "ast",
       "id": "src_app_statusbadge",
       "community": 24,
@@ -327,7 +337,7 @@
       "label": "AppRail()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L65",
+      "source_location": "L80",
       "_origin": "ast",
       "id": "src_app_apprail",
       "community": 24,
@@ -337,7 +347,7 @@
       "label": "StudyNavigator()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L100",
+      "source_location": "L115",
       "_origin": "ast",
       "id": "src_app_studynavigator",
       "community": 24,
@@ -347,7 +357,7 @@
       "label": "TopBar()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L203",
+      "source_location": "L229",
       "_origin": "ast",
       "id": "src_app_topbar",
       "community": 24,
@@ -357,7 +367,7 @@
       "label": "WorksheetToolbar()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L249",
+      "source_location": "L283",
       "_origin": "ast",
       "id": "src_app_worksheettoolbar",
       "community": 24,
@@ -367,7 +377,7 @@
       "label": "HazopTable()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L295",
+      "source_location": "L329",
       "_origin": "ast",
       "id": "src_app_hazoptable",
       "community": 24,
@@ -377,7 +387,7 @@
       "label": "EvidencePanel()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L396",
+      "source_location": "L430",
       "_origin": "ast",
       "id": "src_app_evidencepanel",
       "community": 24,
@@ -387,7 +397,7 @@
       "label": "LopaWorkspace()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L465",
+      "source_location": "L501",
       "_origin": "ast",
       "id": "src_app_lopaworkspace",
       "community": 24,
@@ -397,7 +407,7 @@
       "label": "RiskMatrix()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L526",
+      "source_location": "L562",
       "_origin": "ast",
       "id": "src_app_riskmatrix",
       "community": 24,
@@ -407,21 +417,71 @@
       "label": "SourcesWorkspace()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L563",
+      "source_location": "L599",
       "_origin": "ast",
       "id": "src_app_sourcesworkspace",
       "community": 24,
       "norm_label": "sourcesworkspace()"
     },
     {
+      "label": "ProductStatusWorkspace()",
+      "file_type": "code",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L639",
+      "_origin": "ast",
+      "id": "src_app_productstatusworkspace",
+      "community": 24,
+      "norm_label": "productstatusworkspace()"
+    },
+    {
       "label": "App()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L603",
+      "source_location": "L738",
       "_origin": "ast",
       "id": "src_app_app",
       "community": 24,
       "norm_label": "app()"
+    },
+    {
+      "label": "api.ts",
+      "file_type": "code",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_api",
+      "community": 24,
+      "norm_label": "api.ts"
+    },
+    {
+      "label": "getJson()",
+      "file_type": "code",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "src_api_getjson",
+      "community": 24,
+      "norm_label": "getjson()"
+    },
+    {
+      "label": "fetchWorkspace()",
+      "file_type": "code",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "src_api_fetchworkspace",
+      "community": 24,
+      "norm_label": "fetchworkspace()"
+    },
+    {
+      "label": "fetchProductStatus()",
+      "file_type": "code",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "src_api_fetchproductstatus",
+      "community": 24,
+      "norm_label": "fetchproductstatus()"
     },
     {
       "label": "data.ts",
@@ -464,10 +524,60 @@
       "norm_label": "suggestion"
     },
     {
-      "label": "initialRows",
+      "label": "WorkspaceStudy",
       "file_type": "code",
       "source_file": "frontend/src/data.ts",
       "source_location": "L26",
+      "_origin": "ast",
+      "id": "src_data_workspacestudy",
+      "community": 24,
+      "norm_label": "workspacestudy"
+    },
+    {
+      "label": "WorkspaceNode",
+      "file_type": "code",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "src_data_workspacenode",
+      "community": 24,
+      "norm_label": "workspacenode"
+    },
+    {
+      "label": "WorkspaceResponse",
+      "file_type": "code",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L46",
+      "_origin": "ast",
+      "id": "src_data_workspaceresponse",
+      "community": 24,
+      "norm_label": "workspaceresponse"
+    },
+    {
+      "label": "DeliveryModule",
+      "file_type": "code",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L55",
+      "_origin": "ast",
+      "id": "src_data_deliverymodule",
+      "community": 24,
+      "norm_label": "deliverymodule"
+    },
+    {
+      "label": "ProductStatus",
+      "file_type": "code",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "src_data_productstatus",
+      "community": 24,
+      "norm_label": "productstatus"
+    },
+    {
+      "label": "initialRows",
+      "file_type": "code",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L74",
       "_origin": "ast",
       "id": "src_data_initialrows",
       "community": 24,
@@ -477,21 +587,41 @@
       "label": "suggestions",
       "file_type": "code",
       "source_file": "frontend/src/data.ts",
-      "source_location": "L83",
+      "source_location": "L131",
       "_origin": "ast",
       "id": "src_data_suggestions",
       "community": 24,
       "norm_label": "suggestions"
     },
     {
+      "label": "fallbackStudy",
+      "file_type": "code",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L161",
+      "_origin": "ast",
+      "id": "src_data_fallbackstudy",
+      "community": 24,
+      "norm_label": "fallbackstudy"
+    },
+    {
       "label": "nodes",
       "file_type": "code",
       "source_file": "frontend/src/data.ts",
-      "source_location": "L113",
+      "source_location": "L171",
       "_origin": "ast",
       "id": "src_data_nodes",
       "community": 24,
       "norm_label": "nodes"
+    },
+    {
+      "label": "fallbackStatus",
+      "file_type": "code",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L220",
+      "_origin": "ast",
+      "id": "src_data_fallbackstatus",
+      "community": 24,
+      "norm_label": "fallbackstatus"
     },
     {
       "label": "main.tsx",
@@ -502,6 +632,16 @@
       "id": "src_main",
       "community": 24,
       "norm_label": "main.tsx"
+    },
+    {
+      "label": "vite-env.d.ts",
+      "file_type": "code",
+      "source_file": "frontend/src/vite-env.d.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_vite_env_d",
+      "community": 36,
+      "norm_label": "vite-env.d.ts"
     },
     {
       "label": "tsconfig.app.json",
@@ -834,6 +974,26 @@
       "norm_label": "include"
     },
     {
+      "label": "vercel.json",
+      "file_type": "code",
+      "source_file": "frontend/vercel.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "frontend_vercel",
+      "community": 34,
+      "norm_label": "vercel.json"
+    },
+    {
+      "label": "rewrites",
+      "file_type": "code",
+      "source_file": "frontend/vercel.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "frontend_vercel_rewrites",
+      "community": 34,
+      "norm_label": "rewrites"
+    },
+    {
       "label": "vite.config.ts",
       "file_type": "code",
       "source_file": "frontend/vite.config.ts",
@@ -1142,6 +1302,56 @@
       "id": "src_preventa_api_routes_rag_py_deviationassistresponse",
       "community": 0,
       "norm_label": "deviationassistresponse"
+    },
+    {
+      "label": "workspace.py",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "routes_workspace",
+      "community": 5,
+      "norm_label": "workspace.py"
+    },
+    {
+      "label": "workspace()",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "routes_workspace_workspace",
+      "community": 5,
+      "norm_label": "workspace()"
+    },
+    {
+      "label": "WorkspaceResponse",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "src_preventa_api_routes_workspace_py_workspaceresponse",
+      "community": 5,
+      "norm_label": "workspaceresponse"
+    },
+    {
+      "label": "product_status()",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "routes_workspace_product_status",
+      "community": 5,
+      "norm_label": "product_status()"
+    },
+    {
+      "label": "ProductStatusResponse",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "src_preventa_api_routes_workspace_py_productstatusresponse",
+      "community": 5,
+      "norm_label": "productstatusresponse"
     },
     {
       "label": "__init__.py",
@@ -1560,7 +1770,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "rag_guardrails",
-      "community": 5,
+      "community": 1,
       "norm_label": "guardrails.py"
     },
     {
@@ -1590,7 +1800,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "rag_guardrails_require_citations",
-      "community": 5,
+      "community": 1,
       "norm_label": "require_citations()"
     },
     {
@@ -1600,7 +1810,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_preventa_features_rag_guardrails_py_generateddraft",
-      "community": 5,
+      "community": 1,
       "norm_label": "generateddraft"
     },
     {
@@ -1610,7 +1820,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "collection",
-      "community": 5,
+      "community": 1,
       "norm_label": "collection"
     },
     {
@@ -1960,7 +2170,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "rag_schemas",
-      "community": 5,
+      "community": 0,
       "norm_label": "schemas.py"
     },
     {
@@ -1990,7 +2200,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "rag_schemas_citation",
-      "community": 5,
+      "community": 1,
       "norm_label": "citation"
     },
     {
@@ -2000,7 +2210,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "rag_schemas_candidate",
-      "community": 5,
+      "community": 1,
       "norm_label": "candidate"
     },
     {
@@ -2204,6 +2414,156 @@
       "norm_label": "retrievaltrace"
     },
     {
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/__init__.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "workspace_init",
+      "community": 35,
+      "norm_label": "__init__.py"
+    },
+    {
+      "label": "Workspace read models and product delivery status.",
+      "file_type": "rationale",
+      "source_file": "src/preventa/features/workspace/__init__.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "workspace_init_rationale_1",
+      "community": 35,
+      "norm_label": "workspace read models and product delivery status."
+    },
+    {
+      "label": "schemas.py",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "workspace_schemas",
+      "community": 5,
+      "norm_label": "schemas.py"
+    },
+    {
+      "label": "WorkspaceStudy",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "workspace_schemas_workspacestudy",
+      "community": 5,
+      "norm_label": "workspacestudy"
+    },
+    {
+      "label": "WorkspaceNode",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "workspace_schemas_workspacenode",
+      "community": 5,
+      "norm_label": "workspacenode"
+    },
+    {
+      "label": "WorkspaceRow",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "workspace_schemas_workspacerow",
+      "community": 5,
+      "norm_label": "workspacerow"
+    },
+    {
+      "label": "WorkspaceSuggestion",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "workspace_schemas_workspacesuggestion",
+      "community": 5,
+      "norm_label": "workspacesuggestion"
+    },
+    {
+      "label": "WorkspaceResponse",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L49",
+      "_origin": "ast",
+      "id": "workspace_schemas_workspaceresponse",
+      "community": 5,
+      "norm_label": "workspaceresponse"
+    },
+    {
+      "label": "DeliveryModule",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "workspace_schemas_deliverymodule",
+      "community": 5,
+      "norm_label": "deliverymodule"
+    },
+    {
+      "label": "ProductStatusResponse",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L66",
+      "_origin": "ast",
+      "id": "workspace_schemas_productstatusresponse",
+      "community": 5,
+      "norm_label": "productstatusresponse"
+    },
+    {
+      "label": "service.py",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/service.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "workspace_service",
+      "community": 5,
+      "norm_label": "service.py"
+    },
+    {
+      "label": "get_workspace()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/service.py",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "workspace_service_get_workspace",
+      "community": 5,
+      "norm_label": "get_workspace()"
+    },
+    {
+      "label": "WorkspaceResponse",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/service.py",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "src_preventa_features_workspace_service_py_workspaceresponse",
+      "community": 5,
+      "norm_label": "workspaceresponse"
+    },
+    {
+      "label": "get_product_status()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/service.py",
+      "source_location": "L178",
+      "_origin": "ast",
+      "id": "workspace_service_get_product_status",
+      "community": 5,
+      "norm_label": "get_product_status()"
+    },
+    {
+      "label": "ProductStatusResponse",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/service.py",
+      "source_location": "L178",
+      "_origin": "ast",
+      "id": "src_preventa_features_workspace_service_py_productstatusresponse",
+      "community": 5,
+      "norm_label": "productstatusresponse"
+    },
+    {
       "label": "main.py",
       "file_type": "code",
       "source_file": "src/preventa/main.py",
@@ -2310,7 +2670,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "unit_test_guardrails",
-      "community": 5,
+      "community": 1,
       "norm_label": "test_guardrails.py"
     },
     {
@@ -2320,7 +2680,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "unit_test_guardrails_test_rejects_empty_generation",
-      "community": 5,
+      "community": 1,
       "norm_label": "test_rejects_empty_generation()"
     },
     {
@@ -2330,7 +2690,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "unit_test_guardrails_test_accepts_candidate_with_source_citation",
-      "community": 5,
+      "community": 1,
       "norm_label": "test_accepts_candidate_with_source_citation()"
     },
     {
@@ -2340,8 +2700,68 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "unit_test_guardrails_test_rejects_citation_outside_retrieved_context",
-      "community": 5,
+      "community": 1,
       "norm_label": "test_rejects_citation_outside_retrieved_context()"
+    },
+    {
+      "label": "test_workspace.py",
+      "file_type": "code",
+      "source_file": "tests/unit/test_workspace.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "unit_test_workspace",
+      "community": 5,
+      "norm_label": "test_workspace.py"
+    },
+    {
+      "label": "test_workspace_exposes_api_seed_transparently()",
+      "file_type": "code",
+      "source_file": "tests/unit/test_workspace.py",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "unit_test_workspace_test_workspace_exposes_api_seed_transparently",
+      "community": 5,
+      "norm_label": "test_workspace_exposes_api_seed_transparently()"
+    },
+    {
+      "label": "test_product_status_reports_unfinished_persistence()",
+      "file_type": "code",
+      "source_file": "tests/unit/test_workspace.py",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "unit_test_workspace_test_product_status_reports_unfinished_persistence",
+      "community": 5,
+      "norm_label": "test_product_status_reports_unfinished_persistence()"
+    },
+    {
+      "label": "vercel.json",
+      "file_type": "code",
+      "source_file": "vercel.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "vercel",
+      "community": 33,
+      "norm_label": "vercel.json"
+    },
+    {
+      "label": "builds",
+      "file_type": "code",
+      "source_file": "vercel.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "vercel_builds",
+      "community": 33,
+      "norm_label": "builds"
+    },
+    {
+      "label": "routes",
+      "file_type": "code",
+      "source_file": "vercel.json",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "vercel_routes",
+      "community": 33,
+      "norm_label": "routes"
     },
     {
       "label": "DESIGN.md",
@@ -2706,14 +3126,25 @@
   ],
   "links": [
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "api/index.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "api_index",
+      "target": "preventa_main",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/package.json",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package",
-      "target": "frontend_package_dependencies",
-      "confidence_score": 1.0
+      "target": "frontend_package_dependencies"
     },
     {
       "relation": "contains",
@@ -2721,9 +3152,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package",
-      "target": "frontend_package_devdependencies",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies"
     },
     {
       "relation": "contains",
@@ -2731,9 +3162,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package",
-      "target": "frontend_package_name",
-      "confidence_score": 1.0
+      "target": "frontend_package_name"
     },
     {
       "relation": "contains",
@@ -2741,9 +3172,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package",
-      "target": "frontend_package_private",
-      "confidence_score": 1.0
+      "target": "frontend_package_private"
     },
     {
       "relation": "contains",
@@ -2751,9 +3182,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package",
-      "target": "frontend_package_scripts",
-      "confidence_score": 1.0
+      "target": "frontend_package_scripts"
     },
     {
       "relation": "contains",
@@ -2761,9 +3192,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package",
-      "target": "frontend_package_type",
-      "confidence_score": 1.0
+      "target": "frontend_package_type"
     },
     {
       "relation": "contains",
@@ -2771,9 +3202,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package",
-      "target": "frontend_package_version",
-      "confidence_score": 1.0
+      "target": "frontend_package_version"
     },
     {
       "relation": "contains",
@@ -2781,9 +3212,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_scripts",
-      "target": "frontend_package_scripts_build",
-      "confidence_score": 1.0
+      "target": "frontend_package_scripts_build"
     },
     {
       "relation": "contains",
@@ -2791,9 +3222,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_scripts",
-      "target": "frontend_package_scripts_dev",
-      "confidence_score": 1.0
+      "target": "frontend_package_scripts_dev"
     },
     {
       "relation": "contains",
@@ -2801,9 +3232,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_scripts",
-      "target": "frontend_package_scripts_lint",
-      "confidence_score": 1.0
+      "target": "frontend_package_scripts_lint"
     },
     {
       "relation": "contains",
@@ -2811,9 +3242,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_scripts",
-      "target": "frontend_package_scripts_preview",
-      "confidence_score": 1.0
+      "target": "frontend_package_scripts_preview"
     },
     {
       "relation": "contains",
@@ -2821,9 +3252,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_dependencies",
-      "target": "frontend_package_dependencies_lucide_react",
-      "confidence_score": 1.0
+      "target": "frontend_package_dependencies_lucide_react"
     },
     {
       "relation": "contains",
@@ -2831,9 +3262,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_dependencies",
-      "target": "frontend_package_dependencies_react",
-      "confidence_score": 1.0
+      "target": "frontend_package_dependencies_react"
     },
     {
       "relation": "contains",
@@ -2841,9 +3272,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_dependencies",
-      "target": "frontend_package_dependencies_react_dom",
-      "confidence_score": 1.0
+      "target": "frontend_package_dependencies_react_dom"
     },
     {
       "relation": "contains",
@@ -2851,9 +3282,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_eslint",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_eslint"
     },
     {
       "relation": "contains",
@@ -2861,9 +3292,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_eslint_js",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_eslint_js"
     },
     {
       "relation": "contains",
@@ -2871,9 +3302,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_eslint_plugin_react_hooks",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_eslint_plugin_react_hooks"
     },
     {
       "relation": "contains",
@@ -2881,9 +3312,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_eslint_plugin_react_refresh",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_eslint_plugin_react_refresh"
     },
     {
       "relation": "contains",
@@ -2891,9 +3322,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_globals",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_globals"
     },
     {
       "relation": "contains",
@@ -2901,9 +3332,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_types_react",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_types_react"
     },
     {
       "relation": "contains",
@@ -2911,9 +3342,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_types_react_dom",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_types_react_dom"
     },
     {
       "relation": "contains",
@@ -2921,9 +3352,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_typescript",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_typescript"
     },
     {
       "relation": "contains",
@@ -2931,9 +3362,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_typescript_eslint",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_typescript_eslint"
     },
     {
       "relation": "contains",
@@ -2941,9 +3372,9 @@
       "source_file": "frontend/package.json",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_vite",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_vite"
     },
     {
       "relation": "contains",
@@ -2951,8 +3382,41 @@
       "source_file": "frontend/package.json",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_vitejs_plugin_react",
+      "target": "frontend_package_devdependencies_vitejs_plugin_react"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_api",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_api_fetchproductstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_api_fetchworkspace",
       "confidence_score": 1.0
     },
     {
@@ -2961,9 +3425,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L603",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_app",
-      "confidence_score": 1.0
+      "target": "src_app_app"
     },
     {
       "relation": "contains",
@@ -2971,9 +3435,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_apprail",
-      "confidence_score": 1.0
+      "target": "src_app_apprail"
     },
     {
       "relation": "contains",
@@ -2981,9 +3445,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L396",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_evidencepanel",
-      "confidence_score": 1.0
+      "target": "src_app_evidencepanel"
     },
     {
       "relation": "contains",
@@ -2991,9 +3455,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L295",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_hazoptable",
-      "confidence_score": 1.0
+      "target": "src_app_hazoptable"
     },
     {
       "relation": "contains",
@@ -3001,8 +3465,18 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L465",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_lopaworkspace",
+      "target": "src_app_lopaworkspace"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L639",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_app_productstatusworkspace",
       "confidence_score": 1.0
     },
     {
@@ -3011,9 +3485,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_riskbadge",
-      "confidence_score": 1.0
+      "target": "src_app_riskbadge"
     },
     {
       "relation": "contains",
@@ -3021,9 +3495,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L526",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_riskmatrix",
-      "confidence_score": 1.0
+      "target": "src_app_riskmatrix"
     },
     {
       "relation": "contains",
@@ -3031,9 +3505,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L563",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_sourcesworkspace",
-      "confidence_score": 1.0
+      "target": "src_app_sourcesworkspace"
     },
     {
       "relation": "contains",
@@ -3041,9 +3515,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_statusbadge",
-      "confidence_score": 1.0
+      "target": "src_app_statusbadge"
     },
     {
       "relation": "contains",
@@ -3051,9 +3525,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L100",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_studynavigator",
-      "confidence_score": 1.0
+      "target": "src_app_studynavigator"
     },
     {
       "relation": "contains",
@@ -3061,9 +3535,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L203",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_topbar",
-      "confidence_score": 1.0
+      "target": "src_app_topbar"
     },
     {
       "relation": "contains",
@@ -3071,9 +3545,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L249",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_worksheettoolbar",
-      "confidence_score": 1.0
+      "target": "src_app_worksheettoolbar"
     },
     {
       "relation": "contains",
@@ -3081,9 +3555,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_workspacetab",
-      "confidence_score": 1.0
+      "target": "src_app_workspacetab"
     },
     {
       "relation": "contains",
@@ -3091,9 +3565,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_workspacetabs",
-      "confidence_score": 1.0
+      "target": "src_app_workspacetabs"
     },
     {
       "relation": "imports_from",
@@ -3102,8 +3576,30 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_data",
+      "target": "src_data"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_data_fallbackstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_data_fallbackstudy",
       "confidence_score": 1.0
     },
     {
@@ -3113,8 +3609,52 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_data_hazoprow",
+      "target": "src_data_hazoprow"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L33",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app",
+      "target": "src_data_initialrows"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L33",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app",
+      "target": "src_data_nodes"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_data_productstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_data_suggestion",
       "confidence_score": 1.0
     },
     {
@@ -3124,8 +3664,19 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_data_initialrows",
+      "target": "src_data_suggestions"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_data_workspacenode",
       "confidence_score": 1.0
     },
     {
@@ -3133,21 +3684,10 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L33",
+      "source_location": "L36",
       "weight": 1.0,
       "source": "src_app",
-      "target": "src_data_nodes",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L33",
-      "weight": 1.0,
-      "source": "src_app",
-      "target": "src_data_suggestions",
+      "target": "src_data_workspacestudy",
       "confidence_score": 1.0
     },
     {
@@ -3157,8 +3697,123 @@
       "source_file": "frontend/src/main.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_main",
-      "target": "src_app",
+      "target": "src_app"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_api_fetchproductstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_api_fetchworkspace",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_api_getjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_data",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_data_productstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_data_workspaceresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "src_api_fetchproductstatus",
+      "target": "src_api_getjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "src_api_fetchworkspace",
+      "target": "src_api_getjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "src_data",
+      "target": "src_data_deliverymodule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L220",
+      "weight": 1.0,
+      "source": "src_data",
+      "target": "src_data_fallbackstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L161",
+      "weight": 1.0,
+      "source": "src_data",
+      "target": "src_data_fallbackstudy",
       "confidence_score": 1.0
     },
     {
@@ -3167,8 +3822,88 @@
       "source_file": "frontend/src/data.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_data",
-      "target": "src_data_hazoprow",
+      "target": "src_data_hazoprow"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L26",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_data",
+      "target": "src_data_initialrows"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L113",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_data",
+      "target": "src_data_nodes"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "src_data",
+      "target": "src_data_productstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_data",
+      "target": "src_data_risklevel"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_data",
+      "target": "src_data_suggestion"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L83",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_data",
+      "target": "src_data_suggestions"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_data",
+      "target": "src_data_workspacenode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "src_data",
+      "target": "src_data_workspaceresponse",
       "confidence_score": 1.0
     },
     {
@@ -3178,47 +3913,7 @@
       "source_location": "L26",
       "weight": 1.0,
       "source": "src_data",
-      "target": "src_data_initialrows",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/data.ts",
-      "source_location": "L113",
-      "weight": 1.0,
-      "source": "src_data",
-      "target": "src_data_nodes",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/data.ts",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "src_data",
-      "target": "src_data_risklevel",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/data.ts",
-      "source_location": "L16",
-      "weight": 1.0,
-      "source": "src_data",
-      "target": "src_data_suggestion",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/data.ts",
-      "source_location": "L83",
-      "weight": 1.0,
-      "source": "src_data",
-      "target": "src_data_suggestions",
+      "target": "src_data_workspacestudy",
       "confidence_score": 1.0
     },
     {
@@ -3227,9 +3922,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app",
-      "target": "frontend_tsconfig_app_compileroptions",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions"
     },
     {
       "relation": "contains",
@@ -3237,9 +3932,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app",
-      "target": "frontend_tsconfig_app_include",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_include"
     },
     {
       "relation": "contains",
@@ -3247,9 +3942,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_allowjs",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_allowjs"
     },
     {
       "relation": "contains",
@@ -3257,9 +3952,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_allowsyntheticdefaultimports",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_allowsyntheticdefaultimports"
     },
     {
       "relation": "contains",
@@ -3267,9 +3962,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_esmoduleinterop",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_esmoduleinterop"
     },
     {
       "relation": "contains",
@@ -3277,9 +3972,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_forceconsistentcasinginfilenames",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_forceconsistentcasinginfilenames"
     },
     {
       "relation": "contains",
@@ -3287,9 +3982,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_isolatedmodules",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_isolatedmodules"
     },
     {
       "relation": "contains",
@@ -3297,9 +3992,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_jsx",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_jsx"
     },
     {
       "relation": "contains",
@@ -3307,9 +4002,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_lib",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_lib"
     },
     {
       "relation": "contains",
@@ -3317,9 +4012,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_module",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_module"
     },
     {
       "relation": "contains",
@@ -3327,9 +4022,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_moduleresolution",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_moduleresolution"
     },
     {
       "relation": "contains",
@@ -3337,9 +4032,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_noemit",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_noemit"
     },
     {
       "relation": "contains",
@@ -3347,9 +4042,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_resolvejsonmodule",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_resolvejsonmodule"
     },
     {
       "relation": "contains",
@@ -3357,9 +4052,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_skiplibcheck",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_skiplibcheck"
     },
     {
       "relation": "contains",
@@ -3367,9 +4062,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_strict",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_strict"
     },
     {
       "relation": "contains",
@@ -3377,9 +4072,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_target",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_target"
     },
     {
       "relation": "contains",
@@ -3387,9 +4082,9 @@
       "source_file": "frontend/tsconfig.app.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_app_compileroptions",
-      "target": "frontend_tsconfig_app_compileroptions_usedefineforclassfields",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_app_compileroptions_usedefineforclassfields"
     },
     {
       "relation": "contains",
@@ -3397,9 +4092,9 @@
       "source_file": "frontend/tsconfig.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig",
-      "target": "frontend_tsconfig_files",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_files"
     },
     {
       "relation": "contains",
@@ -3407,9 +4102,9 @@
       "source_file": "frontend/tsconfig.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig",
-      "target": "frontend_tsconfig_references",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_references"
     },
     {
       "relation": "contains",
@@ -3417,9 +4112,9 @@
       "source_file": "frontend/tsconfig.node.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_node",
-      "target": "frontend_tsconfig_node_compileroptions",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_node_compileroptions"
     },
     {
       "relation": "contains",
@@ -3427,9 +4122,9 @@
       "source_file": "frontend/tsconfig.node.json",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_node",
-      "target": "frontend_tsconfig_node_include",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_node_include"
     },
     {
       "relation": "contains",
@@ -3437,9 +4132,9 @@
       "source_file": "frontend/tsconfig.node.json",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_node_compileroptions",
-      "target": "frontend_tsconfig_node_compileroptions_allowimportingtsextensions",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_node_compileroptions_allowimportingtsextensions"
     },
     {
       "relation": "contains",
@@ -3447,9 +4142,9 @@
       "source_file": "frontend/tsconfig.node.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_node_compileroptions",
-      "target": "frontend_tsconfig_node_compileroptions_lib",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_node_compileroptions_lib"
     },
     {
       "relation": "contains",
@@ -3457,9 +4152,9 @@
       "source_file": "frontend/tsconfig.node.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_node_compileroptions",
-      "target": "frontend_tsconfig_node_compileroptions_module",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_node_compileroptions_module"
     },
     {
       "relation": "contains",
@@ -3467,9 +4162,9 @@
       "source_file": "frontend/tsconfig.node.json",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_node_compileroptions",
-      "target": "frontend_tsconfig_node_compileroptions_moduledetection",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_node_compileroptions_moduledetection"
     },
     {
       "relation": "contains",
@@ -3477,9 +4172,9 @@
       "source_file": "frontend/tsconfig.node.json",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_node_compileroptions",
-      "target": "frontend_tsconfig_node_compileroptions_moduleresolution",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_node_compileroptions_moduleresolution"
     },
     {
       "relation": "contains",
@@ -3487,9 +4182,9 @@
       "source_file": "frontend/tsconfig.node.json",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_node_compileroptions",
-      "target": "frontend_tsconfig_node_compileroptions_noemit",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_node_compileroptions_noemit"
     },
     {
       "relation": "contains",
@@ -3497,9 +4192,9 @@
       "source_file": "frontend/tsconfig.node.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_node_compileroptions",
-      "target": "frontend_tsconfig_node_compileroptions_skiplibcheck",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_node_compileroptions_skiplibcheck"
     },
     {
       "relation": "contains",
@@ -3507,9 +4202,9 @@
       "source_file": "frontend/tsconfig.node.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_node_compileroptions",
-      "target": "frontend_tsconfig_node_compileroptions_target",
-      "confidence_score": 1.0
+      "target": "frontend_tsconfig_node_compileroptions_target"
     },
     {
       "relation": "contains",
@@ -3517,8 +4212,18 @@
       "source_file": "frontend/tsconfig.node.json",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_tsconfig_node_compileroptions",
-      "target": "frontend_tsconfig_node_compileroptions_verbatimmodulesyntax",
+      "target": "frontend_tsconfig_node_compileroptions_verbatimmodulesyntax"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/vercel.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "frontend_vercel",
+      "target": "frontend_vercel_rewrites",
       "confidence_score": 1.0
     },
     {
@@ -4080,6 +4785,81 @@
       "confidence_score": 0.5,
       "source": "src_preventa_api_routes_rag_py_deviationassistresponse",
       "target": "rag_schemas_deviationassistresponse"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "fastapi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_product_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_workspace",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "routes_workspace_workspace",
+      "target": "src_preventa_api_routes_workspace_py_workspaceresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "routes_workspace_workspace",
+      "target": "workspace_service_get_workspace"
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "routes_workspace_product_status",
+      "target": "src_preventa_api_routes_workspace_py_productstatusresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "routes_workspace_product_status",
+      "target": "workspace_service_get_product_status"
     },
     {
       "relation": "rationale_for",
@@ -6867,6 +7647,76 @@
       "target": "basemodel"
     },
     {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "workspace_schemas_deliverymodule",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "workspace_schemas_productstatusresponse",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "workspace_schemas_workspacenode",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "workspace_schemas_workspaceresponse",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "workspace_schemas_workspacerow",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "workspace_schemas_workspacestudy",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "workspace_schemas_workspacesuggestion",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "INFERRED",
@@ -7497,6 +8347,172 @@
       "target": "src_preventa_features_rag_service_py_retrievedchunk"
     },
     {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/__init__.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "workspace_init_rationale_1",
+      "target": "workspace_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "workspace_schemas",
+      "target": "workspace_schemas_deliverymodule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "workspace_schemas",
+      "target": "workspace_schemas_productstatusresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "workspace_schemas",
+      "target": "workspace_schemas_workspacenode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "workspace_schemas",
+      "target": "workspace_schemas_workspaceresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "workspace_schemas",
+      "target": "workspace_schemas_workspacerow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "workspace_schemas",
+      "target": "workspace_schemas_workspacestudy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/schemas.py",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "workspace_schemas",
+      "target": "workspace_schemas_workspacesuggestion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/service.py",
+      "source_location": "L76",
+      "weight": 1.0,
+      "source": "workspace_service_get_workspace",
+      "target": "workspace_schemas_workspacerow"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/service.py",
+      "source_location": "L144",
+      "weight": 1.0,
+      "source": "workspace_service_get_workspace",
+      "target": "workspace_schemas_workspacesuggestion"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/service.py",
+      "source_location": "L178",
+      "weight": 1.0,
+      "source": "workspace_service",
+      "target": "workspace_service_get_product_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/service.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "workspace_service",
+      "target": "workspace_service_get_workspace",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/unit/test_workspace.py",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "unit_test_workspace_test_workspace_exposes_api_seed_transparently",
+      "target": "workspace_service_get_workspace"
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/service.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "workspace_service_get_workspace",
+      "target": "src_preventa_features_workspace_service_py_workspaceresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/unit/test_workspace.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "unit_test_workspace_test_product_status_reports_unfinished_persistence",
+      "target": "workspace_service_get_product_status"
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/service.py",
+      "source_location": "L178",
+      "weight": 1.0,
+      "source": "workspace_service_get_product_status",
+      "target": "src_preventa_features_workspace_service_py_productstatusresponse",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -7622,12 +8638,52 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_workspace.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "unit_test_workspace",
+      "target": "unit_test_workspace_test_product_status_reports_unfinished_persistence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_workspace.py",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "unit_test_workspace",
+      "target": "unit_test_workspace_test_workspace_exposes_api_seed_transparently",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vercel.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "vercel",
+      "target": "vercel_builds",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vercel.json",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "vercel",
+      "target": "vercel_routes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "DESIGN.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "design",
-      "target": "design_design_system",
-      "confidence_score": 1.0
+      "target": "design_design_system"
     },
     {
       "relation": "contains",
@@ -7635,9 +8691,9 @@
       "source_file": "DESIGN.md",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "design_design_system",
-      "target": "design_color",
-      "confidence_score": 1.0
+      "target": "design_color"
     },
     {
       "relation": "contains",
@@ -7645,9 +8701,9 @@
       "source_file": "DESIGN.md",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "design_design_system",
-      "target": "design_components",
-      "confidence_score": 1.0
+      "target": "design_components"
     },
     {
       "relation": "contains",
@@ -7655,9 +8711,9 @@
       "source_file": "DESIGN.md",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "design_design_system",
-      "target": "design_direction",
-      "confidence_score": 1.0
+      "target": "design_direction"
     },
     {
       "relation": "contains",
@@ -7665,9 +8721,9 @@
       "source_file": "DESIGN.md",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "design_design_system",
-      "target": "design_layout",
-      "confidence_score": 1.0
+      "target": "design_layout"
     },
     {
       "relation": "contains",
@@ -7675,9 +8731,9 @@
       "source_file": "DESIGN.md",
       "source_location": "L61",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "design_design_system",
-      "target": "design_motion",
-      "confidence_score": 1.0
+      "target": "design_motion"
     },
     {
       "relation": "contains",
@@ -7685,9 +8741,9 @@
       "source_file": "DESIGN.md",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "design_design_system",
-      "target": "design_typography",
-      "confidence_score": 1.0
+      "target": "design_typography"
     },
     {
       "relation": "contains",
@@ -7695,9 +8751,9 @@
       "source_file": "PRODUCT.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "product",
-      "target": "product_product",
-      "confidence_score": 1.0
+      "target": "product_product"
     },
     {
       "relation": "contains",
@@ -7705,9 +8761,9 @@
       "source_file": "PRODUCT.md",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "product_product",
-      "target": "product_accessibility_inclusion",
-      "confidence_score": 1.0
+      "target": "product_accessibility_inclusion"
     },
     {
       "relation": "contains",
@@ -7715,9 +8771,9 @@
       "source_file": "PRODUCT.md",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "product_product",
-      "target": "product_anti_references",
-      "confidence_score": 1.0
+      "target": "product_anti_references"
     },
     {
       "relation": "contains",
@@ -7725,9 +8781,9 @@
       "source_file": "PRODUCT.md",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "product_product",
-      "target": "product_brand_personality",
-      "confidence_score": 1.0
+      "target": "product_brand_personality"
     },
     {
       "relation": "contains",
@@ -7735,9 +8791,9 @@
       "source_file": "PRODUCT.md",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "product_product",
-      "target": "product_design_principles",
-      "confidence_score": 1.0
+      "target": "product_design_principles"
     },
     {
       "relation": "contains",
@@ -7745,9 +8801,9 @@
       "source_file": "PRODUCT.md",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "product_product",
-      "target": "product_product_purpose",
-      "confidence_score": 1.0
+      "target": "product_product_purpose"
     },
     {
       "relation": "contains",
@@ -7755,9 +8811,9 @@
       "source_file": "PRODUCT.md",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "product_product",
-      "target": "product_register",
-      "confidence_score": 1.0
+      "target": "product_register"
     },
     {
       "relation": "contains",
@@ -7765,9 +8821,9 @@
       "source_file": "PRODUCT.md",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "product_product",
-      "target": "product_users",
-      "confidence_score": 1.0
+      "target": "product_users"
     },
     {
       "relation": "contains",
@@ -7795,9 +8851,9 @@
       "source_file": "README.md",
       "source_location": "L46",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_preventa",
-      "target": "readme_product_ui",
-      "confidence_score": 1.0
+      "target": "readme_product_ui"
     },
     {
       "relation": "contains",
@@ -7895,9 +8951,9 @@
       "source_file": "graphify-out/memory/query_20260612_203152_preventa_hazop_deviation_assist_hybrid_retrieval_c.md",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "memory_query_20260612_203152_preventa_hazop_deviation_assist_hybrid_retrieval_c",
-      "target": "memory_query_20260612_203152_preventa_hazop_deviation_assist_hybrid_retrieval_c_q_preventa_hazop_deviation_assist_hybrid_retrieval_citation_guardrail_api_database_architecture",
-      "confidence_score": 1.0
+      "target": "memory_query_20260612_203152_preventa_hazop_deviation_assist_hybrid_retrieval_c_q_preventa_hazop_deviation_assist_hybrid_retrieval_citation_guardrail_api_database_architecture"
     },
     {
       "relation": "contains",
@@ -7905,9 +8961,9 @@
       "source_file": "graphify-out/memory/query_20260612_203152_preventa_hazop_deviation_assist_hybrid_retrieval_c.md",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "memory_query_20260612_203152_preventa_hazop_deviation_assist_hybrid_retrieval_c_q_preventa_hazop_deviation_assist_hybrid_retrieval_citation_guardrail_api_database_architecture",
-      "target": "memory_query_20260612_203152_preventa_hazop_deviation_assist_hybrid_retrieval_c_answer",
-      "confidence_score": 1.0
+      "target": "memory_query_20260612_203152_preventa_hazop_deviation_assist_hybrid_retrieval_c_answer"
     },
     {
       "relation": "contains",
@@ -7915,11 +8971,11 @@
       "source_file": "graphify-out/memory/query_20260612_203152_preventa_hazop_deviation_assist_hybrid_retrieval_c.md",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "memory_query_20260612_203152_preventa_hazop_deviation_assist_hybrid_retrieval_c_q_preventa_hazop_deviation_assist_hybrid_retrieval_citation_guardrail_api_database_architecture",
-      "target": "memory_query_20260612_203152_preventa_hazop_deviation_assist_hybrid_retrieval_c_source_nodes",
-      "confidence_score": 1.0
+      "target": "memory_query_20260612_203152_preventa_hazop_deviation_assist_hybrid_retrieval_c_source_nodes"
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "8f12cf904b76ca41d9858481726a969a52a28f03"
+  "built_at_commit": "330c4f3ec145898c4937c0f4875eaef28d5ae656"
 }

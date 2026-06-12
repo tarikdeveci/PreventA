@@ -23,6 +23,54 @@ export type Suggestion = {
   target: "cause" | "consequence" | "safeguard";
 };
 
+export type WorkspaceStudy = {
+  id: string;
+  title: string;
+  client: string;
+  facility: string;
+  progress: number;
+  reviewed_scenarios: number;
+  total_scenarios: number;
+};
+
+export type WorkspaceNode = {
+  id: string;
+  code: string;
+  name: string;
+  equipment_type: string;
+  design_intent: string;
+  scenario_count: number;
+  state: "complete" | "active" | "review" | "empty";
+};
+
+export type WorkspaceResponse = {
+  source: "api_seed" | "database";
+  study: WorkspaceStudy;
+  active_node_id: string;
+  nodes: WorkspaceNode[];
+  rows: HazopRow[];
+  suggestions: Suggestion[];
+};
+
+export type DeliveryModule = {
+  id: string;
+  name: string;
+  status: "complete" | "in_progress" | "planned";
+  progress: number;
+  detail: string;
+};
+
+export type ProductStatus = {
+  release: string;
+  stage: string;
+  overall_progress: number;
+  api_connected: boolean;
+  persistence: "seed" | "postgresql";
+  ai_runtime: "contract_ready" | "ollama_connected";
+  deployment: string;
+  modules: DeliveryModule[];
+};
+
 export const initialRows: HazopRow[] = [
   {
     id: 1,
@@ -110,11 +158,73 @@ export const suggestions: Suggestion[] = [
   },
 ];
 
-export const nodes = [
-  { code: "N-01", name: "Hammadde tankı T-100", count: 18, state: "complete" },
-  { code: "N-02", name: "Besleme pompası P-101", count: 24, state: "active" },
-  { code: "N-03", name: "Isı eşanjörü E-102", count: 16, state: "review" },
-  { code: "N-04", name: "Reaktör R-201", count: 31, state: "review" },
-  { code: "N-05", name: "Ayırıcı V-301", count: 0, state: "empty" },
+export const fallbackStudy: WorkspaceStudy = {
+  id: "fallback-study",
+  title: "Ünite 200 HAZOP",
+  client: "ACWA Power",
+  facility: "Konya",
+  progress: 62,
+  reviewed_scenarios: 89,
+  total_scenarios: 143,
+};
+
+export const nodes: WorkspaceNode[] = [
+  {
+    id: "node-t100",
+    code: "N-01",
+    name: "Hammadde tankı T-100",
+    equipment_type: "Atmosferik tank",
+    design_intent: "Hammaddeyi güvenli işletme sınırlarında depolamak.",
+    scenario_count: 18,
+    state: "complete",
+  },
+  {
+    id: "node-p101",
+    code: "N-02",
+    name: "Besleme pompası P-101",
+    equipment_type: "Santrifüj pompa",
+    design_intent:
+      "T-100 hammadde tankından R-201 reaktörüne kesintisiz ve kontrollü besleme sağlamak.",
+    scenario_count: 24,
+    state: "active",
+  },
+  {
+    id: "node-e102",
+    code: "N-03",
+    name: "Isı eşanjörü E-102",
+    equipment_type: "Kabuk-boru eşanjör",
+    design_intent: "Besleme sıcaklığını reaksiyon giriş koşuluna getirmek.",
+    scenario_count: 16,
+    state: "review",
+  },
+  {
+    id: "node-r201",
+    code: "N-04",
+    name: "Reaktör R-201",
+    equipment_type: "Karıştırıcılı reaktör",
+    design_intent: "Reaksiyonu tanımlı sıcaklık ve basınç aralığında yürütmek.",
+    scenario_count: 31,
+    state: "review",
+  },
+  {
+    id: "node-v301",
+    code: "N-05",
+    name: "Ayırıcı V-301",
+    equipment_type: "Basınçlı kap",
+    design_intent: "Gaz ve sıvı fazlarını güvenli biçimde ayırmak.",
+    scenario_count: 0,
+    state: "empty",
+  },
 ];
+
+export const fallbackStatus: ProductStatus = {
+  release: "MVP foundation",
+  stage: "Frontend fallback",
+  overall_progress: 40,
+  api_connected: false,
+  persistence: "seed",
+  ai_runtime: "contract_ready",
+  deployment: "Tarayıcı içi fallback veri",
+  modules: [],
+};
 

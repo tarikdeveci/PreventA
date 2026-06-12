@@ -10,6 +10,7 @@ import {
   ChevronRight,
   CircleHelp,
   ClipboardCheck,
+  Cloud,
   Clock3,
   Download,
   FileClock,
@@ -18,6 +19,7 @@ import {
   Gauge,
   History,
   LayoutGrid,
+  ListChecks,
   Menu,
   MoreHorizontal,
   PanelRightClose,
@@ -29,16 +31,29 @@ import {
   Table2,
   X,
 } from "lucide-react";
-import { useMemo, useState } from "react";
-import { initialRows, nodes, suggestions, type HazopRow } from "./data";
+import { useEffect, useMemo, useState } from "react";
+import { fetchProductStatus, fetchWorkspace } from "./api";
+import {
+  fallbackStatus,
+  fallbackStudy,
+  initialRows,
+  nodes as fallbackNodes,
+  suggestions as fallbackSuggestions,
+  type HazopRow,
+  type ProductStatus,
+  type Suggestion,
+  type WorkspaceNode,
+  type WorkspaceStudy,
+} from "./data";
 
-type WorkspaceTab = "HAZOP" | "LOPA" | "Risk matrisi" | "Kaynaklar";
+type WorkspaceTab = "HAZOP" | "LOPA" | "Risk matrisi" | "Kaynaklar" | "Ürün durumu";
 
 const workspaceTabs: { label: WorkspaceTab; count?: number }[] = [
   { label: "HAZOP", count: 24 },
   { label: "LOPA", count: 3 },
   { label: "Risk matrisi" },
   { label: "Kaynaklar", count: 12 },
+  { label: "Ürün durumu" },
 ];
 
 function RiskBadge({ level }: { level: HazopRow["risk"] }) {
@@ -100,9 +115,17 @@ function AppRail() {
 function StudyNavigator({
   open,
   onClose,
+  nodes,
+  study,
+  activeNodeId,
+  onSelectNode,
 }: {
   open: boolean;
   onClose: () => void;
+  nodes: WorkspaceNode[];
+  study: WorkspaceStudy;
+  activeNodeId: string;
+  onSelectNode: (id: string) => void;
 }) {
   const [query, setQuery] = useState("");
   const filteredNodes = nodes.filter((node) =>
@@ -116,7 +139,7 @@ function StudyNavigator({
         <div className="study-nav-header">
           <div>
             <span className="context-label">Aktif çalışma</span>
-            <strong>Ünite 200 HAZOP</strong>
+            <strong>{study.title}</strong>
           </div>
           <button className="icon-button mobile-only" onClick={onClose} aria-label="Navigasyonu kapat">
             <X size={18} />
@@ -127,7 +150,7 @@ function StudyNavigator({
           <span className="study-monogram">RA</span>
           <span>
             <strong>Reaktör Alanı</strong>
-            <small>ACWA Power · Konya</small>
+            <small>{study.client} · {study.facility}</small>
           </span>
           <ChevronDown size={16} />
         </button>
@@ -171,15 +194,16 @@ function StudyNavigator({
           <div className="node-list">
             {filteredNodes.map((node) => (
               <button
-                className={`node-row ${node.state === "active" ? "is-active" : ""}`}
+                className={`node-row ${node.id === activeNodeId ? "is-active" : ""}`}
                 key={node.code}
+                onClick={() => onSelectNode(node.id)}
               >
                 <span className={`node-state node-state-${node.state}`} aria-hidden="true" />
                 <span className="node-copy">
                   <small>{node.code}</small>
                   <strong>{node.name}</strong>
                 </span>
-                <span className="node-count">{node.count}</span>
+                <span className="node-count">{node.scenario_count}</span>
               </button>
             ))}
           </div>
@@ -188,12 +212,14 @@ function StudyNavigator({
         <div className="study-nav-footer">
           <div className="progress-copy">
             <span>Çalışma ilerlemesi</span>
-            <strong>%62</strong>
+            <strong>%{study.progress}</strong>
           </div>
           <div className="progress-track" aria-label="Çalışma ilerlemesi yüzde 62">
-            <span style={{ width: "62%" }} />
+            <span style={{ width: `${study.progress}%` }} />
           </div>
-          <small>89 / 143 senaryo incelendi</small>
+          <small>
+            {study.reviewed_scenarios} / {study.total_scenarios} senaryo incelendi
+          </small>
         </div>
       </aside>
     </>
@@ -203,9 +229,13 @@ function StudyNavigator({
 function TopBar({
   onOpenNav,
   onExport,
+  activeNode,
+  apiConnected,
 }: {
   onOpenNav: () => void;
   onExport: () => void;
+  activeNode: WorkspaceNode;
+  apiConnected: boolean;
 }) {
   return (
     <header className="top-bar">
@@ -220,12 +250,16 @@ function TopBar({
             <span>Ünite 200 HAZOP</span>
           </div>
           <div className="title-line">
-            <h1>Besleme pompası P-101</h1>
-            <span className="equipment-tag">Santrifüj pompa</span>
+            <h1>{activeNode.name}</h1>
+            <span className="equipment-tag">{activeNode.equipment_type}</span>
           </div>
         </div>
       </div>
       <div className="top-actions">
+        <span className={`api-state ${apiConnected ? "is-connected" : "is-fallback"}`}>
+          <Cloud size={14} />
+          {apiConnected ? "API bağlı" : "Fallback veri"}
+        </span>
         <span className="save-state">
           <Check size={14} />
           Tüm değişiklikler kaydedildi
@@ -397,10 +431,12 @@ function EvidencePanel({
   open,
   onClose,
   onApply,
+  suggestions,
 }: {
   open: boolean;
   onClose: () => void;
   onApply: (suggestionId: string) => void;
+  suggestions: Suggestion[];
 }) {
   return (
     <aside className={`evidence-panel ${open ? "is-open" : ""}`} aria-label="Kaynaklı öneriler">
@@ -600,9 +636,114 @@ function SourcesWorkspace() {
   );
 }
 
+function ProductStatusWorkspace({ status }: { status: ProductStatus }) {
+  const statusCopy = {
+    complete: "Tamamlandı",
+    in_progress: "Devam ediyor",
+    planned: "Planlandı",
+  } as const;
+
+  return (
+    <section className="delivery-workspace">
+      <div className="delivery-hero">
+        <div className="delivery-summary">
+          <span className="context-label">{status.release}</span>
+          <h2>{status.stage}</h2>
+          <p>
+            Arayüz canlı API'ye bağlı. Kalıcı PostgreSQL CRUD, canlı Ollama corpus'u ve
+            rapor üretimi tamamlanmadan ürün pilot kullanıma hazır sayılmayacak.
+          </p>
+          <div className="delivery-progress-row">
+            <div className="delivery-progress-track">
+              <span style={{ width: `${status.overall_progress}%` }} />
+            </div>
+            <strong>%{status.overall_progress}</strong>
+          </div>
+        </div>
+        <dl className="runtime-facts">
+          <div>
+            <dt>API</dt>
+            <dd className={status.api_connected ? "fact-ok" : "fact-warn"}>
+              {status.api_connected ? "Bağlı" : "Bağlantı yok"}
+            </dd>
+          </div>
+          <div>
+            <dt>Veri kalıcılığı</dt>
+            <dd className={status.persistence === "postgresql" ? "fact-ok" : "fact-warn"}>
+              {status.persistence === "postgresql" ? "PostgreSQL" : "API seed"}
+            </dd>
+          </div>
+          <div>
+            <dt>AI çalışma zamanı</dt>
+            <dd className={status.ai_runtime === "ollama_connected" ? "fact-ok" : "fact-warn"}>
+              {status.ai_runtime === "ollama_connected" ? "Ollama bağlı" : "Sözleşme hazır"}
+            </dd>
+          </div>
+          <div>
+            <dt>Deploy</dt>
+            <dd>{status.deployment}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div className="section-heading delivery-heading">
+        <div>
+          <h2>Modül teslim durumu</h2>
+          <p>PRD kabul kriterlerine göre mevcut teknik ilerleme.</p>
+        </div>
+      </div>
+      <div className="delivery-list">
+        {status.modules.map((module) => (
+          <article className="delivery-row" key={module.id}>
+            <span className={`delivery-icon status-${module.status}`}>
+              {module.status === "complete" ? (
+                <CheckCircle2 size={18} />
+              ) : module.status === "in_progress" ? (
+                <Activity size={18} />
+              ) : (
+                <Clock3 size={18} />
+              )}
+            </span>
+            <div className="delivery-copy">
+              <div>
+                <strong>{module.name}</strong>
+                <span className={`delivery-status status-${module.status}`}>
+                  {statusCopy[module.status]}
+                </span>
+              </div>
+              <p>{module.detail}</p>
+            </div>
+            <div className="module-progress">
+              <span style={{ width: `${module.progress}%` }} />
+            </div>
+            <strong className="module-percent">%{module.progress}</strong>
+          </article>
+        ))}
+      </div>
+
+      <div className="next-milestone">
+        <ListChecks size={20} />
+        <div>
+          <strong>Sıradaki gerçek kilometre taşı</strong>
+          <p>
+            Study, node ve worksheet create/update endpoint'lerini PostgreSQL'e bağlamak;
+            ardından aynı akışla ilk gerçek pilot çalışmayı kaydetmek.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("HAZOP");
   const [rows, setRows] = useState(initialRows);
+  const [workspaceNodes, setWorkspaceNodes] = useState(fallbackNodes);
+  const [study, setStudy] = useState(fallbackStudy);
+  const [workspaceSuggestions, setWorkspaceSuggestions] = useState(fallbackSuggestions);
+  const [productStatus, setProductStatus] = useState(fallbackStatus);
+  const [apiConnected, setApiConnected] = useState(false);
+  const [activeNodeId, setActiveNodeId] = useState("node-p101");
   const [selectedRow, setSelectedRow] = useState(1);
   const [evidenceOpen, setEvidenceOpen] = useState(true);
   const [navOpen, setNavOpen] = useState(false);
@@ -612,6 +753,36 @@ export default function App() {
     () => rows.find((row) => row.id === selectedRow) ?? rows[0],
     [rows, selectedRow],
   );
+  const activeNode = useMemo(
+    () =>
+      workspaceNodes.find((node) => node.id === activeNodeId) ??
+      workspaceNodes[0] ??
+      fallbackNodes[1],
+    [activeNodeId, workspaceNodes],
+  );
+
+  useEffect(() => {
+    let active = true;
+    Promise.all([fetchWorkspace(), fetchProductStatus()])
+      .then(([workspace, status]) => {
+        if (!active) return;
+        setRows(workspace.rows);
+        setWorkspaceNodes(workspace.nodes);
+        setStudy(workspace.study);
+        setWorkspaceSuggestions(workspace.suggestions);
+        setActiveNodeId(workspace.active_node_id);
+        setProductStatus(status);
+        setApiConnected(status.api_connected);
+      })
+      .catch(() => {
+        if (!active) return;
+        setApiConnected(false);
+        setProductStatus(fallbackStatus);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const notify = (message: string) => {
     setToast(message);
@@ -646,7 +817,7 @@ export default function App() {
   };
 
   const applySuggestion = (suggestionId: string) => {
-    const suggestion = suggestions.find((item) => item.id === suggestionId);
+    const suggestion = workspaceSuggestions.find((item) => item.id === suggestionId);
     if (!suggestion || !selected) return;
     const existing = selected[suggestion.target];
     updateRow(
@@ -660,11 +831,23 @@ export default function App() {
   return (
     <div className="app-shell">
       <AppRail />
-      <StudyNavigator open={navOpen} onClose={() => setNavOpen(false)} />
+      <StudyNavigator
+        open={navOpen}
+        onClose={() => setNavOpen(false)}
+        nodes={workspaceNodes}
+        study={study}
+        activeNodeId={activeNodeId}
+        onSelectNode={(id) => {
+          setActiveNodeId(id);
+          setNavOpen(false);
+        }}
+      />
       <div className="workspace-shell">
         <TopBar
           onOpenNav={() => setNavOpen(true)}
           onExport={() => notify("Rapor kuyruğa alındı. DOCX ve PDF hazırlanıyor.")}
+          activeNode={activeNode}
+          apiConnected={apiConnected}
         />
 
         <main id="main-content" className="main-workspace">
@@ -672,8 +855,7 @@ export default function App() {
             <div>
               <span className="context-label">Tasarım niyeti</span>
               <p>
-                T-100 hammadde tankından R-201 reaktörüne kesintisiz ve kontrollü besleme
-                sağlamak.
+                {activeNode.design_intent}
               </p>
             </div>
             <button className="text-button">Node bilgilerini düzenle</button>
@@ -712,6 +894,7 @@ export default function App() {
                   open={evidenceOpen}
                   onClose={() => setEvidenceOpen(false)}
                   onApply={applySuggestion}
+                  suggestions={workspaceSuggestions}
                 />
               </div>
             </>
@@ -719,6 +902,7 @@ export default function App() {
           {activeTab === "LOPA" && <LopaWorkspace />}
           {activeTab === "Risk matrisi" && <RiskMatrix />}
           {activeTab === "Kaynaklar" && <SourcesWorkspace />}
+          {activeTab === "Ürün durumu" && <ProductStatusWorkspace status={productStatus} />}
         </main>
 
         <footer className="status-bar">

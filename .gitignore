@@ -15,3 +15,5 @@ frontend/dist/
 graphify-out/.graphify_*
 graphify-out/cache/
 graphify-out/manifest.json
+
+.vercel
