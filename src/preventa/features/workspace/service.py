@@ -178,10 +178,10 @@ def get_workspace() -> WorkspaceResponse:
 def get_product_status() -> ProductStatusResponse:
     return ProductStatusResponse(
         release="MVP foundation",
-        stage="Entegre prototip",
-        overall_progress=46,
+        stage="Çalışan MVP beta",
+        overall_progress=72,
         api_connected=True,
-        persistence="seed",
+        persistence="volatile_sqlite",
         ai_runtime="contract_ready",
         deployment="Vercel frontend + serverless API",
         modules=[
@@ -203,8 +203,11 @@ def get_product_status() -> ProductStatusResponse:
                 id="database",
                 name="PostgreSQL kalıcılık",
                 status="in_progress",
-                progress=55,
-                detail="Şema ve migration hazır; production veritabanı bağlantısı bekliyor.",
+                progress=65,
+                detail=(
+                    "Yerel SQLite CRUD çalışıyor; Vercel production için yönetilen "
+                    "PostgreSQL bağlantısı bekliyor."
+                ),
             ),
             DeliveryModule(
                 id="rag",
@@ -219,16 +222,16 @@ def get_product_status() -> ProductStatusResponse:
             DeliveryModule(
                 id="crud",
                 name="Study ve HAZOP CRUD",
-                status="in_progress",
-                progress=35,
-                detail="Read API bağlı; create/update persistence endpoint'leri sıradaki iş.",
+                status="complete",
+                progress=100,
+                detail="Study, node, worksheet ve LOPA create/update/delete API'leri çalışıyor.",
             ),
             DeliveryModule(
                 id="report",
                 name="DOCX/PDF rapor",
-                status="planned",
-                progress=10,
-                detail="Rapor aksiyonu UI'da; gerçek şablon üreticisi henüz bağlı değil.",
+                status="in_progress",
+                progress=70,
+                detail="Canlı DOCX raporu üretiliyor; PDF ve müşteri şablonu sırada.",
             ),
             DeliveryModule(
                 id="import",

@@ -1,16 +1,16 @@
 # Graph Report - PreventA  (2026-06-13)
 
 ## Corpus Check
-- 58 files · ~8,708 words
+- 63 files · ~12,292 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 312 nodes · 573 edges · 37 communities (24 shown, 13 thin omitted)
-- Extraction: 58% EXTRACTED · 42% INFERRED · 0% AMBIGUOUS · INFERRED: 238 edges (avg confidence: 0.53)
+- 398 nodes · 864 edges · 38 communities (25 shown, 13 thin omitted)
+- Extraction: 54% EXTRACTED · 46% INFERRED · 0% AMBIGUOUS · INFERRED: 395 edges (avg confidence: 0.54)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `330c4f3e`
+- Built from commit: `fccfe9b0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -44,18 +44,19 @@
 - [[_COMMUNITY_Community 33|Community 33]]
 - [[_COMMUNITY_Community 34|Community 34]]
 - [[_COMMUNITY_Community 35|Community 35]]
+- [[_COMMUNITY_Community 37|Community 37]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `DeviationAssistRequest` - 31 edges
 2. `RetrievedChunk` - 28 edges
 3. `GeneratedDraft` - 26 edges
-4. `HybridRetrievalRepository` - 21 edges
-5. `UngroundedSuggestionError` - 20 edges
-6. `DraftGenerator` - 20 edges
-7. `Embedder` - 19 edges
-8. `Reranker` - 19 edges
-9. `Settings` - 18 edges
-10. `DeviationAssistService` - 18 edges
+4. `WorkspaceRepository` - 24 edges
+5. `StudyCreate` - 22 edges
+6. `HybridRetrievalRepository` - 21 edges
+7. `NodeCreate` - 21 edges
+8. `RowCreate` - 21 edges
+9. `RowUpdate` - 21 edges
+10. `LopaLayerCreate` - 21 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `test_rrf_is_deterministic_for_tied_scores()` --calls--> `reciprocal_rank_fusion()`  [INFERRED]
@@ -73,19 +74,19 @@
 - 1-file cycle: `src/preventa/main.py -> src/preventa/main.py`
 - 1-file cycle: `src/preventa/features/rag/guardrails.py -> src/preventa/features/rag/guardrails.py`
 
-## Communities (37 total, 13 thin omitted)
+## Communities (38 total, 13 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.22
-Nodes (32): BaseSettings, Settings, DeviationAssistServiceDep, DraftGenerator, Embedder, Protocol, UngroundedSuggestionError, DraftGenerator (+24 more)
+Cohesion: 0.14
+Nodes (41): get_deviation_assist_service(), BaseSettings, Settings, DeviationAssistService, DeviationAssistServiceDep, DraftGenerator, Embedder, Protocol (+33 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.16
 Nodes (25): Collection, Base, TimestampMixin, UUIDPrimaryKeyMixin, DeclarativeBase, HazopNode, HazopWorksheetRow, ReviewStatus (+17 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.19
-Nodes (9): get_deviation_assist_service(), DeviationAssistService, OllamaClient, PassthroughReranker, SessionDep, SettingsDep, DeviationAssistRequest, GeneratedDraft (+1 more)
+Cohesion: 0.18
+Nodes (34): Response, add_lopa_layer(), create_node(), create_row(), create_study(), delete_row(), download_report(), list_rows() (+26 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.20
@@ -96,12 +97,12 @@ Cohesion: 0.20
 Nodes (5): get_settings(), configure_logging(), FastAPI, create_app(), lifespan()
 
 ### Community 5 - "Community 5"
-Cohesion: 0.13
-Nodes (18): BaseModel, product_status(), workspace(), ProductStatusResponse, WorkspaceResponse, ProductStatusResponse, WorkspaceResponse, test_product_status_reports_unfinished_persistence() (+10 more)
+Cohesion: 0.15
+Nodes (16): BaseModel, product_status(), workspace(), ProductStatusResponse, WorkspaceResponse, test_product_status_reports_unfinished_persistence(), test_workspace_exposes_api_seed_transparently(), DeliveryModule (+8 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.42
-Nodes (7): Any, citation_accuracy(), evaluate(), main(), recall_at_k(), test_citation_accuracy(), test_recall_at_k()
+Nodes (7): citation_accuracy(), evaluate(), main(), Any, recall_at_k(), test_citation_accuracy(), test_recall_at_k()
 
 ### Community 7 - "Community 7"
 Cohesion: 0.33
@@ -116,8 +117,8 @@ Cohesion: 0.08
 Nodes (25): dependencies, lucide-react, react, react-dom, devDependencies, eslint, @eslint/js, eslint-plugin-react-hooks (+17 more)
 
 ### Community 24 - "Community 24"
-Cohesion: 0.09
-Nodes (18): fetchProductStatus(), fetchWorkspace(), getJson(), WorkspaceTab, workspaceTabs, DeliveryModule, fallbackStatus, fallbackStudy (+10 more)
+Cohesion: 0.07
+Nodes (30): createHazopRow(), createNode(), createStudy(), deleteHazopRow(), fetchNodes(), fetchProductStatus(), fetchRows(), fetchStudies() (+22 more)
 
 ### Community 25 - "Community 25"
 Cohesion: 0.11
@@ -139,25 +140,29 @@ Nodes (7): Color, Components, Design System, Direction, Layout, Motion, Typograp
 Cohesion: 0.50
 Nodes (3): Answer, Q: PreventA HAZOP deviation assist hybrid retrieval citation guardrail API database architecture, Source Nodes
 
+### Community 37 - "Community 37"
+Cohesion: 0.16
+Nodes (14): Row, Any, Any, Path, test_workspace_crud_and_lopa(), WorkspaceRepository, audit(), connection() (+6 more)
+
 ## Knowledge Gaps
-- **89 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+84 more)
+- **91 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+86 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **13 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `GeneratedDraft` connect `Community 0` to `Community 1`, `Community 2`, `Community 5`?**
-  _High betweenness centrality (0.053) - this node is a cross-community bridge._
-- **Why does `UUID` connect `Community 1` to `Community 0`?**
-  _High betweenness centrality (0.049) - this node is a cross-community bridge._
-- **Why does `DeviationAssistRequest` connect `Community 0` to `Community 2`, `Community 3`, `Community 5`?**
-  _High betweenness centrality (0.028) - this node is a cross-community bridge._
+- **Why does `GeneratedDraft` connect `Community 0` to `Community 1`, `Community 5`?**
+  _High betweenness centrality (0.065) - this node is a cross-community bridge._
+- **Why does `UUID` connect `Community 1` to `Community 0`, `Community 37`?**
+  _High betweenness centrality (0.064) - this node is a cross-community bridge._
+- **Why does `DeviationAssistRequest` connect `Community 0` to `Community 3`, `Community 5`?**
+  _High betweenness centrality (0.036) - this node is a cross-community bridge._
 - **Are the 29 inferred relationships involving `DeviationAssistRequest` (e.g. with `DeviationAssistServiceDep` and `DraftGenerator`) actually correct?**
   _`DeviationAssistRequest` has 29 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 26 inferred relationships involving `RetrievedChunk` (e.g. with `DraftGenerator` and `Embedder`) actually correct?**
   _`RetrievedChunk` has 26 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 24 inferred relationships involving `GeneratedDraft` (e.g. with `Collection` and `DraftGenerator`) actually correct?**
   _`GeneratedDraft` has 24 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 15 inferred relationships involving `HybridRetrievalRepository` (e.g. with `DraftGenerator` and `Embedder`) actually correct?**
-  _`HybridRetrievalRepository` has 15 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 7 inferred relationships involving `WorkspaceRepository` (e.g. with `test_workspace_crud_and_lopa()` and `LopaLayerCreate`) actually correct?**
+  _`WorkspaceRepository` has 7 INFERRED edges - model-reasoned connections that need verification._

@@ -14,7 +14,6 @@ def test_product_status_reports_unfinished_persistence() -> None:
     status = get_product_status()
 
     assert status.api_connected is True
-    assert status.persistence == "seed"
+    assert status.persistence == "volatile_sqlite"
     assert status.overall_progress < 100
     assert any(module.status == "planned" for module in status.modules)
-

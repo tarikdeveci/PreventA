@@ -68,8 +68,7 @@ class ProductStatusResponse(BaseModel):
     stage: str
     overall_progress: int
     api_connected: bool
-    persistence: Literal["seed", "postgresql"]
+    persistence: Literal["seed", "volatile_sqlite", "postgresql"]
     ai_runtime: Literal["contract_ready", "ollama_connected"]
     deployment: str
     modules: list[DeliveryModule]
-

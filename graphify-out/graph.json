@@ -297,7 +297,7 @@
       "label": "WorkspaceTab",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L49",
+      "source_location": "L63",
       "_origin": "ast",
       "id": "src_app_workspacetab",
       "community": 24,
@@ -307,7 +307,7 @@
       "label": "workspaceTabs",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L51",
+      "source_location": "L65",
       "_origin": "ast",
       "id": "src_app_workspacetabs",
       "community": 24,
@@ -317,7 +317,7 @@
       "label": "RiskBadge()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L59",
+      "source_location": "L73",
       "_origin": "ast",
       "id": "src_app_riskbadge",
       "community": 24,
@@ -327,17 +327,27 @@
       "label": "StatusBadge()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L63",
+      "source_location": "L77",
       "_origin": "ast",
       "id": "src_app_statusbadge",
       "community": 24,
       "norm_label": "statusbadge()"
     },
     {
+      "label": "RailSection",
+      "file_type": "code",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L94",
+      "_origin": "ast",
+      "id": "src_app_railsection",
+      "community": 24,
+      "norm_label": "railsection"
+    },
+    {
       "label": "AppRail()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L80",
+      "source_location": "L96",
       "_origin": "ast",
       "id": "src_app_apprail",
       "community": 24,
@@ -347,7 +357,7 @@
       "label": "StudyNavigator()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L115",
+      "source_location": "L157",
       "_origin": "ast",
       "id": "src_app_studynavigator",
       "community": 24,
@@ -357,7 +367,7 @@
       "label": "TopBar()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L229",
+      "source_location": "L286",
       "_origin": "ast",
       "id": "src_app_topbar",
       "community": 24,
@@ -367,7 +377,7 @@
       "label": "WorksheetToolbar()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L283",
+      "source_location": "L340",
       "_origin": "ast",
       "id": "src_app_worksheettoolbar",
       "community": 24,
@@ -377,7 +387,7 @@
       "label": "HazopTable()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L329",
+      "source_location": "L392",
       "_origin": "ast",
       "id": "src_app_hazoptable",
       "community": 24,
@@ -387,7 +397,7 @@
       "label": "EvidencePanel()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L430",
+      "source_location": "L493",
       "_origin": "ast",
       "id": "src_app_evidencepanel",
       "community": 24,
@@ -397,7 +407,7 @@
       "label": "LopaWorkspace()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L501",
+      "source_location": "L564",
       "_origin": "ast",
       "id": "src_app_lopaworkspace",
       "community": 24,
@@ -407,7 +417,7 @@
       "label": "RiskMatrix()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L562",
+      "source_location": "L625",
       "_origin": "ast",
       "id": "src_app_riskmatrix",
       "community": 24,
@@ -417,7 +427,7 @@
       "label": "SourcesWorkspace()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L599",
+      "source_location": "L662",
       "_origin": "ast",
       "id": "src_app_sourcesworkspace",
       "community": 24,
@@ -427,17 +437,57 @@
       "label": "ProductStatusWorkspace()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L639",
+      "source_location": "L702",
       "_origin": "ast",
       "id": "src_app_productstatusworkspace",
       "community": 24,
       "norm_label": "productstatusworkspace()"
     },
     {
+      "label": "LandingPage()",
+      "file_type": "code",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L805",
+      "_origin": "ast",
+      "id": "src_app_landingpage",
+      "community": 24,
+      "norm_label": "landingpage()"
+    },
+    {
+      "label": "CreateStudyDialog()",
+      "file_type": "code",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L940",
+      "_origin": "ast",
+      "id": "src_app_createstudydialog",
+      "community": 24,
+      "norm_label": "createstudydialog()"
+    },
+    {
+      "label": "CreateNodeDialog()",
+      "file_type": "code",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L983",
+      "_origin": "ast",
+      "id": "src_app_createnodedialog",
+      "community": 24,
+      "norm_label": "createnodedialog()"
+    },
+    {
+      "label": "WorkspaceApp()",
+      "file_type": "code",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L1022",
+      "_origin": "ast",
+      "id": "src_app_workspaceapp",
+      "community": 24,
+      "norm_label": "workspaceapp()"
+    },
+    {
       "label": "App()",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
-      "source_location": "L738",
+      "source_location": "L1377",
       "_origin": "ast",
       "id": "src_app_app",
       "community": 24,
@@ -457,17 +507,27 @@
       "label": "getJson()",
       "file_type": "code",
       "source_file": "frontend/src/api.ts",
-      "source_location": "L5",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "src_api_getjson",
       "community": 24,
       "norm_label": "getjson()"
     },
     {
+      "label": "sendJson()",
+      "file_type": "code",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "src_api_sendjson",
+      "community": 24,
+      "norm_label": "sendjson()"
+    },
+    {
       "label": "fetchWorkspace()",
       "file_type": "code",
       "source_file": "frontend/src/api.ts",
-      "source_location": "L15",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "src_api_fetchworkspace",
       "community": 24,
@@ -477,11 +537,101 @@
       "label": "fetchProductStatus()",
       "file_type": "code",
       "source_file": "frontend/src/api.ts",
-      "source_location": "L19",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "src_api_fetchproductstatus",
       "community": 24,
       "norm_label": "fetchproductstatus()"
+    },
+    {
+      "label": "fetchStudies()",
+      "file_type": "code",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L50",
+      "_origin": "ast",
+      "id": "src_api_fetchstudies",
+      "community": 24,
+      "norm_label": "fetchstudies()"
+    },
+    {
+      "label": "createStudy()",
+      "file_type": "code",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L54",
+      "_origin": "ast",
+      "id": "src_api_createstudy",
+      "community": 24,
+      "norm_label": "createstudy()"
+    },
+    {
+      "label": "fetchNodes()",
+      "file_type": "code",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L62",
+      "_origin": "ast",
+      "id": "src_api_fetchnodes",
+      "community": 24,
+      "norm_label": "fetchnodes()"
+    },
+    {
+      "label": "createNode()",
+      "file_type": "code",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L66",
+      "_origin": "ast",
+      "id": "src_api_createnode",
+      "community": 24,
+      "norm_label": "createnode()"
+    },
+    {
+      "label": "fetchRows()",
+      "file_type": "code",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L78",
+      "_origin": "ast",
+      "id": "src_api_fetchrows",
+      "community": 24,
+      "norm_label": "fetchrows()"
+    },
+    {
+      "label": "createHazopRow()",
+      "file_type": "code",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L82",
+      "_origin": "ast",
+      "id": "src_api_createhazoprow",
+      "community": 24,
+      "norm_label": "createhazoprow()"
+    },
+    {
+      "label": "updateHazopRow()",
+      "file_type": "code",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L86",
+      "_origin": "ast",
+      "id": "src_api_updatehazoprow",
+      "community": 24,
+      "norm_label": "updatehazoprow()"
+    },
+    {
+      "label": "deleteHazopRow()",
+      "file_type": "code",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L93",
+      "_origin": "ast",
+      "id": "src_api_deletehazoprow",
+      "community": 24,
+      "norm_label": "deletehazoprow()"
+    },
+    {
+      "label": "reportUrl()",
+      "file_type": "code",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L97",
+      "_origin": "ast",
+      "id": "src_api_reporturl",
+      "community": 24,
+      "norm_label": "reporturl()"
     },
     {
       "label": "data.ts",
@@ -534,10 +684,20 @@
       "norm_label": "workspacestudy"
     },
     {
-      "label": "WorkspaceNode",
+      "label": "StudyListItem",
       "file_type": "code",
       "source_file": "frontend/src/data.ts",
       "source_location": "L36",
+      "_origin": "ast",
+      "id": "src_data_studylistitem",
+      "community": 24,
+      "norm_label": "studylistitem"
+    },
+    {
+      "label": "WorkspaceNode",
+      "file_type": "code",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L45",
       "_origin": "ast",
       "id": "src_data_workspacenode",
       "community": 24,
@@ -547,7 +707,7 @@
       "label": "WorkspaceResponse",
       "file_type": "code",
       "source_file": "frontend/src/data.ts",
-      "source_location": "L46",
+      "source_location": "L55",
       "_origin": "ast",
       "id": "src_data_workspaceresponse",
       "community": 24,
@@ -557,7 +717,7 @@
       "label": "DeliveryModule",
       "file_type": "code",
       "source_file": "frontend/src/data.ts",
-      "source_location": "L55",
+      "source_location": "L64",
       "_origin": "ast",
       "id": "src_data_deliverymodule",
       "community": 24,
@@ -567,7 +727,7 @@
       "label": "ProductStatus",
       "file_type": "code",
       "source_file": "frontend/src/data.ts",
-      "source_location": "L63",
+      "source_location": "L72",
       "_origin": "ast",
       "id": "src_data_productstatus",
       "community": 24,
@@ -577,7 +737,7 @@
       "label": "initialRows",
       "file_type": "code",
       "source_file": "frontend/src/data.ts",
-      "source_location": "L74",
+      "source_location": "L83",
       "_origin": "ast",
       "id": "src_data_initialrows",
       "community": 24,
@@ -587,7 +747,7 @@
       "label": "suggestions",
       "file_type": "code",
       "source_file": "frontend/src/data.ts",
-      "source_location": "L131",
+      "source_location": "L140",
       "_origin": "ast",
       "id": "src_data_suggestions",
       "community": 24,
@@ -597,7 +757,7 @@
       "label": "fallbackStudy",
       "file_type": "code",
       "source_file": "frontend/src/data.ts",
-      "source_location": "L161",
+      "source_location": "L170",
       "_origin": "ast",
       "id": "src_data_fallbackstudy",
       "community": 24,
@@ -607,7 +767,7 @@
       "label": "nodes",
       "file_type": "code",
       "source_file": "frontend/src/data.ts",
-      "source_location": "L171",
+      "source_location": "L180",
       "_origin": "ast",
       "id": "src_data_nodes",
       "community": 24,
@@ -617,7 +777,7 @@
       "label": "fallbackStatus",
       "file_type": "code",
       "source_file": "frontend/src/data.ts",
-      "source_location": "L220",
+      "source_location": "L229",
       "_origin": "ast",
       "id": "src_data_fallbackstatus",
       "community": 24,
@@ -1129,7 +1289,7 @@
       "source_file": "scripts/evaluate_retrieval.py",
       "source_location": "L19",
       "_origin": "ast",
-      "id": "any",
+      "id": "scripts_evaluate_retrieval_py_any",
       "community": 6,
       "norm_label": "any"
     },
@@ -1190,7 +1350,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "api_dependencies_get_deviation_assist_service",
-      "community": 2,
+      "community": 0,
       "norm_label": "get_deviation_assist_service()"
     },
     {
@@ -1200,7 +1360,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "sessiondep",
-      "community": 2,
+      "community": 0,
       "norm_label": "sessiondep"
     },
     {
@@ -1210,7 +1370,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "settingsdep",
-      "community": 2,
+      "community": 0,
       "norm_label": "settingsdep"
     },
     {
@@ -1220,7 +1380,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "deviationassistservice",
-      "community": 2,
+      "community": 0,
       "norm_label": "deviationassistservice"
     },
     {
@@ -1310,14 +1470,14 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_workspace",
-      "community": 5,
+      "community": 2,
       "norm_label": "workspace.py"
     },
     {
       "label": "workspace()",
       "file_type": "code",
       "source_file": "src/preventa/api/routes/workspace.py",
-      "source_location": "L10",
+      "source_location": "L25",
       "_origin": "ast",
       "id": "routes_workspace_workspace",
       "community": 5,
@@ -1327,17 +1487,17 @@
       "label": "WorkspaceResponse",
       "file_type": "code",
       "source_file": "src/preventa/api/routes/workspace.py",
-      "source_location": "L10",
+      "source_location": "L25",
       "_origin": "ast",
       "id": "src_preventa_api_routes_workspace_py_workspaceresponse",
-      "community": 5,
+      "community": 2,
       "norm_label": "workspaceresponse"
     },
     {
       "label": "product_status()",
       "file_type": "code",
       "source_file": "src/preventa/api/routes/workspace.py",
-      "source_location": "L15",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "routes_workspace_product_status",
       "community": 5,
@@ -1347,11 +1507,211 @@
       "label": "ProductStatusResponse",
       "file_type": "code",
       "source_file": "src/preventa/api/routes/workspace.py",
-      "source_location": "L15",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "src_preventa_api_routes_workspace_py_productstatusresponse",
-      "community": 5,
+      "community": 2,
       "norm_label": "productstatusresponse"
+    },
+    {
+      "label": "list_studies()",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L35",
+      "_origin": "ast",
+      "id": "routes_workspace_list_studies",
+      "community": 2,
+      "norm_label": "list_studies()"
+    },
+    {
+      "label": "create_study()",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "routes_workspace_create_study",
+      "community": 2,
+      "norm_label": "create_study()"
+    },
+    {
+      "label": "StudyCreate",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "src_preventa_api_routes_workspace_py_studycreate",
+      "community": 2,
+      "norm_label": "studycreate"
+    },
+    {
+      "label": "list_nodes()",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L45",
+      "_origin": "ast",
+      "id": "routes_workspace_list_nodes",
+      "community": 2,
+      "norm_label": "list_nodes()"
+    },
+    {
+      "label": "create_node()",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L50",
+      "_origin": "ast",
+      "id": "routes_workspace_create_node",
+      "community": 2,
+      "norm_label": "create_node()"
+    },
+    {
+      "label": "NodeCreate",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L50",
+      "_origin": "ast",
+      "id": "src_preventa_api_routes_workspace_py_nodecreate",
+      "community": 2,
+      "norm_label": "nodecreate"
+    },
+    {
+      "label": "update_node()",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L57",
+      "_origin": "ast",
+      "id": "routes_workspace_update_node",
+      "community": 2,
+      "norm_label": "update_node()"
+    },
+    {
+      "label": "NodeUpdate",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L57",
+      "_origin": "ast",
+      "id": "src_preventa_api_routes_workspace_py_nodeupdate",
+      "community": 2,
+      "norm_label": "nodeupdate"
+    },
+    {
+      "label": "list_rows()",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L65",
+      "_origin": "ast",
+      "id": "routes_workspace_list_rows",
+      "community": 2,
+      "norm_label": "list_rows()"
+    },
+    {
+      "label": "create_row()",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L70",
+      "_origin": "ast",
+      "id": "routes_workspace_create_row",
+      "community": 2,
+      "norm_label": "create_row()"
+    },
+    {
+      "label": "RowCreate",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L70",
+      "_origin": "ast",
+      "id": "src_preventa_api_routes_workspace_py_rowcreate",
+      "community": 2,
+      "norm_label": "rowcreate"
+    },
+    {
+      "label": "update_row()",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L77",
+      "_origin": "ast",
+      "id": "routes_workspace_update_row",
+      "community": 2,
+      "norm_label": "update_row()"
+    },
+    {
+      "label": "RowUpdate",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L77",
+      "_origin": "ast",
+      "id": "src_preventa_api_routes_workspace_py_rowupdate",
+      "community": 2,
+      "norm_label": "rowupdate"
+    },
+    {
+      "label": "delete_row()",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L85",
+      "_origin": "ast",
+      "id": "routes_workspace_delete_row",
+      "community": 2,
+      "norm_label": "delete_row()"
+    },
+    {
+      "label": "Response",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L85",
+      "_origin": "ast",
+      "id": "response",
+      "community": 2,
+      "norm_label": "response"
+    },
+    {
+      "label": "list_lopa_layers()",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L92",
+      "_origin": "ast",
+      "id": "routes_workspace_list_lopa_layers",
+      "community": 2,
+      "norm_label": "list_lopa_layers()"
+    },
+    {
+      "label": "add_lopa_layer()",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L97",
+      "_origin": "ast",
+      "id": "routes_workspace_add_lopa_layer",
+      "community": 2,
+      "norm_label": "add_lopa_layer()"
+    },
+    {
+      "label": "LopaLayerCreate",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L97",
+      "_origin": "ast",
+      "id": "src_preventa_api_routes_workspace_py_lopalayercreate",
+      "community": 2,
+      "norm_label": "lopalayercreate"
+    },
+    {
+      "label": "download_report()",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L104",
+      "_origin": "ast",
+      "id": "routes_workspace_download_report",
+      "community": 2,
+      "norm_label": "download_report()"
+    },
+    {
+      "label": "StreamingResponse",
+      "file_type": "code",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L104",
+      "_origin": "ast",
+      "id": "streamingresponse",
+      "community": 2,
+      "norm_label": "streamingresponse"
     },
     {
       "label": "__init__.py",
@@ -1850,7 +2210,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "rag_providers",
-      "community": 2,
+      "community": 0,
       "norm_label": "providers.py"
     },
     {
@@ -1910,7 +2270,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "rag_providers_draftgenerator_generate",
-      "community": 2,
+      "community": 0,
       "norm_label": ".generate()"
     },
     {
@@ -1920,7 +2280,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_preventa_features_rag_providers_py_deviationassistrequest",
-      "community": 2,
+      "community": 0,
       "norm_label": "deviationassistrequest"
     },
     {
@@ -1930,7 +2290,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_preventa_features_rag_providers_py_retrievedchunk",
-      "community": 2,
+      "community": 0,
       "norm_label": "retrievedchunk"
     },
     {
@@ -1940,7 +2300,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_preventa_features_rag_providers_py_generateddraft",
-      "community": 2,
+      "community": 0,
       "norm_label": "generateddraft"
     },
     {
@@ -1960,7 +2320,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "rag_providers_reranker_rerank",
-      "community": 2,
+      "community": 0,
       "norm_label": ".rerank()"
     },
     {
@@ -1970,7 +2330,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "rag_providers_passthroughreranker",
-      "community": 2,
+      "community": 0,
       "norm_label": "passthroughreranker"
     },
     {
@@ -1980,7 +2340,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "rag_providers_passthroughreranker_rerank",
-      "community": 2,
+      "community": 0,
       "norm_label": ".rerank()"
     },
     {
@@ -1990,7 +2350,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "rag_providers_ollamaclient",
-      "community": 2,
+      "community": 0,
       "norm_label": "ollamaclient"
     },
     {
@@ -2000,7 +2360,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "rag_providers_ollamaclient_init",
-      "community": 2,
+      "community": 0,
       "norm_label": ".__init__()"
     },
     {
@@ -2010,7 +2370,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "rag_providers_ollamaclient_model_name",
-      "community": 2,
+      "community": 0,
       "norm_label": ".model_name()"
     },
     {
@@ -2020,7 +2380,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "rag_providers_ollamaclient_embed",
-      "community": 2,
+      "community": 0,
       "norm_label": ".embed()"
     },
     {
@@ -2030,7 +2390,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "rag_providers_ollamaclient_generate",
-      "community": 2,
+      "community": 0,
       "norm_label": ".generate()"
     },
     {
@@ -2434,6 +2794,356 @@
       "norm_label": "workspace read models and product delivery status."
     },
     {
+      "label": "crud_schemas.py",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "workspace_crud_schemas",
+      "community": 2,
+      "norm_label": "crud_schemas.py"
+    },
+    {
+      "label": "StudyCreate",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "workspace_crud_schemas_studycreate",
+      "community": 2,
+      "norm_label": "studycreate"
+    },
+    {
+      "label": "StudyItem",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "workspace_crud_schemas_studyitem",
+      "community": 2,
+      "norm_label": "studyitem"
+    },
+    {
+      "label": "NodeCreate",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "workspace_crud_schemas_nodecreate",
+      "community": 2,
+      "norm_label": "nodecreate"
+    },
+    {
+      "label": "NodeUpdate",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "workspace_crud_schemas_nodeupdate",
+      "community": 2,
+      "norm_label": "nodeupdate"
+    },
+    {
+      "label": "RowCreate",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "workspace_crud_schemas_rowcreate",
+      "community": 2,
+      "norm_label": "rowcreate"
+    },
+    {
+      "label": "RowUpdate",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "workspace_crud_schemas_rowupdate",
+      "community": 2,
+      "norm_label": "rowupdate"
+    },
+    {
+      "label": "LopaLayerCreate",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L52",
+      "_origin": "ast",
+      "id": "workspace_crud_schemas_lopalayercreate",
+      "community": 2,
+      "norm_label": "lopalayercreate"
+    },
+    {
+      "label": "report.py",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/report.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "workspace_report",
+      "community": 2,
+      "norm_label": "report.py"
+    },
+    {
+      "label": "build_docx()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/report.py",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "workspace_report_build_docx",
+      "community": 2,
+      "norm_label": "build_docx()"
+    },
+    {
+      "label": "repository.py",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "workspace_repository",
+      "community": 37,
+      "norm_label": "repository.py"
+    },
+    {
+      "label": "WorkspaceRepository",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository",
+      "community": 37,
+      "norm_label": "workspacerepository"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_init",
+      "community": 37,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".list_studies()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_list_studies",
+      "community": 37,
+      "norm_label": ".list_studies()"
+    },
+    {
+      "label": "Any",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "src_preventa_features_workspace_repository_py_any",
+      "community": 37,
+      "norm_label": "any"
+    },
+    {
+      "label": ".create_study()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_create_study",
+      "community": 37,
+      "norm_label": ".create_study()"
+    },
+    {
+      "label": "StudyCreate",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "src_preventa_features_workspace_repository_py_studycreate",
+      "community": 2,
+      "norm_label": "studycreate"
+    },
+    {
+      "label": ".get_study()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L51",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_get_study",
+      "community": 37,
+      "norm_label": ".get_study()"
+    },
+    {
+      "label": ".list_nodes()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_list_nodes",
+      "community": 37,
+      "norm_label": ".list_nodes()"
+    },
+    {
+      "label": ".create_node()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L74",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_create_node",
+      "community": 37,
+      "norm_label": ".create_node()"
+    },
+    {
+      "label": "NodeCreate",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L74",
+      "_origin": "ast",
+      "id": "src_preventa_features_workspace_repository_py_nodecreate",
+      "community": 2,
+      "norm_label": "nodecreate"
+    },
+    {
+      "label": ".update_node()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L95",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_update_node",
+      "community": 37,
+      "norm_label": ".update_node()"
+    },
+    {
+      "label": "NodeUpdate",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L95",
+      "_origin": "ast",
+      "id": "src_preventa_features_workspace_repository_py_nodeupdate",
+      "community": 2,
+      "norm_label": "nodeupdate"
+    },
+    {
+      "label": ".get_node()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L108",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_get_node",
+      "community": 37,
+      "norm_label": ".get_node()"
+    },
+    {
+      "label": ".list_rows()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L113",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_list_rows",
+      "community": 37,
+      "norm_label": ".list_rows()"
+    },
+    {
+      "label": ".create_row()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L121",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_create_row",
+      "community": 37,
+      "norm_label": ".create_row()"
+    },
+    {
+      "label": "RowCreate",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L121",
+      "_origin": "ast",
+      "id": "src_preventa_features_workspace_repository_py_rowcreate",
+      "community": 2,
+      "norm_label": "rowcreate"
+    },
+    {
+      "label": ".update_row()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L148",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_update_row",
+      "community": 37,
+      "norm_label": ".update_row()"
+    },
+    {
+      "label": "RowUpdate",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L148",
+      "_origin": "ast",
+      "id": "src_preventa_features_workspace_repository_py_rowupdate",
+      "community": 2,
+      "norm_label": "rowupdate"
+    },
+    {
+      "label": ".get_row()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L165",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_get_row",
+      "community": 37,
+      "norm_label": ".get_row()"
+    },
+    {
+      "label": ".delete_row()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L170",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_delete_row",
+      "community": 37,
+      "norm_label": ".delete_row()"
+    },
+    {
+      "label": ".add_lopa_layer()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L177",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_add_lopa_layer",
+      "community": 37,
+      "norm_label": ".add_lopa_layer()"
+    },
+    {
+      "label": "LopaLayerCreate",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L177",
+      "_origin": "ast",
+      "id": "src_preventa_features_workspace_repository_py_lopalayercreate",
+      "community": 2,
+      "norm_label": "lopalayercreate"
+    },
+    {
+      "label": ".list_lopa_layers()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L198",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_list_lopa_layers",
+      "community": 37,
+      "norm_label": ".list_lopa_layers()"
+    },
+    {
+      "label": "._serialize_row()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L210",
+      "_origin": "ast",
+      "id": "workspace_repository_workspacerepository_serialize_row",
+      "community": 37,
+      "norm_label": "._serialize_row()"
+    },
+    {
       "label": "schemas.py",
       "file_type": "code",
       "source_file": "src/preventa/features/workspace/schemas.py",
@@ -2562,6 +3272,126 @@
       "id": "src_preventa_features_workspace_service_py_productstatusresponse",
       "community": 5,
       "norm_label": "productstatusresponse"
+    },
+    {
+      "label": "store.py",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "workspace_store",
+      "community": 37,
+      "norm_label": "store.py"
+    },
+    {
+      "label": "_database_path()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "workspace_store_database_path",
+      "community": 37,
+      "norm_label": "_database_path()"
+    },
+    {
+      "label": "Path",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "src_preventa_features_workspace_store_py_path",
+      "community": 37,
+      "norm_label": "path"
+    },
+    {
+      "label": "connection()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "workspace_store_connection",
+      "community": 37,
+      "norm_label": "connection()"
+    },
+    {
+      "label": "initialize_store()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "workspace_store_initialize_store",
+      "community": 37,
+      "norm_label": "initialize_store()"
+    },
+    {
+      "label": "_seed()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L90",
+      "_origin": "ast",
+      "id": "workspace_store_seed",
+      "community": 37,
+      "norm_label": "_seed()"
+    },
+    {
+      "label": "risk_label()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L204",
+      "_origin": "ast",
+      "id": "workspace_store_risk_label",
+      "community": 37,
+      "norm_label": "risk_label()"
+    },
+    {
+      "label": "audit()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L215",
+      "_origin": "ast",
+      "id": "workspace_store_audit",
+      "community": 37,
+      "norm_label": "audit()"
+    },
+    {
+      "label": "row_dict()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L225",
+      "_origin": "ast",
+      "id": "workspace_store_row_dict",
+      "community": 37,
+      "norm_label": "row_dict()"
+    },
+    {
+      "label": "Row",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L225",
+      "_origin": "ast",
+      "id": "row",
+      "community": 37,
+      "norm_label": "row"
+    },
+    {
+      "label": "Any",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L225",
+      "_origin": "ast",
+      "id": "src_preventa_features_workspace_store_py_any",
+      "community": 37,
+      "norm_label": "any"
+    },
+    {
+      "label": "new_id()",
+      "file_type": "code",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L229",
+      "_origin": "ast",
+      "id": "workspace_store_new_id",
+      "community": 37,
+      "norm_label": "new_id()"
     },
     {
       "label": "main.py",
@@ -2732,6 +3562,36 @@
       "id": "unit_test_workspace_test_product_status_reports_unfinished_persistence",
       "community": 5,
       "norm_label": "test_product_status_reports_unfinished_persistence()"
+    },
+    {
+      "label": "test_workspace_crud.py",
+      "file_type": "code",
+      "source_file": "tests/unit/test_workspace_crud.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "unit_test_workspace_crud",
+      "community": 37,
+      "norm_label": "test_workspace_crud.py"
+    },
+    {
+      "label": "test_workspace_crud_and_lopa()",
+      "file_type": "code",
+      "source_file": "tests/unit/test_workspace_crud.py",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "unit_test_workspace_crud_test_workspace_crud_and_lopa",
+      "community": 37,
+      "norm_label": "test_workspace_crud_and_lopa()"
+    },
+    {
+      "label": "Path",
+      "file_type": "code",
+      "source_file": "tests/unit/test_workspace_crud.py",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "tests_unit_test_workspace_crud_py_path",
+      "community": 2,
+      "norm_label": "path"
     },
     {
       "label": "vercel.json",
@@ -3132,9 +3992,9 @@
       "source_file": "api/index.py",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "api_index",
-      "target": "preventa_main",
-      "confidence_score": 1.0
+      "target": "preventa_main"
     },
     {
       "relation": "contains",
@@ -3393,8 +4253,63 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_api",
+      "target": "src_api"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_api_createhazoprow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_api_createnode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_api_createstudy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_api_deletehazoprow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_api_fetchnodes",
       "confidence_score": 1.0
     },
     {
@@ -3404,8 +4319,30 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_api_fetchproductstatus",
+      "target": "src_api_fetchproductstatus"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_api_fetchrows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_api_fetchstudies",
       "confidence_score": 1.0
     },
     {
@@ -3415,8 +4352,30 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_api_fetchworkspace",
+      "target": "src_api_fetchworkspace"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_api_reporturl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_api_updatehazoprow",
       "confidence_score": 1.0
     },
     {
@@ -3443,6 +4402,26 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/App.tsx",
+      "source_location": "L983",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_app_createnodedialog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L940",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_app_createstudydialog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
       "source_location": "L396",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -3463,6 +4442,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/App.tsx",
+      "source_location": "L805",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_app_landingpage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
       "source_location": "L465",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -3475,8 +4464,18 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L639",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_productstatusworkspace",
+      "target": "src_app_productstatusworkspace"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L94",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_app_railsection",
       "confidence_score": 1.0
     },
     {
@@ -3553,6 +4552,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/App.tsx",
+      "source_location": "L1022",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_app_workspaceapp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
       "source_location": "L35",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -3587,9 +4596,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_data_fallbackstatus",
-      "confidence_score": 1.0
+      "target": "src_data_fallbackstatus"
     },
     {
       "relation": "imports",
@@ -3598,9 +4607,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_data_fallbackstudy",
-      "confidence_score": 1.0
+      "target": "src_data_fallbackstudy"
     },
     {
       "relation": "imports",
@@ -3642,8 +4651,19 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_data_productstatus",
+      "target": "src_data_productstatus"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.tsx",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "src_data_studylistitem",
       "confidence_score": 1.0
     },
     {
@@ -3653,9 +4673,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_data_suggestion",
-      "confidence_score": 1.0
+      "target": "src_data_suggestion"
     },
     {
       "relation": "imports",
@@ -3675,9 +4695,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_data_workspacenode",
-      "confidence_score": 1.0
+      "target": "src_data_workspacenode"
     },
     {
       "relation": "imports",
@@ -3686,9 +4706,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_data_workspacestudy",
-      "confidence_score": 1.0
+      "target": "src_data_workspacestudy"
     },
     {
       "relation": "imports_from",
@@ -3705,10 +4725,80 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api.ts",
-      "source_location": "L19",
+      "source_location": "L82",
       "weight": 1.0,
       "source": "src_api",
-      "target": "src_api_fetchproductstatus",
+      "target": "src_api_createhazoprow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_api_createnode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L54",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_api_createstudy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L93",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_api_deletehazoprow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_api_fetchnodes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_api",
+      "target": "src_api_fetchproductstatus"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_api_fetchrows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_api_fetchstudies",
       "confidence_score": 1.0
     },
     {
@@ -3717,9 +4807,9 @@
       "source_file": "frontend/src/api.ts",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_api",
-      "target": "src_api_fetchworkspace",
-      "confidence_score": 1.0
+      "target": "src_api_fetchworkspace"
     },
     {
       "relation": "contains",
@@ -3727,8 +4817,38 @@
       "source_file": "frontend/src/api.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_api",
-      "target": "src_api_getjson",
+      "target": "src_api_getjson"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L97",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_api_reporturl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_api_sendjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L86",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_api_updatehazoprow",
       "confidence_score": 1.0
     },
     {
@@ -3738,8 +4858,41 @@
       "source_file": "frontend/src/api.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_api",
-      "target": "src_data",
+      "target": "src_data"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_data_hazoprow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_api",
+      "target": "src_data_productstatus"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_api",
+      "target": "src_data_studylistitem",
       "confidence_score": 1.0
     },
     {
@@ -3750,7 +4903,7 @@
       "source_location": "L1",
       "weight": 1.0,
       "source": "src_api",
-      "target": "src_data_productstatus",
+      "target": "src_data_workspacenode",
       "confidence_score": 1.0
     },
     {
@@ -3760,8 +4913,19 @@
       "source_file": "frontend/src/api.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_api",
-      "target": "src_data_workspaceresponse",
+      "target": "src_data_workspaceresponse"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "src_api_fetchnodes",
+      "target": "src_api_getjson",
       "confidence_score": 1.0
     },
     {
@@ -3771,7 +4935,29 @@
       "source_file": "frontend/src/api.ts",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_api_fetchproductstatus",
+      "target": "src_api_getjson"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L79",
+      "weight": 1.0,
+      "source": "src_api_fetchrows",
+      "target": "src_api_getjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "src_api_fetchstudies",
       "target": "src_api_getjson",
       "confidence_score": 1.0
     },
@@ -3782,8 +4968,63 @@
       "source_file": "frontend/src/api.ts",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_api_fetchworkspace",
-      "target": "src_api_getjson",
+      "target": "src_api_getjson"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "src_api_createhazoprow",
+      "target": "src_api_sendjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "src_api_createnode",
+      "target": "src_api_sendjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "src_api_createstudy",
+      "target": "src_api_sendjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L94",
+      "weight": 1.0,
+      "source": "src_api_deletehazoprow",
+      "target": "src_api_sendjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api.ts",
+      "source_location": "L90",
+      "weight": 1.0,
+      "source": "src_api_updatehazoprow",
+      "target": "src_api_sendjson",
       "confidence_score": 1.0
     },
     {
@@ -3792,9 +5033,9 @@
       "source_file": "frontend/src/data.ts",
       "source_location": "L55",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_data",
-      "target": "src_data_deliverymodule",
-      "confidence_score": 1.0
+      "target": "src_data_deliverymodule"
     },
     {
       "relation": "contains",
@@ -3802,9 +5043,9 @@
       "source_file": "frontend/src/data.ts",
       "source_location": "L220",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_data",
-      "target": "src_data_fallbackstatus",
-      "confidence_score": 1.0
+      "target": "src_data_fallbackstatus"
     },
     {
       "relation": "contains",
@@ -3812,9 +5053,9 @@
       "source_file": "frontend/src/data.ts",
       "source_location": "L161",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_data",
-      "target": "src_data_fallbackstudy",
-      "confidence_score": 1.0
+      "target": "src_data_fallbackstudy"
     },
     {
       "relation": "contains",
@@ -3852,9 +5093,9 @@
       "source_file": "frontend/src/data.ts",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_data",
-      "target": "src_data_productstatus",
-      "confidence_score": 1.0
+      "target": "src_data_productstatus"
     },
     {
       "relation": "contains",
@@ -3865,6 +5106,16 @@
       "confidence_score": 1.0,
       "source": "src_data",
       "target": "src_data_risklevel"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/data.ts",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_data",
+      "target": "src_data_studylistitem",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -3892,9 +5143,9 @@
       "source_file": "frontend/src/data.ts",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_data",
-      "target": "src_data_workspacenode",
-      "confidence_score": 1.0
+      "target": "src_data_workspacenode"
     },
     {
       "relation": "contains",
@@ -3902,9 +5153,9 @@
       "source_file": "frontend/src/data.ts",
       "source_location": "L46",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_data",
-      "target": "src_data_workspaceresponse",
-      "confidence_score": 1.0
+      "target": "src_data_workspaceresponse"
     },
     {
       "relation": "contains",
@@ -3912,9 +5163,9 @@
       "source_file": "frontend/src/data.ts",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_data",
-      "target": "src_data_workspacestudy",
-      "confidence_score": 1.0
+      "target": "src_data_workspacestudy"
     },
     {
       "relation": "contains",
@@ -4222,9 +5473,9 @@
       "source_file": "frontend/vercel.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_vercel",
-      "target": "frontend_vercel_rewrites",
-      "confidence_score": 1.0
+      "target": "frontend_vercel_rewrites"
     },
     {
       "relation": "contains",
@@ -4400,9 +5651,9 @@
       "source_file": "scripts/evaluate_retrieval.py",
       "source_location": "L19",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "scripts_evaluate_retrieval_evaluate",
-      "target": "any"
+      "target": "scripts_evaluate_retrieval_py_any",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -4793,8 +6044,108 @@
       "source_file": "src/preventa/api/routes/workspace.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_workspace",
-      "target": "fastapi",
+      "target": "fastapi"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L97",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_add_lopa_layer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_create_node",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L70",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_create_row",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_create_study",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_delete_row",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L104",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_download_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L92",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_list_lopa_layers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_list_nodes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_list_rows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_list_studies",
       "confidence_score": 1.0
     },
     {
@@ -4803,8 +6154,28 @@
       "source_file": "src/preventa/api/routes/workspace.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_workspace",
-      "target": "routes_workspace_product_status",
+      "target": "routes_workspace_product_status"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_update_node",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L77",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_update_row",
       "confidence_score": 1.0
     },
     {
@@ -4813,9 +6184,9 @@
       "source_file": "src/preventa/api/routes/workspace.py",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_workspace",
-      "target": "routes_workspace_workspace",
-      "confidence_score": 1.0
+      "target": "routes_workspace_workspace"
     },
     {
       "relation": "references",
@@ -4824,9 +6195,9 @@
       "source_file": "src/preventa/api/routes/workspace.py",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_workspace_workspace",
-      "target": "src_preventa_api_routes_workspace_py_workspaceresponse",
-      "confidence_score": 1.0
+      "target": "src_preventa_api_routes_workspace_py_workspaceresponse"
     },
     {
       "relation": "calls",
@@ -4840,15 +6211,85 @@
       "target": "workspace_service_get_workspace"
     },
     {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_workspaceresponse",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_workspaceresponse",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_workspaceresponse",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_workspaceresponse",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_workspaceresponse",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_workspaceresponse",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_workspaceresponse",
+      "target": "workspace_crud_schemas_studyitem",
+      "confidence_score": 0.5
+    },
+    {
       "relation": "references",
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "src/preventa/api/routes/workspace.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_workspace_product_status",
-      "target": "src_preventa_api_routes_workspace_py_productstatusresponse",
-      "confidence_score": 1.0
+      "target": "src_preventa_api_routes_workspace_py_productstatusresponse"
     },
     {
       "relation": "calls",
@@ -4860,6 +6301,746 @@
       "weight": 1.0,
       "source": "routes_workspace_product_status",
       "target": "workspace_service_get_product_status"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_productstatusresponse",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_productstatusresponse",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_productstatusresponse",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_productstatusresponse",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_productstatusresponse",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_productstatusresponse",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_productstatusresponse",
+      "target": "workspace_crud_schemas_studyitem",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "routes_workspace_create_study",
+      "target": "src_preventa_api_routes_workspace_py_studycreate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_studycreate",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_studycreate",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_studycreate",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_studycreate",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_studycreate",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_studycreate",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_studycreate",
+      "target": "workspace_crud_schemas_studyitem",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "routes_workspace_create_node",
+      "target": "src_preventa_api_routes_workspace_py_nodecreate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_nodecreate",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_nodecreate",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_nodecreate",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_nodecreate",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_nodecreate",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_nodecreate",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_nodecreate",
+      "target": "workspace_crud_schemas_studyitem",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "routes_workspace_update_node",
+      "target": "src_preventa_api_routes_workspace_py_nodeupdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_nodeupdate",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_nodeupdate",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_nodeupdate",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_nodeupdate",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_nodeupdate",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_nodeupdate",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_nodeupdate",
+      "target": "workspace_crud_schemas_studyitem",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L109",
+      "weight": 1.0,
+      "source": "routes_workspace_download_report",
+      "target": "routes_workspace_list_rows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L70",
+      "weight": 1.0,
+      "source": "routes_workspace_create_row",
+      "target": "src_preventa_api_routes_workspace_py_rowcreate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_rowcreate",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_rowcreate",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_rowcreate",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_rowcreate",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_rowcreate",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_rowcreate",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_rowcreate",
+      "target": "workspace_crud_schemas_studyitem",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L77",
+      "weight": 1.0,
+      "source": "routes_workspace_update_row",
+      "target": "src_preventa_api_routes_workspace_py_rowupdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_rowupdate",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_rowupdate",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_rowupdate",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_rowupdate",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_rowupdate",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_rowupdate",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_rowupdate",
+      "target": "workspace_crud_schemas_studyitem",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "routes_workspace_delete_row",
+      "target": "response",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "response",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "response",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "response",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "response",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "response",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "response",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "response",
+      "target": "workspace_crud_schemas_studyitem",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L97",
+      "weight": 1.0,
+      "source": "routes_workspace_add_lopa_layer",
+      "target": "src_preventa_api_routes_workspace_py_lopalayercreate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_lopalayercreate",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_lopalayercreate",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_lopalayercreate",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_lopalayercreate",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_lopalayercreate",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_lopalayercreate",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "src_preventa_api_routes_workspace_py_lopalayercreate",
+      "target": "workspace_crud_schemas_studyitem",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L104",
+      "weight": 1.0,
+      "source": "routes_workspace_download_report",
+      "target": "streamingresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L109",
+      "weight": 1.0,
+      "source": "routes_workspace_download_report",
+      "target": "workspace_report_build_docx"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "streamingresponse",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "streamingresponse",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "streamingresponse",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "streamingresponse",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "streamingresponse",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "streamingresponse",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/api/routes/workspace.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "source": "streamingresponse",
+      "target": "workspace_crud_schemas_studyitem",
+      "confidence_score": 0.5
     },
     {
       "relation": "rationale_for",
@@ -6053,6 +8234,17 @@
       "confidence_score": 0.5,
       "source": "uuid",
       "target": "rag_schemas_generateddraft"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "workspace_store",
+      "target": "uuid",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7649,12 +9841,72 @@
     {
       "relation": "inherits",
       "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "workspace_crud_schemas_lopalayercreate",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "workspace_crud_schemas_nodecreate",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "workspace_crud_schemas_nodeupdate",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "workspace_crud_schemas_rowcreate",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "workspace_crud_schemas_rowupdate",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "workspace_crud_schemas_studycreate",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
       "source_file": "src/preventa/features/workspace/schemas.py",
       "source_location": "L58",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_schemas_deliverymodule",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -7662,9 +9914,9 @@
       "source_file": "src/preventa/features/workspace/schemas.py",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_schemas_productstatusresponse",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -7672,9 +9924,9 @@
       "source_file": "src/preventa/features/workspace/schemas.py",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_schemas_workspacenode",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -7682,9 +9934,9 @@
       "source_file": "src/preventa/features/workspace/schemas.py",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_schemas_workspaceresponse",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -7692,9 +9944,9 @@
       "source_file": "src/preventa/features/workspace/schemas.py",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_schemas_workspacerow",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -7702,9 +9954,9 @@
       "source_file": "src/preventa/features/workspace/schemas.py",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_schemas_workspacestudy",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -7712,9 +9964,9 @@
       "source_file": "src/preventa/features/workspace/schemas.py",
       "source_location": "L39",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_schemas_workspacesuggestion",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "calls",
@@ -8352,9 +10604,1437 @@
       "source_file": "src/preventa/features/workspace/__init__.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_init_rationale_1",
-      "target": "workspace_init",
+      "target": "workspace_init"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "workspace_crud_schemas",
+      "target": "workspace_crud_schemas_lopalayercreate",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "workspace_crud_schemas",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "workspace_crud_schemas",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "workspace_crud_schemas",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "workspace_crud_schemas",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "workspace_crud_schemas",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "workspace_crud_schemas",
+      "target": "workspace_crud_schemas_studyitem",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_any",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_lopalayercreate",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_nodecreate",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_nodeupdate",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_rowcreate",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_rowupdate",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_studycreate",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "tests/unit/test_workspace_crud.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "tests_unit_test_workspace_crud_py_path",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/crud_schemas.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "workspace_crud_schemas_studyitem",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_crud_schemas_studycreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_any",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_lopalayercreate",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_nodecreate",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_nodeupdate",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_rowcreate",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_rowupdate",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_studycreate",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "tests/unit/test_workspace_crud.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "tests_unit_test_workspace_crud_py_path",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_crud_schemas_nodecreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_any",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_lopalayercreate",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_nodecreate",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_nodeupdate",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_rowcreate",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_rowupdate",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_studycreate",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_crud_schemas_nodeupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_any",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_lopalayercreate",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_nodecreate",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_nodeupdate",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_rowcreate",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_rowupdate",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_studycreate",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "tests/unit/test_workspace_crud.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "tests_unit_test_workspace_crud_py_path",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_crud_schemas_rowcreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_any",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_lopalayercreate",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_nodecreate",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_nodeupdate",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_rowcreate",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_rowupdate",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_studycreate",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "tests/unit/test_workspace_crud.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "tests_unit_test_workspace_crud_py_path",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_crud_schemas_rowupdate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_any",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_lopalayercreate",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_nodecreate",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_nodeupdate",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_rowcreate",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_rowupdate",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "src_preventa_features_workspace_repository_py_studycreate",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "tests/unit/test_workspace_crud.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "tests_unit_test_workspace_crud_py_path",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_crud_schemas_lopalayercreate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/report.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "workspace_report",
+      "target": "workspace_report_build_docx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "workspace_repository",
+      "target": "workspace_repository_workspacerepository",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/unit/test_workspace_crud.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "unit_test_workspace_crud_test_workspace_crud_and_lopa",
+      "target": "workspace_repository_workspacerepository"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L177",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_add_lopa_layer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_create_node",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L121",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_create_row",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_create_study",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L170",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_delete_row",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L108",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_get_node",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L165",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_get_row",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_get_study",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L198",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_list_lopa_layers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_list_nodes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L113",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_list_rows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_list_studies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L210",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_serialize_row",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L95",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_update_node",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L148",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository",
+      "target": "workspace_repository_workspacerepository_update_row",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_init",
+      "target": "workspace_store_initialize_store"
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_list_studies",
+      "target": "src_preventa_features_workspace_repository_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_list_studies",
+      "target": "workspace_store_connection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_list_studies",
+      "target": "workspace_store_row_dict"
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L177",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_add_lopa_layer",
+      "target": "src_preventa_features_workspace_repository_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_node",
+      "target": "src_preventa_features_workspace_repository_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L121",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_row",
+      "target": "src_preventa_features_workspace_repository_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_study",
+      "target": "src_preventa_features_workspace_repository_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L108",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_get_node",
+      "target": "src_preventa_features_workspace_repository_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L165",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_get_row",
+      "target": "src_preventa_features_workspace_repository_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_get_study",
+      "target": "src_preventa_features_workspace_repository_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L198",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_list_lopa_layers",
+      "target": "src_preventa_features_workspace_repository_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_list_nodes",
+      "target": "src_preventa_features_workspace_repository_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L113",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_list_rows",
+      "target": "src_preventa_features_workspace_repository_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L210",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_serialize_row",
+      "target": "src_preventa_features_workspace_repository_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L95",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_update_node",
+      "target": "src_preventa_features_workspace_repository_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L148",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_update_row",
+      "target": "src_preventa_features_workspace_repository_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_study",
+      "target": "src_preventa_features_workspace_repository_py_studycreate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_study",
+      "target": "workspace_store_audit"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_study",
+      "target": "workspace_store_connection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_study",
+      "target": "workspace_store_new_id"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_get_study",
+      "target": "workspace_store_connection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_get_study",
+      "target": "workspace_store_row_dict"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L60",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_list_nodes",
+      "target": "workspace_store_connection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L72",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_list_nodes",
+      "target": "workspace_store_row_dict"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_node",
+      "target": "src_preventa_features_workspace_repository_py_nodecreate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L92",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_node",
+      "target": "workspace_store_audit"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L76",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_node",
+      "target": "workspace_store_connection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_node",
+      "target": "workspace_store_new_id"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L95",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_update_node",
+      "target": "src_preventa_features_workspace_repository_py_nodeupdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L98",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_update_node",
+      "target": "workspace_repository_workspacerepository_get_node",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_update_node",
+      "target": "workspace_store_audit"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L100",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_update_node",
+      "target": "workspace_store_connection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L109",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_get_node",
+      "target": "workspace_store_connection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L111",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_get_node",
+      "target": "workspace_store_row_dict"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L119",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_list_rows",
+      "target": "workspace_repository_workspacerepository_serialize_row",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L114",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_list_rows",
+      "target": "workspace_store_connection"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L121",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_row",
+      "target": "src_preventa_features_workspace_repository_py_rowcreate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L146",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_row",
+      "target": "workspace_repository_workspacerepository_get_row",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L145",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_row",
+      "target": "workspace_store_audit"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L122",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_create_row",
+      "target": "workspace_store_connection"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L148",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_update_row",
+      "target": "src_preventa_features_workspace_repository_py_rowupdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L151",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_update_row",
+      "target": "workspace_repository_workspacerepository_get_row",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L162",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_update_row",
+      "target": "workspace_store_audit"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L153",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_update_row",
+      "target": "workspace_store_connection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L168",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_get_row",
+      "target": "workspace_repository_workspacerepository_serialize_row",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L166",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_get_row",
+      "target": "workspace_store_connection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L174",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_delete_row",
+      "target": "workspace_store_audit"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L171",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_delete_row",
+      "target": "workspace_store_connection"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L177",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_add_lopa_layer",
+      "target": "src_preventa_features_workspace_repository_py_lopalayercreate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L195",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_add_lopa_layer",
+      "target": "workspace_store_audit"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L179",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_add_lopa_layer",
+      "target": "workspace_store_connection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L178",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_add_lopa_layer",
+      "target": "workspace_store_new_id"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L199",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_list_lopa_layers",
+      "target": "workspace_store_connection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L205",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_list_lopa_layers",
+      "target": "workspace_store_row_dict"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L212",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_serialize_row",
+      "target": "workspace_store_risk_label"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/preventa/features/workspace/repository.py",
+      "source_location": "L211",
+      "weight": 1.0,
+      "source": "workspace_repository_workspacerepository_serialize_row",
+      "target": "workspace_store_row_dict"
     },
     {
       "relation": "contains",
@@ -8362,9 +12042,9 @@
       "source_file": "src/preventa/features/workspace/schemas.py",
       "source_location": "L58",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_schemas",
-      "target": "workspace_schemas_deliverymodule",
-      "confidence_score": 1.0
+      "target": "workspace_schemas_deliverymodule"
     },
     {
       "relation": "contains",
@@ -8372,9 +12052,9 @@
       "source_file": "src/preventa/features/workspace/schemas.py",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_schemas",
-      "target": "workspace_schemas_productstatusresponse",
-      "confidence_score": 1.0
+      "target": "workspace_schemas_productstatusresponse"
     },
     {
       "relation": "contains",
@@ -8382,9 +12062,9 @@
       "source_file": "src/preventa/features/workspace/schemas.py",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_schemas",
-      "target": "workspace_schemas_workspacenode",
-      "confidence_score": 1.0
+      "target": "workspace_schemas_workspacenode"
     },
     {
       "relation": "contains",
@@ -8392,9 +12072,9 @@
       "source_file": "src/preventa/features/workspace/schemas.py",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_schemas",
-      "target": "workspace_schemas_workspaceresponse",
-      "confidence_score": 1.0
+      "target": "workspace_schemas_workspaceresponse"
     },
     {
       "relation": "contains",
@@ -8402,9 +12082,9 @@
       "source_file": "src/preventa/features/workspace/schemas.py",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_schemas",
-      "target": "workspace_schemas_workspacerow",
-      "confidence_score": 1.0
+      "target": "workspace_schemas_workspacerow"
     },
     {
       "relation": "contains",
@@ -8412,9 +12092,9 @@
       "source_file": "src/preventa/features/workspace/schemas.py",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_schemas",
-      "target": "workspace_schemas_workspacestudy",
-      "confidence_score": 1.0
+      "target": "workspace_schemas_workspacestudy"
     },
     {
       "relation": "contains",
@@ -8422,9 +12102,9 @@
       "source_file": "src/preventa/features/workspace/schemas.py",
       "source_location": "L39",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_schemas",
-      "target": "workspace_schemas_workspacesuggestion",
-      "confidence_score": 1.0
+      "target": "workspace_schemas_workspacesuggestion"
     },
     {
       "relation": "calls",
@@ -8454,9 +12134,9 @@
       "source_file": "src/preventa/features/workspace/service.py",
       "source_location": "L178",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_service",
-      "target": "workspace_service_get_product_status",
-      "confidence_score": 1.0
+      "target": "workspace_service_get_product_status"
     },
     {
       "relation": "contains",
@@ -8464,9 +12144,9 @@
       "source_file": "src/preventa/features/workspace/service.py",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_service",
-      "target": "workspace_service_get_workspace",
-      "confidence_score": 1.0
+      "target": "workspace_service_get_workspace"
     },
     {
       "relation": "calls",
@@ -8486,9 +12166,9 @@
       "source_file": "src/preventa/features/workspace/service.py",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_service_get_workspace",
-      "target": "src_preventa_features_workspace_service_py_workspaceresponse",
-      "confidence_score": 1.0
+      "target": "src_preventa_features_workspace_service_py_workspaceresponse"
     },
     {
       "relation": "calls",
@@ -8508,8 +12188,176 @@
       "source_file": "src/preventa/features/workspace/service.py",
       "source_location": "L178",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "workspace_service_get_product_status",
-      "target": "src_preventa_features_workspace_service_py_productstatusresponse",
+      "target": "src_preventa_features_workspace_service_py_productstatusresponse"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L215",
+      "weight": 1.0,
+      "source": "workspace_store",
+      "target": "workspace_store_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "workspace_store",
+      "target": "workspace_store_connection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "workspace_store",
+      "target": "workspace_store_database_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "workspace_store",
+      "target": "workspace_store_initialize_store",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L229",
+      "weight": 1.0,
+      "source": "workspace_store",
+      "target": "workspace_store_new_id",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L204",
+      "weight": 1.0,
+      "source": "workspace_store",
+      "target": "workspace_store_risk_label",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L225",
+      "weight": 1.0,
+      "source": "workspace_store",
+      "target": "workspace_store_row_dict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L90",
+      "weight": 1.0,
+      "source": "workspace_store",
+      "target": "workspace_store_seed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "workspace_store_connection",
+      "target": "workspace_store_database_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "workspace_store_database_path",
+      "target": "src_preventa_features_workspace_store_py_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L215",
+      "weight": 1.0,
+      "source": "workspace_store_audit",
+      "target": "workspace_store_connection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "workspace_store_initialize_store",
+      "target": "workspace_store_connection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L90",
+      "weight": 1.0,
+      "source": "workspace_store_seed",
+      "target": "workspace_store_connection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L87",
+      "weight": 1.0,
+      "source": "workspace_store_initialize_store",
+      "target": "workspace_store_seed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L225",
+      "weight": 1.0,
+      "source": "workspace_store_row_dict",
+      "target": "row",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/preventa/features/workspace/store.py",
+      "source_location": "L225",
+      "weight": 1.0,
+      "source": "workspace_store_row_dict",
+      "target": "src_preventa_features_workspace_store_py_any",
       "confidence_score": 1.0
     },
     {
@@ -8641,9 +12489,9 @@
       "source_file": "tests/unit/test_workspace.py",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "unit_test_workspace",
-      "target": "unit_test_workspace_test_product_status_reports_unfinished_persistence",
-      "confidence_score": 1.0
+      "target": "unit_test_workspace_test_product_status_reports_unfinished_persistence"
     },
     {
       "relation": "contains",
@@ -8651,8 +12499,29 @@
       "source_file": "tests/unit/test_workspace.py",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "unit_test_workspace",
-      "target": "unit_test_workspace_test_workspace_exposes_api_seed_transparently",
+      "target": "unit_test_workspace_test_workspace_exposes_api_seed_transparently"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_workspace_crud.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "unit_test_workspace_crud",
+      "target": "unit_test_workspace_crud_test_workspace_crud_and_lopa",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/unit/test_workspace_crud.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "unit_test_workspace_crud_test_workspace_crud_and_lopa",
+      "target": "tests_unit_test_workspace_crud_py_path",
       "confidence_score": 1.0
     },
     {
@@ -8661,9 +12530,9 @@
       "source_file": "vercel.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "vercel",
-      "target": "vercel_builds",
-      "confidence_score": 1.0
+      "target": "vercel_builds"
     },
     {
       "relation": "contains",
@@ -8671,9 +12540,9 @@
       "source_file": "vercel.json",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "vercel",
-      "target": "vercel_routes",
-      "confidence_score": 1.0
+      "target": "vercel_routes"
     },
     {
       "relation": "contains",
@@ -8977,5 +12846,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "330c4f3ec145898c4937c0f4875eaef28d5ae656"
+  "built_at_commit": "fccfe9b04b3cfd6a17b1a365ecc3b8bb477c3545"
 }

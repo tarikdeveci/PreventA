@@ -29,10 +29,23 @@ import {
   ShieldCheck,
   Sparkles,
   Table2,
+  Trash2,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { fetchProductStatus, fetchWorkspace } from "./api";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  createHazopRow,
+  createNode,
+  createStudy,
+  deleteHazopRow,
+  fetchNodes,
+  fetchProductStatus,
+  fetchRows,
+  fetchStudies,
+  fetchWorkspace,
+  reportUrl,
+  updateHazopRow,
+} from "./api";
 import {
   fallbackStatus,
   fallbackStudy,
@@ -41,6 +54,7 @@ import {
   suggestions as fallbackSuggestions,
   type HazopRow,
   type ProductStatus,
+  type StudyListItem,
   type Suggestion,
   type WorkspaceNode,
   type WorkspaceStudy,
@@ -77,23 +91,51 @@ function StatusBadge({ status }: { status: HazopRow["status"] }) {
   );
 }
 
-function AppRail() {
+type RailSection = "studies" | "library" | "reports" | "history";
+
+function AppRail({
+  active,
+  onSelect,
+}: {
+  active: RailSection;
+  onSelect: (section: RailSection) => void;
+}) {
   return (
     <aside className="app-rail" aria-label="Ana uygulama">
       <button className="brand-mark" aria-label="PreventA ana sayfa">
         <ShieldCheck size={25} strokeWidth={2.2} />
       </button>
       <nav className="rail-nav" aria-label="Uygulama bölümleri">
-        <button className="rail-button is-active" aria-label="Çalışmalar" title="Çalışmalar">
+        <button
+          className={`rail-button ${active === "studies" ? "is-active" : ""}`}
+          aria-label="Çalışmalar"
+          title="Çalışmalar"
+          onClick={() => onSelect("studies")}
+        >
           <Files size={20} />
         </button>
-        <button className="rail-button" aria-label="Senaryo kütüphanesi" title="Senaryo kütüphanesi">
+        <button
+          className={`rail-button ${active === "library" ? "is-active" : ""}`}
+          aria-label="Senaryo kütüphanesi"
+          title="Senaryo kütüphanesi"
+          onClick={() => onSelect("library")}
+        >
           <BookOpen size={20} />
         </button>
-        <button className="rail-button" aria-label="Raporlar" title="Raporlar">
+        <button
+          className={`rail-button ${active === "reports" ? "is-active" : ""}`}
+          aria-label="Raporlar"
+          title="Raporlar"
+          onClick={() => onSelect("reports")}
+        >
           <FileOutput size={20} />
         </button>
-        <button className="rail-button" aria-label="Denetim geçmişi" title="Denetim geçmişi">
+        <button
+          className={`rail-button ${active === "history" ? "is-active" : ""}`}
+          aria-label="Denetim geçmişi"
+          title="Denetim geçmişi"
+          onClick={() => onSelect("history")}
+        >
           <History size={20} />
         </button>
       </nav>
@@ -119,6 +161,9 @@ function StudyNavigator({
   study,
   activeNodeId,
   onSelectNode,
+  onCreateNode,
+  studies,
+  onSelectStudy,
 }: {
   open: boolean;
   onClose: () => void;
@@ -126,6 +171,9 @@ function StudyNavigator({
   study: WorkspaceStudy;
   activeNodeId: string;
   onSelectNode: (id: string) => void;
+  onCreateNode: () => void;
+  studies: StudyListItem[];
+  onSelectStudy: (studyId: string) => void;
 }) {
   const [query, setQuery] = useState("");
   const filteredNodes = nodes.filter((node) =>
@@ -146,19 +194,28 @@ function StudyNavigator({
           </button>
         </div>
 
-        <button className="study-switcher">
+        <div className="study-switcher">
           <span className="study-monogram">RA</span>
           <span>
-            <strong>Reaktör Alanı</strong>
+            <label className="sr-only" htmlFor="study-selector">Aktif çalışmayı seç</label>
+            <select
+              id="study-selector"
+              value={study.id}
+              onChange={(event) => onSelectStudy(event.target.value)}
+            >
+              {studies.map((item) => (
+                <option value={item.id} key={item.id}>{item.title}</option>
+              ))}
+            </select>
             <small>{study.client} · {study.facility}</small>
           </span>
           <ChevronDown size={16} />
-        </button>
+        </div>
 
         <div className="nav-section">
           <div className="nav-section-title">
             <span>Çalışma yapısı</span>
-            <button className="compact-icon" aria-label="Yeni bölüm ekle">
+            <button className="compact-icon" aria-label="Yeni node ekle" onClick={onCreateNode}>
               <Plus size={15} />
             </button>
           </div>
@@ -282,10 +339,12 @@ function TopBar({
 
 function WorksheetToolbar({
   onAddRow,
+  onDeleteRow,
   evidenceOpen,
   onToggleEvidence,
 }: {
   onAddRow: () => void;
+  onDeleteRow: () => void;
   evidenceOpen: boolean;
   onToggleEvidence: () => void;
 }) {
@@ -295,6 +354,10 @@ function WorksheetToolbar({
         <button className="secondary-button compact" onClick={onAddRow}>
           <Plus size={16} />
           Satır ekle
+        </button>
+        <button className="secondary-button compact danger-action" onClick={onDeleteRow}>
+          <Trash2 size={16} />
+          Satırı sil
         </button>
         <button className="secondary-button compact">
           <Archive size={16} />
@@ -670,7 +733,11 @@ function ProductStatusWorkspace({ status }: { status: ProductStatus }) {
           <div>
             <dt>Veri kalıcılığı</dt>
             <dd className={status.persistence === "postgresql" ? "fact-ok" : "fact-warn"}>
-              {status.persistence === "postgresql" ? "PostgreSQL" : "API seed"}
+              {status.persistence === "postgresql"
+                ? "PostgreSQL"
+                : status.persistence === "volatile_sqlite"
+                  ? "Geçici SQLite"
+                  : "API seed"}
             </dd>
           </div>
           <div>
@@ -735,19 +802,242 @@ function ProductStatusWorkspace({ status }: { status: ProductStatus }) {
   );
 }
 
-export default function App() {
+function LandingPage() {
+  return (
+    <div className="landing-page">
+      <header className="landing-nav">
+        <a className="landing-brand" href="/">
+          <ShieldCheck size={28} />
+          <span>PreventA</span>
+        </a>
+        <nav aria-label="Landing navigasyonu">
+          <a href="#urun">Ürün</a>
+          <a href="#guvenlik">Veri güvenliği</a>
+          <a href="#akis">İş akışı</a>
+        </nav>
+        <a className="primary-button landing-login" href="/app">
+          Çalışma alanını aç
+        </a>
+      </header>
+
+      <main>
+        <section className="landing-hero">
+          <div className="hero-copy">
+            <span className="hero-kicker">HAZOP · LOPA · Kurumsal tehlike hafızası</span>
+            <h1>Proses güvenliği çalışmalarını tekrar kullanılabilir bilgiye dönüştürün.</h1>
+            <p>
+              PreventA, fasilitatörlerin HAZOP ve LOPA çalışmalarını yapılandırılmış
+              biçimde yürütmesini, geçmiş senaryolardan kaynaklı öneriler almasını ve
+              müşteri raporunu aynı çalışma alanından üretmesini sağlar.
+            </p>
+            <div className="hero-actions">
+              <a className="primary-button landing-cta" href="/app">
+                MVP çalışma alanını aç
+                <ChevronRight size={17} />
+              </a>
+              <a className="secondary-button landing-cta" href="#akis">
+                İş akışını incele
+              </a>
+            </div>
+            <div className="hero-trust">
+              <span><ShieldCheck size={16} /> Yerel veri seçeneği</span>
+              <span><FileClock size={16} /> Kaynak ve değişiklik izi</span>
+              <span><Download size={16} /> DOCX rapor çıktısı</span>
+            </div>
+          </div>
+          <div className="hero-product" aria-label="PreventA ürün önizlemesi">
+            <div className="mini-window-bar">
+              <span />
+              <span />
+              <span />
+              <strong>Ünite 200 HAZOP</strong>
+            </div>
+            <div className="mini-workspace">
+              <div className="mini-sidebar">
+                <span className="mini-node complete">N-01</span>
+                <span className="mini-node active">N-02</span>
+                <span className="mini-node">N-03</span>
+                <span className="mini-node">N-04</span>
+              </div>
+              <div className="mini-table">
+                <div className="mini-table-head">
+                  <span>Sapma</span><span>Neden</span><span>Sonuç</span><span>Risk</span>
+                </div>
+                {["Akış yok", "Yüksek akış", "Ters akış", "Düşük akış"].map((item, index) => (
+                  <div className="mini-table-row" key={item}>
+                    <strong>{item}</strong>
+                    <span />
+                    <span />
+                    <em className={`mini-risk risk-${index}`}>{index === 2 ? "Kritik" : "Orta"}</em>
+                  </div>
+                ))}
+              </div>
+              <div className="mini-evidence">
+                <strong>Kaynaklı öneriler</strong>
+                <div><Sparkles size={14} /> Çekvalf arızası</div>
+                <div><Sparkles size={14} /> Düşük akış alarmı</div>
+                <div><Sparkles size={14} /> IEC 61882 §6.3</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="landing-section" id="urun">
+          <div className="landing-section-heading">
+            <h2>Toplantı boyunca tek çalışma yüzeyi</h2>
+            <p>
+              Study yapısı, worksheet, risk değerlendirmesi, LOPA ve kanıtlar aynı
+              bağlamda kalır.
+            </p>
+          </div>
+          <div className="capability-list">
+            {[
+              ["01", "Klavye odaklı HAZOP", "Satırları hızla oluşturun, düzenleyin ve risk derecesini otomatik hesaplayın."],
+              ["02", "Kaynaklı öneriler", "Geçmiş çalışmalar ve standartlardan gelen önerilerin kaynağını inceleyin."],
+              ["03", "LOPA ve IPL kaydı", "Koruma katmanlarını PFD ve uygunluk değerlendirmesiyle senaryoya bağlayın."],
+              ["04", "Teslim edilebilir rapor", "Çalışmayı tek tıkla düzenlenebilir DOCX raporuna dönüştürün."],
+            ].map(([number, title, detail]) => (
+              <article key={number}>
+                <span>{number}</span>
+                <h3>{title}</h3>
+                <p>{detail}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="security-section" id="guvenlik">
+          <div>
+            <ShieldCheck size={34} />
+            <h2>Hassas tesis verisi için açık mimari sınırlar</h2>
+          </div>
+          <p>
+            PreventA, öneri ve veri katmanlarını ayrı sözleşmelerle yönetir. Üretim
+            kurulumunda PostgreSQL ve Ollama müşteri ortamında çalıştırılabilir; model
+            önerileri mühendis onayı olmadan çalışma kararına dönüşmez.
+          </p>
+        </section>
+
+        <section className="workflow-section" id="akis">
+          <h2>Bir çalışmanın PreventA akışı</h2>
+          <ol>
+            <li><strong>Study açın</strong><span>Müşteri, tesis ve risk bağlamını kaydedin.</span></li>
+            <li><strong>Node'ları tanımlayın</strong><span>Ekipman tipi ve tasarım niyetini standardize edin.</span></li>
+            <li><strong>HAZOP ve LOPA'yı yürütün</strong><span>Senaryoları kaydedin, kaynaklı önerileri inceleyin.</span></li>
+            <li><strong>Raporu teslim edin</strong><span>Denetim iziyle birlikte DOCX çıktısını indirin.</span></li>
+          </ol>
+          <a className="primary-button landing-cta" href="/app">Çalışma alanına geç</a>
+        </section>
+      </main>
+      <footer className="landing-footer">
+        <span>PreventA · Process Safety Workspace</span>
+        <span>MVP · Haziran 2026</span>
+      </footer>
+    </div>
+  );
+}
+
+function CreateStudyDialog({
+  open,
+  onClose,
+  onCreated,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onCreated: (study: StudyListItem) => void;
+}) {
+  const [values, setValues] = useState({ title: "", client: "", facility: "" });
+  const [saving, setSaving] = useState(false);
+  if (!open) return null;
+  return (
+    <div className="modal-backdrop" role="presentation">
+      <form
+        className="form-dialog"
+        onSubmit={async (event) => {
+          event.preventDefault();
+          setSaving(true);
+          try {
+            const created = await createStudy(values);
+            onCreated(created);
+          } finally {
+            setSaving(false);
+          }
+        }}
+      >
+        <div className="dialog-heading">
+          <div><h2>Yeni çalışma</h2><p>Müşteri ve tesis bağlamını tanımlayın.</p></div>
+          <button type="button" className="icon-button" onClick={onClose} aria-label="Kapat"><X size={18} /></button>
+        </div>
+        <label>Çalışma adı<input required value={values.title} onChange={(e) => setValues({...values, title: e.target.value})} /></label>
+        <label>Müşteri<input required value={values.client} onChange={(e) => setValues({...values, client: e.target.value})} /></label>
+        <label>Tesis<input required value={values.facility} onChange={(e) => setValues({...values, facility: e.target.value})} /></label>
+        <div className="dialog-actions">
+          <button type="button" className="secondary-button" onClick={onClose}>Vazgeç</button>
+          <button className="primary-button" disabled={saving}>{saving ? "Oluşturuluyor" : "Çalışma oluştur"}</button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function CreateNodeDialog({
+  open,
+  studyId,
+  onClose,
+  onCreated,
+}: {
+  open: boolean;
+  studyId: string;
+  onClose: () => void;
+  onCreated: (node: WorkspaceNode) => void;
+}) {
+  const [values, setValues] = useState({ code: "", name: "", equipment_type: "", design_intent: "" });
+  if (!open) return null;
+  return (
+    <div className="modal-backdrop" role="presentation">
+      <form
+        className="form-dialog"
+        onSubmit={async (event) => {
+          event.preventDefault();
+          onCreated(await createNode(studyId, values));
+        }}
+      >
+        <div className="dialog-heading">
+          <div><h2>Yeni node</h2><p>Öneri kalitesi için ekipman tipini açık yazın.</p></div>
+          <button type="button" className="icon-button" onClick={onClose} aria-label="Kapat"><X size={18} /></button>
+        </div>
+        <label>Node kodu<input required placeholder="N-06" value={values.code} onChange={(e) => setValues({...values, code: e.target.value})} /></label>
+        <label>Node adı<input required value={values.name} onChange={(e) => setValues({...values, name: e.target.value})} /></label>
+        <label>Ekipman tipi<input required value={values.equipment_type} onChange={(e) => setValues({...values, equipment_type: e.target.value})} /></label>
+        <label>Tasarım niyeti<textarea required value={values.design_intent} onChange={(e) => setValues({...values, design_intent: e.target.value})} /></label>
+        <div className="dialog-actions">
+          <button type="button" className="secondary-button" onClick={onClose}>Vazgeç</button>
+          <button className="primary-button">Node oluştur</button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function WorkspaceApp() {
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("HAZOP");
+  const [railSection, setRailSection] = useState<RailSection>("studies");
   const [rows, setRows] = useState(initialRows);
   const [workspaceNodes, setWorkspaceNodes] = useState(fallbackNodes);
   const [study, setStudy] = useState(fallbackStudy);
+  const [studyOptions, setStudyOptions] = useState<StudyListItem[]>([]);
   const [workspaceSuggestions, setWorkspaceSuggestions] = useState(fallbackSuggestions);
   const [productStatus, setProductStatus] = useState(fallbackStatus);
   const [apiConnected, setApiConnected] = useState(false);
   const [activeNodeId, setActiveNodeId] = useState("node-p101");
+  const [studyDialogOpen, setStudyDialogOpen] = useState(false);
+  const [nodeDialogOpen, setNodeDialogOpen] = useState(false);
+  const [loadingRows, setLoadingRows] = useState(false);
   const [selectedRow, setSelectedRow] = useState(1);
   const [evidenceOpen, setEvidenceOpen] = useState(true);
   const [navOpen, setNavOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const saveTimers = useRef<Record<number, number>>({});
 
   const selected = useMemo(
     () => rows.find((row) => row.id === selectedRow) ?? rows[0],
@@ -763,8 +1053,8 @@ export default function App() {
 
   useEffect(() => {
     let active = true;
-    Promise.all([fetchWorkspace(), fetchProductStatus()])
-      .then(([workspace, status]) => {
+    Promise.all([fetchWorkspace(), fetchProductStatus(), fetchStudies()])
+      .then(([workspace, status, studies]) => {
         if (!active) return;
         setRows(workspace.rows);
         setWorkspaceNodes(workspace.nodes);
@@ -773,6 +1063,10 @@ export default function App() {
         setActiveNodeId(workspace.active_node_id);
         setProductStatus(status);
         setApiConnected(status.api_connected);
+        setStudyOptions(studies);
+        if (studies.length > 0) {
+          setStudy((current) => ({ ...current, ...studies[0] }));
+        }
       })
       .catch(() => {
         if (!active) return;
@@ -793,27 +1087,86 @@ export default function App() {
     setRows((current) =>
       current.map((row) => (row.id === id ? { ...row, [field]: value } : row)),
     );
+    window.clearTimeout(saveTimers.current[id]);
+    saveTimers.current[id] = window.setTimeout(async () => {
+      try {
+        await updateHazopRow(id, { [field]: value });
+        setApiConnected(true);
+      } catch {
+        setApiConnected(false);
+        notify("Değişiklik yerel taslakta kaldı. API bağlantısını kontrol edin.");
+      }
+    }, 550);
   };
 
-  const addRow = () => {
-    const nextId = Math.max(...rows.map((row) => row.id)) + 1;
-    setRows((current) => [
+  const addRow = async () => {
+    try {
+      const created = await createHazopRow(activeNodeId);
+      setRows((current) => [...current, created]);
+      setSelectedRow(created.id);
+      notify("Yeni HAZOP satırı veritabanına eklendi.");
+    } catch {
+      notify("Satır oluşturulamadı. API bağlantısını kontrol edin.");
+    }
+  };
+
+  const removeSelectedRow = async () => {
+    if (!selected) return;
+    try {
+      await deleteHazopRow(selected.id);
+      const remaining = rows.filter((row) => row.id !== selected.id);
+      setRows(remaining);
+      setSelectedRow(remaining[0]?.id ?? 0);
+      notify("HAZOP satırı silindi.");
+    } catch {
+      notify("Satır silinemedi.");
+    }
+  };
+
+  const selectNode = async (nodeId: string) => {
+    setActiveNodeId(nodeId);
+    setNavOpen(false);
+    setLoadingRows(true);
+    try {
+      const nodeRows = await fetchRows(nodeId);
+      setRows(nodeRows);
+      setSelectedRow(nodeRows[0]?.id ?? 0);
+      setApiConnected(true);
+    } catch {
+      setRows([]);
+      setApiConnected(false);
+    } finally {
+      setLoadingRows(false);
+    }
+  };
+
+  const selectStudy = async (studyId: string) => {
+    const selectedStudy = studyOptions.find((item) => item.id === studyId);
+    if (!selectedStudy) return;
+    setStudy((current) => ({
       ...current,
-      {
-        id: nextId,
-        guideword: "Yok",
-        deviation: "",
-        cause: "",
-        consequence: "",
-        safeguard: "",
-        severity: 1,
-        likelihood: 1,
-        risk: "Düşük",
-        status: "Eksik",
-      },
-    ]);
-    setSelectedRow(nextId);
-    notify("Yeni HAZOP satırı eklendi.");
+      ...selectedStudy,
+      progress: 0,
+      reviewed_scenarios: 0,
+      total_scenarios: 0,
+    }));
+    setLoadingRows(true);
+    try {
+      const studyNodes = await fetchNodes(studyId);
+      setWorkspaceNodes(studyNodes);
+      const firstNode = studyNodes[0];
+      if (firstNode) {
+        setActiveNodeId(firstNode.id);
+        const nodeRows = await fetchRows(firstNode.id);
+        setRows(nodeRows);
+        setSelectedRow(nodeRows[0]?.id ?? 0);
+      } else {
+        setRows([]);
+        setActiveNodeId("");
+      }
+    } finally {
+      setLoadingRows(false);
+    }
   };
 
   const applySuggestion = (suggestionId: string) => {
@@ -830,27 +1183,69 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <AppRail />
+      <AppRail active={railSection} onSelect={setRailSection} />
       <StudyNavigator
         open={navOpen}
         onClose={() => setNavOpen(false)}
         nodes={workspaceNodes}
         study={study}
         activeNodeId={activeNodeId}
-        onSelectNode={(id) => {
-          setActiveNodeId(id);
-          setNavOpen(false);
-        }}
+        onSelectNode={selectNode}
+        onCreateNode={() => setNodeDialogOpen(true)}
+        studies={studyOptions}
+        onSelectStudy={selectStudy}
       />
       <div className="workspace-shell">
         <TopBar
           onOpenNav={() => setNavOpen(true)}
-          onExport={() => notify("Rapor kuyruğa alındı. DOCX ve PDF hazırlanıyor.")}
+          onExport={() => {
+            window.location.href = reportUrl(study.id, activeNode.id);
+          }}
           activeNode={activeNode}
           apiConnected={apiConnected}
         />
 
         <main id="main-content" className="main-workspace">
+          {railSection !== "studies" ? (
+            <section className="rail-section-page">
+              <div className="section-heading">
+                <div>
+                  <h2>
+                    {railSection === "library"
+                      ? "Senaryo kütüphanesi"
+                      : railSection === "reports"
+                        ? "Raporlar"
+                        : "Denetim geçmişi"}
+                  </h2>
+                  <p>
+                    {railSection === "library"
+                      ? "Onaylanmış neden, sonuç ve önlem kayıtlarını ekipman tipine göre yönetin."
+                      : railSection === "reports"
+                        ? "Çalışmalardan üretilen DOCX raporlarını indirin."
+                        : "Study, node ve worksheet değişikliklerinin audit kaydı."}
+                  </p>
+                </div>
+                {railSection === "reports" && (
+                  <button className="primary-button" onClick={() => { window.location.href = reportUrl(study.id, activeNode.id); }}>
+                    <Download size={16} /> Aktif node raporunu indir
+                  </button>
+                )}
+              </div>
+              <div className="functional-empty">
+                {railSection === "library" ? <BookOpen size={28} /> : railSection === "reports" ? <FileOutput size={28} /> : <History size={28} />}
+                <strong>{railSection === "history" ? "Audit kayıtları backend'de tutuluyor" : "Bu modül MVP akışına bağlı"}</strong>
+                <p>
+                  {railSection === "library"
+                    ? `${workspaceSuggestions.length} kaynaklı öneri aktif çalışma bağlamında kullanılabilir.`
+                    : railSection === "reports"
+                      ? "Rapor düğmesi canlı API üzerinden düzenlenebilir DOCX üretir."
+                      : "Create, update ve delete işlemleri mvp_audit tablosuna yazılır."}
+                </p>
+                <button className="secondary-button" onClick={() => setRailSection("studies")}>Çalışmaya dön</button>
+              </div>
+            </section>
+          ) : (
+          <>
           <div className="design-intent">
             <div>
               <span className="context-label">Tasarım niyeti</span>
@@ -880,16 +1275,26 @@ export default function App() {
             <>
               <WorksheetToolbar
                 onAddRow={addRow}
+                onDeleteRow={removeSelectedRow}
                 evidenceOpen={evidenceOpen}
                 onToggleEvidence={() => setEvidenceOpen((current) => !current)}
               />
               <div className={`hazop-layout ${evidenceOpen ? "with-evidence" : ""}`}>
-                <HazopTable
+                {loadingRows ? (
+                  <div className="table-loading">Node satırları yükleniyor...</div>
+                ) : rows.length === 0 ? (
+                  <div className="table-empty">
+                    <Table2 size={28} />
+                    <strong>Bu node için HAZOP satırı yok</strong>
+                    <p>İlk sapmayı kaydetmek için yeni satır oluşturun.</p>
+                    <button className="primary-button" onClick={addRow}><Plus size={16} /> İlk satırı ekle</button>
+                  </div>
+                ) : <HazopTable
                   rows={rows}
                   selectedRow={selectedRow}
                   onSelectRow={setSelectedRow}
                   onUpdateRow={updateRow}
-                />
+                />}
                 <EvidencePanel
                   open={evidenceOpen}
                   onClose={() => setEvidenceOpen(false)}
@@ -903,6 +1308,8 @@ export default function App() {
           {activeTab === "Risk matrisi" && <RiskMatrix />}
           {activeTab === "Kaynaklar" && <SourcesWorkspace />}
           {activeTab === "Ürün durumu" && <ProductStatusWorkspace status={productStatus} />}
+          </>
+          )}
         </main>
 
         <footer className="status-bar">
@@ -930,6 +1337,43 @@ export default function App() {
           {toast}
         </div>
       )}
+      <CreateStudyDialog
+        open={studyDialogOpen}
+        onClose={() => setStudyDialogOpen(false)}
+        onCreated={(created) => {
+          setStudyOptions((current) => [created, ...current]);
+          setStudy({
+            ...created,
+            progress: 0,
+            reviewed_scenarios: 0,
+            total_scenarios: 0,
+          });
+          setWorkspaceNodes([]);
+          setRows([]);
+          setStudyDialogOpen(false);
+          setNodeDialogOpen(true);
+          notify("Çalışma oluşturuldu. Şimdi ilk node'u ekleyin.");
+        }}
+      />
+      <CreateNodeDialog
+        open={nodeDialogOpen}
+        studyId={study.id}
+        onClose={() => setNodeDialogOpen(false)}
+        onCreated={(created) => {
+          setWorkspaceNodes((current) => [...current, created]);
+          setActiveNodeId(created.id);
+          setRows([]);
+          setNodeDialogOpen(false);
+          notify("Node oluşturuldu.");
+        }}
+      />
+      <button className="floating-create-study" onClick={() => setStudyDialogOpen(true)}>
+        <Plus size={17} /> Yeni çalışma
+      </button>
     </div>
   );
+}
+
+export default function App() {
+  return window.location.pathname.startsWith("/app") ? <WorkspaceApp /> : <LandingPage />;
 }

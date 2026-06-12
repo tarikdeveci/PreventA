@@ -10,6 +10,7 @@ dist/
 build/
 .coverage
 htmlcov/
+.data/
 frontend/node_modules/
 frontend/dist/
 graphify-out/.graphify_*

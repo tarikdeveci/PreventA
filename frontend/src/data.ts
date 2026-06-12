@@ -33,6 +33,15 @@ export type WorkspaceStudy = {
   total_scenarios: number;
 };
 
+export type StudyListItem = {
+  id: string;
+  title: string;
+  client: string;
+  facility: string;
+  status: string;
+  node_count: number;
+};
+
 export type WorkspaceNode = {
   id: string;
   code: string;
@@ -65,7 +74,7 @@ export type ProductStatus = {
   stage: string;
   overall_progress: number;
   api_connected: boolean;
-  persistence: "seed" | "postgresql";
+  persistence: "seed" | "volatile_sqlite" | "postgresql";
   ai_runtime: "contract_ready" | "ollama_connected";
   deployment: string;
   modules: DeliveryModule[];
@@ -227,4 +236,3 @@ export const fallbackStatus: ProductStatus = {
   deployment: "Tarayıcı içi fallback veri",
   modules: [],
 };
-
