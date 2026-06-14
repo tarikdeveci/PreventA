@@ -1,15 +1,14 @@
+import base64
+import hashlib
+import hmac
 import os
 import sqlite3
+import time
 from datetime import UTC, datetime, timedelta
 from typing import Any, cast
 
 from preventa.features.auth.schemas import AuthUser, Role, UserCreate
-from preventa.features.auth.security import (
-    hash_password,
-    hash_session_token,
-    new_session_token,
-    verify_password,
-)
+from preventa.features.auth.security import hash_password, hash_session_token, verify_password
 from preventa.features.workspace.store import connection, initialize_store, new_id
 
 ROLE_PERMISSIONS: dict[Role, list[str]] = {
@@ -33,8 +32,17 @@ ROLE_PERMISSIONS: dict[Role, list[str]] = {
 
 class AuthRepository:
     def __init__(self) -> None:
+        self._revoked_tokens: set[str] = set()
         initialize_store()
         self._seed_users()
+
+    @staticmethod
+    def _session_secret() -> bytes:
+        configured = os.getenv("PREVENTA_SESSION_SECRET")
+        if configured:
+            return configured.encode()
+        admin_password = os.getenv("PREVENTA_ADMIN_PASSWORD", "PreventA-Admin-2026!")
+        return f"preventa-session:{admin_password}".encode()
 
     def _seed_users(self) -> None:
         users: list[tuple[str, str, str, Role]] = [
@@ -112,39 +120,40 @@ class AuthRepository:
         return self._to_user(row)
 
     def create_session(self, user_id: str, *, hours: int = 12) -> str:
-        token = new_session_token()
-        expires_at = datetime.now(UTC) + timedelta(hours=hours)
-        with connection() as database:
-            database.execute(
-                """
-                INSERT INTO app_sessions (token_hash, user_id, expires_at)
-                VALUES (?, ?, ?)
-                """,
-                (hash_session_token(token), user_id, expires_at.isoformat()),
-            )
-        return token
+        expires_at = int((datetime.now(UTC) + timedelta(hours=hours)).timestamp())
+        payload = f"{user_id}.{expires_at}"
+        signature = hmac.new(
+            self._session_secret(), payload.encode(), hashlib.sha256
+        ).digest()
+        encoded_signature = base64.urlsafe_b64encode(signature).decode().rstrip("=")
+        return f"{payload}.{encoded_signature}"
 
     def get_user_for_session(self, token: str) -> AuthUser | None:
-        now = datetime.now(UTC).isoformat()
+        token_hash = hash_session_token(token)
+        if token_hash in self._revoked_tokens:
+            return None
+        try:
+            user_id, expires_at_text, signature = token.split(".", 2)
+            expires_at = int(expires_at_text)
+        except (TypeError, ValueError):
+            return None
+        if expires_at <= int(time.time()):
+            return None
+        payload = f"{user_id}.{expires_at}"
+        expected = base64.urlsafe_b64encode(
+            hmac.new(self._session_secret(), payload.encode(), hashlib.sha256).digest()
+        ).decode().rstrip("=")
+        if not hmac.compare_digest(signature, expected):
+            return None
         with connection() as database:
-            database.execute("DELETE FROM app_sessions WHERE expires_at <= ?", (now,))
             row = database.execute(
-                """
-                SELECT u.*
-                FROM app_sessions s
-                JOIN app_users u ON u.id = s.user_id
-                WHERE s.token_hash = ? AND s.expires_at > ? AND u.is_active = 1
-                """,
-                (hash_session_token(token), now),
+                "SELECT * FROM app_users WHERE id = ? AND is_active = 1",
+                (user_id,),
             ).fetchone()
         return self._to_user(row) if row else None
 
     def delete_session(self, token: str) -> None:
-        with connection() as database:
-            database.execute(
-                "DELETE FROM app_sessions WHERE token_hash = ?",
-                (hash_session_token(token),),
-            )
+        self._revoked_tokens.add(hash_session_token(token))
 
     def list_users(self) -> list[AuthUser]:
         with connection() as database:

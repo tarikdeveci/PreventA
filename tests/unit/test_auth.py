@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pytest
 from fastapi import HTTPException
-
 from preventa.api.auth_dependencies import require_permission
 from preventa.features.auth.repository import AuthRepository
 from preventa.features.auth.schemas import AuthUser
@@ -26,6 +25,7 @@ def test_authentication_and_session_round_trip(
     token = repository.create_session(user.id)
     restored = repository.get_user_for_session(token)
     assert restored == user
+    assert AuthRepository().get_user_for_session(token) == user
 
     repository.delete_session(token)
     assert repository.get_user_for_session(token) is None
