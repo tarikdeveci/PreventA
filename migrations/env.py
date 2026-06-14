@@ -1,11 +1,10 @@
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import engine_from_config, pool
-
 from preventa.core.config import get_settings
 from preventa.db.base import Base
 from preventa.db.models import *  # noqa: F403
+from sqlalchemy import engine_from_config, pool
 
 config = context.config
 config.set_main_option("sqlalchemy.url", get_settings().database_url)

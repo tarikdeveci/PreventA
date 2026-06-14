@@ -26,10 +26,38 @@ export type Suggestion = {
   id: string;
   kind: "Neden" | "Sonuç" | "Önlem";
   text: string;
-  confidence: "Yüksek" | "Orta";
-  source: string;
-  section: string;
+  confidence: "Yüksek" | "Orta" | "Düşük";
+  citations: Citation[];
   target: "cause" | "consequence" | "safeguard";
+};
+
+export type Citation = {
+  chunk_id: string;
+  source_ref: string;
+  section_ref: string | null;
+  excerpt: string;
+};
+
+export type DeviationAssistRequest = {
+  study_id: string;
+  node_id: string;
+  equipment_type: string;
+  design_intent: string;
+  parameter: string;
+  guideword: string;
+  deviation: string;
+  existing_safeguards: string[];
+};
+
+export type DeviationAssistResponse = {
+  suggestion_id: string;
+  candidates: Array<{
+    kind: "cause" | "consequence" | "safeguard";
+    text: string;
+    citations: Citation[];
+    confidence: "low" | "medium" | "high";
+  }>;
+  disclaimer: string;
 };
 
 export type WorkspaceStudy = {
@@ -152,8 +180,12 @@ export const suggestions: Suggestion[] = [
     kind: "Neden",
     text: "Ortak emiş süzgecinin polimer birikimi nedeniyle tıkanması",
     confidence: "Yüksek",
-    source: "HAZOP-2024-018",
-    section: "Node 12 · P-204",
+    citations: [{
+      chunk_id: "mock-s1",
+      source_ref: "HAZOP-2024-018",
+      section_ref: "Node 12 · P-204",
+      excerpt: "Ortak emiş süzgecinde polimer birikimi gözlendi.",
+    }],
     target: "cause",
   },
   {
@@ -161,8 +193,12 @@ export const suggestions: Suggestion[] = [
     kind: "Önlem",
     text: "Pompa emiş ve basma basınç farkı için yüksek fark basınç alarmı",
     confidence: "Yüksek",
-    source: "HAZOP-2023-041",
-    section: "Node 07 · Santrifüj pompa",
+    citations: [{
+      chunk_id: "mock-s2",
+      source_ref: "HAZOP-2023-041",
+      section_ref: "Node 07 · Santrifüj pompa",
+      excerpt: "Fark basınç alarmı bağımsız izleme önlemi olarak kaydedildi.",
+    }],
     target: "safeguard",
   },
   {
@@ -170,20 +206,24 @@ export const suggestions: Suggestion[] = [
     kind: "Sonuç",
     text: "Kavitasyon kaynaklı mekanik salmastra hasarı ve yanıcı akışkan salımı",
     confidence: "Orta",
-    source: "IEC 61882",
-    section: "§6.3.4 · Consequences",
+    citations: [{
+      chunk_id: "mock-s3",
+      source_ref: "IEC 61882",
+      section_ref: "§6.3.4 · Consequences",
+      excerpt: "Consequences should include credible equipment damage and loss of containment.",
+    }],
     target: "consequence",
   },
 ];
 
-export const fallbackStudy: WorkspaceStudy = {
-  id: "fallback-study",
-  title: "Ünite 200 HAZOP",
-  client: "ACWA Power",
-  facility: "Konya",
-  progress: 62,
-  reviewed_scenarios: 89,
-  total_scenarios: 143,
+export const emptyStudy: WorkspaceStudy = {
+  id: "",
+  title: "Çalışma seçilmedi",
+  client: "API bağlantısı yok",
+  facility: "Veri yüklenemedi",
+  progress: 0,
+  reviewed_scenarios: 0,
+  total_scenarios: 0,
 };
 
 export const nodes: WorkspaceNode[] = [
@@ -235,13 +275,13 @@ export const nodes: WorkspaceNode[] = [
   },
 ];
 
-export const fallbackStatus: ProductStatus = {
+export const unavailableStatus: ProductStatus = {
   release: "MVP foundation",
-  stage: "Frontend fallback",
-  overall_progress: 40,
+  stage: "Ürün durumu yüklenemedi",
+  overall_progress: 0,
   api_connected: false,
   persistence: "seed",
   ai_runtime: "contract_ready",
-  deployment: "Tarayıcı içi fallback veri",
+  deployment: "API bağlantısı bekleniyor",
   modules: [],
 };

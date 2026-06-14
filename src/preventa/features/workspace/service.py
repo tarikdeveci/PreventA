@@ -1,3 +1,4 @@
+from preventa.features.workspace.repository import WorkspaceRepository
 from preventa.features.workspace.schemas import (
     DeliveryModule,
     ProductStatusResponse,
@@ -5,181 +6,62 @@ from preventa.features.workspace.schemas import (
     WorkspaceResponse,
     WorkspaceRow,
     WorkspaceStudy,
-    WorkspaceSuggestion,
 )
 
 
-def get_workspace() -> WorkspaceResponse:
+def get_workspace(repository: WorkspaceRepository) -> WorkspaceResponse:
+    studies = repository.list_studies()
+    if not studies:
+        raise LookupError("No workspace study is available.")
+
+    study_data = next(
+        (study for study in studies if study["id"] == "study-reactor-2026"),
+        studies[0],
+    )
+    study_id = str(study_data["id"])
+    node_data = repository.list_nodes(study_id)
+    active_node = next(
+        (node for node in node_data if node["state"] == "active"),
+        node_data[0] if node_data else None,
+    )
+
+    all_rows = [
+        row
+        for node in node_data
+        for row in repository.list_rows(str(node["id"]))
+    ]
+    reviewed_scenarios = sum(row["status"] == "İncelendi" for row in all_rows)
+    total_scenarios = len(all_rows)
+    progress = round(reviewed_scenarios * 100 / total_scenarios) if total_scenarios else 0
+    active_rows = (
+        repository.list_rows(str(active_node["id"]))
+        if active_node is not None
+        else []
+    )
+
     return WorkspaceResponse(
-        source="api_seed",
+        source="database",
         study=WorkspaceStudy(
-            id="study-reactor-2026",
-            title="Ünite 200 HAZOP",
-            client="ACWA Power",
-            facility="Konya",
-            progress=62,
-            reviewed_scenarios=89,
-            total_scenarios=143,
+            id=study_id,
+            title=str(study_data["title"]),
+            client=str(study_data["client"]),
+            facility=str(study_data["facility"]),
+            progress=progress,
+            reviewed_scenarios=reviewed_scenarios,
+            total_scenarios=total_scenarios,
         ),
-        active_node_id="node-p101",
-        nodes=[
-            WorkspaceNode(
-                id="node-t100",
-                code="N-01",
-                name="Hammadde tankı T-100",
-                equipment_type="Atmosferik tank",
-                design_intent="Hammaddeyi güvenli işletme sınırlarında depolamak.",
-                scenario_count=18,
-                state="complete",
-            ),
-            WorkspaceNode(
-                id="node-p101",
-                code="N-02",
-                name="Besleme pompası P-101",
-                equipment_type="Santrifüj pompa",
-                design_intent=(
-                    "T-100 hammadde tankından R-201 reaktörüne kesintisiz ve "
-                    "kontrollü besleme sağlamak."
-                ),
-                scenario_count=24,
-                state="active",
-            ),
-            WorkspaceNode(
-                id="node-e102",
-                code="N-03",
-                name="Isı eşanjörü E-102",
-                equipment_type="Kabuk-boru eşanjör",
-                design_intent="Besleme sıcaklığını reaksiyon giriş koşuluna getirmek.",
-                scenario_count=16,
-                state="review",
-            ),
-            WorkspaceNode(
-                id="node-r201",
-                code="N-04",
-                name="Reaktör R-201",
-                equipment_type="Karıştırıcılı reaktör",
-                design_intent="Reaksiyonu tanımlı sıcaklık ve basınç aralığında yürütmek.",
-                scenario_count=31,
-                state="review",
-            ),
-            WorkspaceNode(
-                id="node-v301",
-                code="N-05",
-                name="Ayırıcı V-301",
-                equipment_type="Basınçlı kap",
-                design_intent="Gaz ve sıvı fazlarını güvenli biçimde ayırmak.",
-                scenario_count=0,
-                state="empty",
-            ),
-        ],
-        rows=[
-            WorkspaceRow(
-                id=1,
-                guideword="Yok",
-                deviation="Akış yok",
-                cause=(
-                    "P-101A/B pompalarının ortak emiş hattında izolasyon vanasının "
-                    "kapalı kalması"
-                ),
-                consequence=(
-                    "Reaktör beslemesinin kesilmesi; sıcaklık kontrolünün bozulması "
-                    "ve plansız duruş"
-                ),
-                safeguard=(
-                    "Düşük akış alarmı FAL-101; yedek pompa otomatik devreye alma "
-                    "prosedürü"
-                ),
-                severity=3,
-                likelihood=2,
-                risk="Orta",
-                status="İncelendi",
-            ),
-            WorkspaceRow(
-                id=2,
-                guideword="Fazla",
-                deviation="Yüksek akış",
-                cause="Kontrol vanası FV-101'in tam açık konumda arızalanması",
-                consequence=(
-                    "Reaktörde besleme oranının artması; sıcaklık yükselmesi ve ürün "
-                    "spesifikasyon dışı üretim"
-                ),
-                safeguard=(
-                    "Yüksek akış alarmı FAH-101; bağımsız yüksek sıcaklık tripi "
-                    "TSHH-204"
-                ),
-                severity=4,
-                likelihood=2,
-                risk="Yüksek",
-                status="Taslak",
-            ),
-            WorkspaceRow(
-                id=3,
-                guideword="Ters",
-                deviation="Ters akış",
-                cause="Pompa duruşunda çekvalfin sızdırması veya açık kalması",
-                consequence=(
-                    "Proses akışkanının depolama tankına geri dönmesi; tankta aşırı "
-                    "basınç ve kontaminasyon"
-                ),
-                safeguard="Çekvalf bakım programı; pompa çıkışında motorlu izolasyon vanası",
-                severity=4,
-                likelihood=3,
-                risk="Kritik",
-                status="Eksik",
-            ),
-            WorkspaceRow(
-                id=4,
-                guideword="Az",
-                deviation="Düşük akış",
-                cause="Emiş filtresinin kısmi tıkanması veya tank seviyesinin düşmesi",
-                consequence="Pompa kavitasyonu; mekanik hasar ve yanıcı akışkan kaçağı",
-                safeguard="Düşük tank seviye alarmı LAL-100; titreşim izleme",
-                severity=3,
-                likelihood=3,
-                risk="Yüksek",
-                status="Taslak",
-            ),
-        ],
-        suggestions=[
-            WorkspaceSuggestion(
-                id="s1",
-                kind="Neden",
-                text="Ortak emiş süzgecinin polimer birikimi nedeniyle tıkanması",
-                confidence="Yüksek",
-                source="HAZOP-2024-018",
-                section="Node 12 · P-204",
-                target="cause",
-            ),
-            WorkspaceSuggestion(
-                id="s2",
-                kind="Önlem",
-                text="Pompa emiş ve basma basınç farkı için yüksek fark basınç alarmı",
-                confidence="Yüksek",
-                source="HAZOP-2023-041",
-                section="Node 07 · Santrifüj pompa",
-                target="safeguard",
-            ),
-            WorkspaceSuggestion(
-                id="s3",
-                kind="Sonuç",
-                text=(
-                    "Kavitasyon kaynaklı mekanik salmastra hasarı ve yanıcı akışkan "
-                    "salımı"
-                ),
-                confidence="Orta",
-                source="IEC 61882",
-                section="§6.3.4 · Consequences",
-                target="consequence",
-            ),
-        ],
+        active_node_id=str(active_node["id"]) if active_node is not None else "",
+        nodes=[WorkspaceNode.model_validate(node) for node in node_data],
+        rows=[WorkspaceRow.model_validate(row) for row in active_rows],
+        suggestions=[],
     )
 
 
 def get_product_status() -> ProductStatusResponse:
     return ProductStatusResponse(
-        release="MVP foundation",
-        stage="Çalışan MVP beta",
-        overall_progress=72,
+        release="MVP beta",
+        stage="Canlı CRUD + RAG istemcisi",
+        overall_progress=58,
         api_connected=True,
         persistence="volatile_sqlite",
         ai_runtime="contract_ready",
@@ -188,35 +70,38 @@ def get_product_status() -> ProductStatusResponse:
             DeliveryModule(
                 id="ui",
                 name="Ürün arayüzü",
-                status="complete",
-                progress=100,
-                detail="HAZOP, LOPA, risk matrisi, kaynaklar ve responsive çalışma alanı.",
+                status="in_progress",
+                progress=78,
+                detail=(
+                    "Canlı CRUD ve kaynaklı öneri paneli bağlı; App.tsx modülerleştirmesi "
+                    "ve responsive doğrulama sürüyor."
+                ),
             ),
             DeliveryModule(
                 id="api",
                 name="Frontend API bağlantısı",
                 status="complete",
                 progress=100,
-                detail="Workspace ve ürün durumu aynı domain üzerindeki API'den yükleniyor.",
+                detail="Study, node, worksheet, LOPA, rapor ve RAG istemcileri API'ye bağlı.",
             ),
             DeliveryModule(
                 id="database",
-                name="PostgreSQL kalıcılık",
+                name="Production kalıcılığı",
                 status="in_progress",
-                progress=65,
+                progress=45,
                 detail=(
-                    "Yerel SQLite CRUD çalışıyor; Vercel production için yönetilen "
-                    "PostgreSQL bağlantısı bekliyor."
+                    "SQLite repository ve gerçek workspace özeti çalışıyor; Vercel için "
+                    "yönetilen PostgreSQL geçişi tamamlanmadı."
                 ),
             ),
             DeliveryModule(
                 id="rag",
                 name="Kaynaklı RAG önerileri",
                 status="in_progress",
-                progress=60,
+                progress=55,
                 detail=(
-                    "Retrieval, citation ve Ollama sözleşmesi hazır; canlı corpus "
-                    "ingestion eksik."
+                    "UI sözleşmesi, citation gösterimi ve guardrail hataları bağlı; canlı "
+                    "Ollama, corpus ingestion ve uçtan uca smoke test eksik."
                 ),
             ),
             DeliveryModule(
@@ -224,28 +109,28 @@ def get_product_status() -> ProductStatusResponse:
                 name="Study ve HAZOP CRUD",
                 status="complete",
                 progress=100,
-                detail="Study, node, worksheet ve LOPA create/update/delete API'leri çalışıyor.",
+                detail="Study, node, worksheet ve LOPA create/update/delete akışları çalışıyor.",
             ),
             DeliveryModule(
                 id="report",
                 name="DOCX/PDF rapor",
                 status="in_progress",
-                progress=70,
-                detail="Canlı DOCX raporu üretiliyor; PDF ve müşteri şablonu sırada.",
+                progress=55,
+                detail="Canlı DOCX üretiliyor; PDF ve müşteri şablonu henüz tamamlanmadı.",
             ),
             DeliveryModule(
                 id="import",
                 name="Excel ve geçmiş çalışma import",
                 status="planned",
-                progress=5,
-                detail="Veri eşleme ve doğrulama akışı tasarlanacak.",
+                progress=0,
+                detail="Veri eşleme ve doğrulama akışı henüz uygulanmadı.",
             ),
             DeliveryModule(
                 id="pilot",
                 name="Gerçek pilot çalışma",
                 status="planned",
                 progress=0,
-                detail="Anar ile gerçek müşteri çalışmasında uçtan uca doğrulama.",
+                detail="Gerçek müşteri verisiyle uçtan uca pilot henüz yapılmadı.",
             ),
         ],
     )

@@ -23,7 +23,10 @@ repository = WorkspaceRepository()
 
 @router.get("/workspace", response_model=WorkspaceResponse)
 async def workspace() -> WorkspaceResponse:
-    return get_workspace()
+    try:
+        return get_workspace(repository)
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
 @router.get("/status", response_model=ProductStatusResponse)

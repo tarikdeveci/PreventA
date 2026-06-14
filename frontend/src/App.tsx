@@ -32,14 +32,16 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  ApiError,
   addLopaLayer,
   createHazopRow,
   createNode,
   createStudy,
   deleteHazopRow,
   deleteLopaLayer,
+  fetchDeviationAssist,
   fetchLopaLayers,
   fetchNodes,
   fetchProductStatus,
@@ -49,8 +51,7 @@ import {
   updateHazopRow,
 } from "./api";
 import {
-  fallbackStatus,
-  fallbackStudy,
+  emptyStudy,
   type HazopRow,
   type LopaLayer,
   type ProductStatus,
@@ -58,6 +59,7 @@ import {
   type Suggestion,
   type WorkspaceNode,
   type WorkspaceStudy,
+  unavailableStatus,
 } from "./data";
 
 type WorkspaceTab = "HAZOP" | "LOPA" | "Risk matrisi" | "Kaynaklar" | "Ürün durumu";
@@ -74,23 +76,6 @@ function workspaceTabs(rowCount: number, lopaCount: number): { label: WorkspaceT
 
 function RiskBadge({ level }: { level: HazopRow["risk"] }) {
   return <span className={`risk-badge risk-${level.toLocaleLowerCase("tr")}`}>{level}</span>;
-}
-
-function StatusBadge({ status }: { status: HazopRow["status"] }) {
-  const icon =
-    status === "İncelendi" ? (
-      <CheckCircle2 size={13} />
-    ) : status === "Eksik" ? (
-      <AlertTriangle size={13} />
-    ) : (
-      <Clock3 size={13} />
-    );
-  return (
-    <span className={`status-badge status-${status.toLocaleLowerCase("tr")}`}>
-      {icon}
-      {status}
-    </span>
-  );
 }
 
 type RailSection = "studies" | "library" | "reports" | "history";
@@ -273,7 +258,10 @@ function StudyNavigator({
             <span>Çalışma ilerlemesi</span>
             <strong>%{study.progress}</strong>
           </div>
-          <div className="progress-track" aria-label="Çalışma ilerlemesi yüzde 62">
+          <div
+            className="progress-track"
+            aria-label={`Çalışma ilerlemesi yüzde ${study.progress}`}
+          >
             <span style={{ width: `${study.progress}%` }} />
           </div>
           <small>
@@ -319,7 +307,7 @@ function TopBar({
       <div className="top-actions">
         <span className={`api-state ${apiConnected ? "is-connected" : "is-fallback"}`}>
           <Cloud size={14} />
-          {apiConnected ? "API bağlı" : "Fallback veri"}
+          {apiConnected ? "API bağlı" : "API bağlantısı yok"}
         </span>
         <span className="save-state">
           <Check size={14} />
@@ -346,11 +334,13 @@ function WorksheetToolbar({
   onDeleteRow,
   evidenceOpen,
   onToggleEvidence,
+  suggestionCount,
 }: {
   onAddRow: () => void;
   onDeleteRow: () => void;
   evidenceOpen: boolean;
   onToggleEvidence: () => void;
+  suggestionCount: number;
 }) {
   return (
     <div className="worksheet-toolbar">
@@ -386,7 +376,7 @@ function WorksheetToolbar({
         >
           <Sparkles size={16} />
           Kaynaklı öneriler
-          <span>3</span>
+          <span>{suggestionCount}</span>
         </button>
       </div>
     </div>
@@ -523,12 +513,20 @@ function EvidencePanel({
   open,
   onClose,
   onApply,
+  onRequest,
+  selectedRow,
   suggestions,
+  state,
+  error,
 }: {
   open: boolean;
   onClose: () => void;
   onApply: (suggestionId: string) => void;
+  onRequest: () => void;
+  selectedRow: HazopRow | undefined;
   suggestions: Suggestion[];
+  state: "idle" | "loading" | "ready" | "error";
+  error: string | null;
 }) {
   return (
     <aside className={`evidence-panel ${open ? "is-open" : ""}`} aria-label="Kaynaklı öneriler">
@@ -538,7 +536,7 @@ function EvidencePanel({
             <Sparkles size={18} />
             <h2>Kaynaklı öneriler</h2>
           </div>
-          <p>Seçili satır: Akış yok</p>
+          <p>Seçili satır: {selectedRow?.deviation || "Sapma seçilmedi"}</p>
         </div>
         <button className="icon-button" onClick={onClose} aria-label="Öneri panelini kapat">
           <PanelRightClose size={19} />
@@ -547,10 +545,38 @@ function EvidencePanel({
 
       <div className="grounding-note">
         <ShieldCheck size={17} />
-        <span>Yalnızca erişilebilir çalışma ve standart kaynakları kullanıldı.</span>
+        <span>Her aday yalnızca erişilebilir çalışma ve standart kaynaklarına dayanır.</span>
       </div>
 
       <div className="suggestion-list">
+        {state === "idle" && (
+          <div className="functional-empty">
+            <Sparkles size={26} />
+            <strong>Seçili sapma için kaynaklı aday üretin</strong>
+            <p>İstek ekipman, tasarım niyeti, kılavuz kelime ve mevcut önlemleri kullanır.</p>
+            <button className="primary-button" onClick={onRequest} disabled={!selectedRow}>
+              Önerileri getir
+            </button>
+          </div>
+        )}
+        {state === "loading" && (
+          <div className="table-loading">Kaynaklar taranıyor ve atıflar doğrulanıyor...</div>
+        )}
+        {state === "error" && (
+          <div className="functional-empty">
+            <AlertTriangle size={26} />
+            <strong>Kaynaklı öneri üretilemedi</strong>
+            <p>{error}</p>
+            <button className="secondary-button" onClick={onRequest}>Tekrar dene</button>
+          </div>
+        )}
+        {state === "ready" && suggestions.length === 0 && (
+          <div className="functional-empty">
+            <ShieldCheck size={26} />
+            <strong>Yeterli kaynak bulunamadı</strong>
+            <p>Atıfsız içerik gösterilmedi. Corpus kapsamını genişletip yeniden deneyin.</p>
+          </div>
+        )}
         {suggestions.map((suggestion) => (
           <article className="suggestion-item" key={suggestion.id}>
             <div className="suggestion-meta">
@@ -560,14 +586,20 @@ function EvidencePanel({
               <span className="confidence">{suggestion.confidence} eşleşme</span>
             </div>
             <p>{suggestion.text}</p>
-            <button className="citation-button" title={`${suggestion.source} · ${suggestion.section}`}>
-              <FileClock size={14} />
-              <span>
-                <strong>{suggestion.source}</strong>
-                {suggestion.section}
-              </span>
-              <ChevronRight size={14} />
-            </button>
+            {suggestion.citations.map((citation) => (
+              <button
+                className="citation-button"
+                key={citation.chunk_id}
+                title={`${citation.source_ref} · ${citation.section_ref ?? "Bölüm belirtilmedi"} · ${citation.excerpt}`}
+              >
+                <FileClock size={14} />
+                <span>
+                  <strong>{citation.source_ref}</strong>
+                  {citation.section_ref ?? "Bölüm belirtilmedi"}
+                </span>
+                <ChevronRight size={14} />
+              </button>
+            ))}
             <div className="suggestion-actions">
               <button className="text-button">Kaynağı aç</button>
               <button className="apply-button" onClick={() => onApply(suggestion.id)}>
@@ -595,18 +627,19 @@ function LopaWorkspace({ selectedRow }: { selectedRow: HazopRow | undefined }) {
   const [loading, setLoading] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [form, setForm] = useState({ description: "", pfd: "1.0e-2", is_valid: true, note: "" });
+  const selectedRowId = selectedRow?.id;
 
   useEffect(() => {
-    if (!selectedRow) {
+    if (!selectedRowId) {
       setLayers([]);
       return;
     }
     setLoading(true);
-    fetchLopaLayers(selectedRow.id)
+    fetchLopaLayers(selectedRowId)
       .then(setLayers)
       .catch(() => setLayers([]))
       .finally(() => setLoading(false));
-  }, [selectedRow?.id]);
+  }, [selectedRowId]);
 
   const handleAdd = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -732,7 +765,7 @@ function LopaWorkspace({ selectedRow }: { selectedRow: HazopRow | undefined }) {
   );
 }
 function RiskMatrix() {
-  const labels = ["Çok düşük", "Düşük", "Olası", "Yüksek", "Çok yüksek"];
+  const riskZone = { low: "Düşük", medium: "Orta", high: "Yüksek", critical: "Kritik" } as const;
   return (
     <section className="matrix-workspace">
       <div className="section-heading">
@@ -749,14 +782,15 @@ function RiskMatrix() {
             [1, 2, 3, 4, 5].map((severity) => {
               const score = likelihood * severity;
               const level = score >= 12 ? "critical" : score >= 8 ? "high" : score >= 4 ? "medium" : "low";
+              const zone = riskZone[level];
               return (
                 <button
                   key={`${likelihood}-${severity}`}
                   className={`matrix-cell matrix-${level}`}
-                  aria-label={`Olasılık ${likelihood}, şiddet ${severity}, skor ${score}`}
+                  aria-label={`Olasılık ${likelihood}, şiddet ${severity}, skor ${score}, risk ${zone}`}
                 >
                   <strong>{score}</strong>
-                  <span>{labels[Math.min(4, Math.floor((score - 1) / 5))]}</span>
+                  <span>{zone}</span>
                 </button>
               );
             }),
@@ -1146,12 +1180,15 @@ function WorkspaceApp() {
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("HAZOP");
   const [railSection, setRailSection] = useState<RailSection>("studies");
   const [rows, setRows] = useState<HazopRow[]>([]);
-  const [lopaLayerCount, setLopaLayerCount] = useState(0);
+  const lopaLayerCount = 0;
   const [workspaceNodes, setWorkspaceNodes] = useState<WorkspaceNode[]>([]);
-  const [study, setStudy] = useState(fallbackStudy);
+  const [study, setStudy] = useState(emptyStudy);
   const [studyOptions, setStudyOptions] = useState<StudyListItem[]>([]);
-  const [workspaceSuggestions] = useState<Suggestion[]>([]);
-  const [productStatus, setProductStatus] = useState(fallbackStatus);
+  const [workspaceSuggestions, setWorkspaceSuggestions] = useState<Suggestion[]>([]);
+  const [evidenceState, setEvidenceState] =
+    useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [evidenceError, setEvidenceError] = useState<string | null>(null);
+  const [productStatus, setProductStatus] = useState(unavailableStatus);
   const [apiConnected, setApiConnected] = useState(false);
   const [activeNodeId, setActiveNodeId] = useState("");
   const [studyDialogOpen, setStudyDialogOpen] = useState(false);
@@ -1167,6 +1204,12 @@ function WorkspaceApp() {
     () => rows.find((row) => row.id === selectedRow) ?? rows[0],
     [rows, selectedRow],
   );
+
+  useEffect(() => {
+    setWorkspaceSuggestions([]);
+    setEvidenceState("idle");
+    setEvidenceError(null);
+  }, [activeNodeId, selectedRow]);
   const activeNode = useMemo(
     () =>
       workspaceNodes.find((node) => node.id === activeNodeId) ??
@@ -1223,7 +1266,7 @@ function WorkspaceApp() {
       .catch(() => {
         if (!active) return;
         setApiConnected(false);
-        setProductStatus(fallbackStatus);
+        setProductStatus(unavailableStatus);
       });
     return () => {
       active = false;
@@ -1369,6 +1412,59 @@ function WorkspaceApp() {
     notify(`${suggestion.kind} önerisi ${selected.id}. satır taslağına eklendi.`);
   };
 
+  const requestSuggestions = async () => {
+    if (!selected || !activeNode.id) {
+      setEvidenceState("error");
+      setEvidenceError("Öneri üretmek için bir node ve HAZOP satırı seçin.");
+      return;
+    }
+
+    setEvidenceState("loading");
+    setEvidenceError(null);
+    try {
+      const response = await fetchDeviationAssist({
+        study_id: study.id,
+        node_id: activeNode.id,
+        equipment_type: activeNode.equipment_type,
+        design_intent: activeNode.design_intent,
+        parameter: selected.deviation.trim() || selected.guideword,
+        guideword: selected.guideword,
+        deviation: selected.deviation.trim() || `${selected.guideword} sapması`,
+        existing_safeguards: selected.safeguard.trim() ? [selected.safeguard.trim()] : [],
+      });
+      const kindLabel = {
+        cause: "Neden",
+        consequence: "Sonuç",
+        safeguard: "Önlem",
+      } as const;
+      const confidenceLabel = {
+        low: "Düşük",
+        medium: "Orta",
+        high: "Yüksek",
+      } as const;
+      setWorkspaceSuggestions(
+        response.candidates.map((candidate, index) => ({
+          id: `${response.suggestion_id}-${index}`,
+          kind: kindLabel[candidate.kind],
+          text: candidate.text,
+          confidence: confidenceLabel[candidate.confidence],
+          citations: candidate.citations,
+          target: candidate.kind,
+        })),
+      );
+      setEvidenceState("ready");
+      setApiConnected(true);
+    } catch (error) {
+      setWorkspaceSuggestions([]);
+      setEvidenceState("error");
+      setEvidenceError(
+        error instanceof ApiError && error.code === "ungrounded_suggestion"
+          ? "Model yeterli ve doğrulanabilir atıf üretemedi; güvenlik kuralı yanıtı engelledi."
+          : "RAG servisine ulaşılamadı. PostgreSQL, corpus ve Ollama bağlantılarını kontrol edin.",
+      );
+    }
+  };
+
   return (
     <div className="app-shell">
       <AppRail active={railSection} onSelect={setRailSection} />
@@ -1466,6 +1562,7 @@ function WorkspaceApp() {
                 onDeleteRow={removeSelectedRow}
                 evidenceOpen={evidenceOpen}
                 onToggleEvidence={() => setEvidenceOpen((current) => !current)}
+                suggestionCount={workspaceSuggestions.length}
               />
               <div className={`hazop-layout ${evidenceOpen ? "with-evidence" : ""}`}>
                 {loadingRows ? (
@@ -1487,7 +1584,11 @@ function WorkspaceApp() {
                   open={evidenceOpen}
                   onClose={() => setEvidenceOpen(false)}
                   onApply={applySuggestion}
+                  onRequest={requestSuggestions}
+                  selectedRow={selected}
                   suggestions={workspaceSuggestions}
+                  state={evidenceState}
+                  error={evidenceError}
                 />
               </div>
             </>

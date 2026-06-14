@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import pytest
 from preventa.features.workspace.crud_schemas import (
     LopaLayerCreate,
     NodeCreate,
@@ -8,9 +9,12 @@ from preventa.features.workspace.crud_schemas import (
     StudyCreate,
 )
 from preventa.features.workspace.repository import WorkspaceRepository
+from preventa.features.workspace.store import connection, initialize_store
 
 
-def test_workspace_crud_and_lopa(monkeypatch, tmp_path: Path) -> None:
+def test_workspace_crud_and_lopa(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     monkeypatch.setenv("PREVENTA_DB_PATH", str(tmp_path / "preventa.db"))
     repository = WorkspaceRepository()
 
@@ -59,3 +63,29 @@ def test_workspace_crud_and_lopa(monkeypatch, tmp_path: Path) -> None:
     assert repository.delete_row(row["id"]) is True
     assert repository.get_row(row["id"]) is None
 
+
+def test_seed_is_idempotent_and_links_rows_to_multiple_nodes(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setenv("PREVENTA_DB_PATH", str(tmp_path / "preventa.db"))
+
+    initialize_store()
+    initialize_store()
+
+    with connection() as database:
+        study_count = database.execute("SELECT COUNT(*) FROM mvp_studies").fetchone()[0]
+        row_count = database.execute("SELECT COUNT(*) FROM mvp_rows").fetchone()[0]
+        populated_nodes = database.execute(
+            """
+            SELECT COUNT(DISTINCT node_id)
+            FROM mvp_rows
+            """
+        ).fetchone()[0]
+        lopa_count = database.execute(
+            "SELECT COUNT(*) FROM mvp_lopa_layers"
+        ).fetchone()[0]
+
+    assert study_count == 3
+    assert row_count == 15
+    assert populated_nodes == 5
+    assert lopa_count > 0
