@@ -1,4 +1,5 @@
 import type {
+  AuthUser,
   DeviationAssistRequest,
   DeviationAssistResponse,
   HazopRow,
@@ -7,6 +8,7 @@ import type {
   StudyListItem,
   WorkspaceNode,
   WorkspaceResponse,
+  SessionResponse,
 } from "./data";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
@@ -43,6 +45,7 @@ async function apiError(response: Response): Promise<ApiError> {
 
 async function getJson<T>(path: string): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
+    credentials: "include",
     headers: { Accept: "application/json" },
   });
   if (!response.ok) {
@@ -58,6 +61,7 @@ async function sendJson<T>(
 ): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     method,
+    credentials: "include",
     headers: payload
       ? { Accept: "application/json", "Content-Type": "application/json" }
       : { Accept: "application/json" },
@@ -70,6 +74,25 @@ async function sendJson<T>(
     return undefined as T;
   }
   return response.json() as Promise<T>;
+}
+
+export function fetchSession(): Promise<SessionResponse> {
+  return getJson("/api/v1/auth/me");
+}
+
+export function login(
+  email: string,
+  password: string,
+): Promise<SessionResponse> {
+  return sendJson("/api/v1/auth/login", "POST", { email, password });
+}
+
+export function logout(): Promise<void> {
+  return sendJson("/api/v1/auth/logout", "POST");
+}
+
+export function fetchUsers(): Promise<AuthUser[]> {
+  return getJson("/api/v1/auth/users");
 }
 
 export function fetchWorkspace(): Promise<WorkspaceResponse> {

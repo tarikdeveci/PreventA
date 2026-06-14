@@ -1,8 +1,13 @@
 from io import BytesIO
 
-from fastapi import APIRouter, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.responses import StreamingResponse
 
+from preventa.api.auth_dependencies import (
+    DeleteUserDep,
+    WriteUserDep,
+    require_permission,
+)
 from preventa.features.workspace.crud_schemas import (
     LopaLayerCreate,
     NodeCreate,
@@ -17,7 +22,9 @@ from preventa.features.workspace.repository import WorkspaceRepository
 from preventa.features.workspace.schemas import ProductStatusResponse, WorkspaceResponse
 from preventa.features.workspace.service import get_product_status, get_workspace
 
-router = APIRouter()
+router = APIRouter(
+    dependencies=[Depends(require_permission("workspace:read"))],
+)
 repository = WorkspaceRepository()
 
 
@@ -40,12 +47,15 @@ async def list_studies() -> list[dict[str, object]]:
 
 
 @router.post("/studies", response_model=StudyItem, status_code=status.HTTP_201_CREATED)
-async def create_study(payload: StudyCreate) -> dict[str, object]:
+async def create_study(
+    payload: StudyCreate,
+    _: WriteUserDep,
+) -> dict[str, object]:
     return repository.create_study(payload)
 
 
 @router.delete("/studies/{study_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_study(study_id: str) -> Response:
+async def delete_study(study_id: str, _: DeleteUserDep) -> Response:
     if not repository.delete_study(study_id):
         raise HTTPException(status_code=404, detail="Study not found")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -57,14 +67,22 @@ async def list_nodes(study_id: str) -> list[dict[str, object]]:
 
 
 @router.post("/studies/{study_id}/nodes", status_code=status.HTTP_201_CREATED)
-async def create_node(study_id: str, payload: NodeCreate) -> dict[str, object]:
+async def create_node(
+    study_id: str,
+    payload: NodeCreate,
+    _: WriteUserDep,
+) -> dict[str, object]:
     if repository.get_study(study_id) is None:
         raise HTTPException(status_code=404, detail="Study not found")
     return repository.create_node(study_id, payload)
 
 
 @router.patch("/nodes/{node_id}")
-async def update_node(node_id: str, payload: NodeUpdate) -> dict[str, object]:
+async def update_node(
+    node_id: str,
+    payload: NodeUpdate,
+    _: WriteUserDep,
+) -> dict[str, object]:
     node = repository.update_node(node_id, payload)
     if node is None:
         raise HTTPException(status_code=404, detail="Node not found")
@@ -72,7 +90,7 @@ async def update_node(node_id: str, payload: NodeUpdate) -> dict[str, object]:
 
 
 @router.delete("/nodes/{node_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_node(node_id: str) -> Response:
+async def delete_node(node_id: str, _: DeleteUserDep) -> Response:
     if not repository.delete_node(node_id):
         raise HTTPException(status_code=404, detail="Node not found")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -84,14 +102,22 @@ async def list_rows(node_id: str) -> list[dict[str, object]]:
 
 
 @router.post("/nodes/{node_id}/rows", status_code=status.HTTP_201_CREATED)
-async def create_row(node_id: str, payload: RowCreate) -> dict[str, object]:
+async def create_row(
+    node_id: str,
+    payload: RowCreate,
+    _: WriteUserDep,
+) -> dict[str, object]:
     if repository.get_node(node_id) is None:
         raise HTTPException(status_code=404, detail="Node not found")
     return repository.create_row(node_id, payload)
 
 
 @router.patch("/rows/{row_id}")
-async def update_row(row_id: int, payload: RowUpdate) -> dict[str, object]:
+async def update_row(
+    row_id: int,
+    payload: RowUpdate,
+    _: WriteUserDep,
+) -> dict[str, object]:
     row = repository.update_row(row_id, payload)
     if row is None:
         raise HTTPException(status_code=404, detail="Row not found")
@@ -99,7 +125,7 @@ async def update_row(row_id: int, payload: RowUpdate) -> dict[str, object]:
 
 
 @router.delete("/rows/{row_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_row(row_id: int) -> Response:
+async def delete_row(row_id: int, _: DeleteUserDep) -> Response:
     if not repository.delete_row(row_id):
         raise HTTPException(status_code=404, detail="Row not found")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -111,14 +137,18 @@ async def list_lopa_layers(row_id: int) -> list[dict[str, object]]:
 
 
 @router.post("/rows/{row_id}/lopa", status_code=status.HTTP_201_CREATED)
-async def add_lopa_layer(row_id: int, payload: LopaLayerCreate) -> dict[str, object]:
+async def add_lopa_layer(
+    row_id: int,
+    payload: LopaLayerCreate,
+    _: WriteUserDep,
+) -> dict[str, object]:
     if repository.get_row(row_id) is None:
         raise HTTPException(status_code=404, detail="HAZOP row not found")
     return repository.add_lopa_layer(row_id, payload)
 
 
 @router.delete("/lopa/{layer_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_lopa_layer(layer_id: str) -> Response:
+async def delete_lopa_layer(layer_id: str, _: DeleteUserDep) -> Response:
     if not repository.delete_lopa_layer(layer_id):
         raise HTTPException(status_code=404, detail="LOPA layer not found")
     return Response(status_code=status.HTTP_204_NO_CONTENT)

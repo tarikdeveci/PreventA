@@ -50,9 +50,25 @@ import {
   fetchWorkspace,
   reportUrl,
   updateHazopRow,
+  fetchSession,
+  logout as logoutSession,
 } from "./api";
+import { LoginPage } from "@/components/login-page";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   emptyStudy,
+  type AuthUser,
   type HazopRow,
   type LopaLayer,
   type ProductStatus,
@@ -152,6 +168,7 @@ function StudyNavigator({
   onCreateNode,
   studies,
   onSelectStudy,
+  canWrite,
 }: {
   open: boolean;
   onClose: () => void;
@@ -162,6 +179,7 @@ function StudyNavigator({
   onCreateNode: () => void;
   studies: StudyListItem[];
   onSelectStudy: (studyId: string) => void;
+  canWrite: boolean;
 }) {
   const [query, setQuery] = useState("");
   const filteredNodes = nodes.filter((node) =>
@@ -203,7 +221,12 @@ function StudyNavigator({
         <div className="nav-section">
           <div className="nav-section-title">
             <span>Çalışma yapısı</span>
-            <button className="compact-icon" aria-label="Yeni node ekle" onClick={onCreateNode}>
+            <button
+              className="compact-icon"
+              aria-label="Yeni node ekle"
+              onClick={onCreateNode}
+              disabled={!canWrite}
+            >
               <Plus size={15} />
             </button>
           </div>
@@ -280,13 +303,22 @@ function TopBar({
   activeNode,
   studyTitle,
   apiConnected,
+  user,
+  onLogout,
 }: {
   onOpenNav: () => void;
   onExport: () => void;
   activeNode: WorkspaceNode;
   studyTitle: string;
   apiConnected: boolean;
+  user: AuthUser;
+  onLogout: () => void;
 }) {
+  const roleLabels = {
+    admin: "Yönetici",
+    facilitator: "Fasilitatör",
+    viewer: "Görüntüleyici",
+  } as const;
   return (
     <header className="top-bar">
       <div className="top-context">
@@ -306,25 +338,55 @@ function TopBar({
         </div>
       </div>
       <div className="top-actions">
-        <span className={`api-state ${apiConnected ? "is-connected" : "is-fallback"}`}>
+        <Badge variant={apiConnected ? "secondary" : "outline"} className="api-state">
           <Cloud size={14} />
           {apiConnected ? "API bağlı" : "API bağlantısı yok"}
-        </span>
+        </Badge>
         <span className="save-state">
           <Check size={14} />
           Tüm değişiklikler kaydedildi
         </span>
-        <button className="secondary-button">
+        <Button variant="outline" size="sm">
           <History size={16} />
           Geçmiş
-        </button>
-        <button className="primary-button" onClick={onExport}>
+        </Button>
+        <Button size="sm" onClick={onExport}>
           <Download size={16} />
           Rapor oluştur
-        </button>
-        <button className="icon-button" aria-label="Diğer çalışma işlemleri">
-          <MoreHorizontal size={19} />
-        </button>
+        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="user-menu-trigger">
+              <Avatar>
+                <AvatarFallback>
+                  {user.full_name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
+                </AvatarFallback>
+              </Avatar>
+              <span className="user-menu-copy">
+                <strong>{user.full_name}</strong>
+                <small>{roleLabels[user.role]}</small>
+              </span>
+              <ChevronDown data-icon="inline-end" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="user-dropdown">
+            <DropdownMenuLabel>
+              <strong>{user.full_name}</strong>
+              <span>{user.email}</span>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                <ShieldCheck />
+                Rol: {roleLabels[user.role]}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onLogout}>
+                <X />
+                Oturumu kapat
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
@@ -336,21 +398,29 @@ function WorksheetToolbar({
   evidenceOpen,
   onToggleEvidence,
   suggestionCount,
+  canWrite,
+  canDelete,
 }: {
   onAddRow: () => void;
   onDeleteRow: () => void;
   evidenceOpen: boolean;
   onToggleEvidence: () => void;
   suggestionCount: number;
+  canWrite: boolean;
+  canDelete: boolean;
 }) {
   return (
     <div className="worksheet-toolbar">
       <div className="toolbar-group">
-        <button className="secondary-button compact" onClick={onAddRow}>
+        <button className="secondary-button compact" onClick={onAddRow} disabled={!canWrite}>
           <Plus size={16} />
           Satır ekle
         </button>
-        <button className="secondary-button compact danger-action" onClick={onDeleteRow}>
+        <button
+          className="secondary-button compact danger-action"
+          onClick={onDeleteRow}
+          disabled={!canDelete}
+        >
           <Trash2 size={16} />
           Satırı sil
         </button>
@@ -389,11 +459,13 @@ function HazopTable({
   selectedRow,
   onSelectRow,
   onUpdateRow,
+  readOnly,
 }: {
   rows: HazopRow[];
   selectedRow: number;
   onSelectRow: (id: number) => void;
   onUpdateRow: (id: number, field: keyof HazopRow, value: string) => void;
+  readOnly: boolean;
 }) {
   return (
     <div className="table-frame">
@@ -432,6 +504,7 @@ function HazopTable({
                 <select
                   aria-label={`${index + 1}. satır kılavuz kelimesi`}
                   value={row.guideword}
+                  disabled={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "guideword", event.target.value)}
                 >
                   <option>Yok</option>
@@ -445,6 +518,7 @@ function HazopTable({
                 <textarea
                   aria-label={`${index + 1}. satır sapması`}
                   value={row.deviation}
+                  readOnly={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "deviation", event.target.value)}
                 />
               </td>
@@ -452,6 +526,7 @@ function HazopTable({
                 <textarea
                   aria-label={`${index + 1}. satır nedeni`}
                   value={row.cause}
+                  readOnly={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "cause", event.target.value)}
                 />
               </td>
@@ -459,6 +534,7 @@ function HazopTable({
                 <textarea
                   aria-label={`${index + 1}. satır sonucu`}
                   value={row.consequence}
+                  readOnly={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "consequence", event.target.value)}
                 />
               </td>
@@ -466,6 +542,7 @@ function HazopTable({
                 <textarea
                   aria-label={`${index + 1}. satır mevcut önlemleri`}
                   value={row.safeguard}
+                  readOnly={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "safeguard", event.target.value)}
                 />
               </td>
@@ -473,6 +550,7 @@ function HazopTable({
                 <select
                   aria-label={`${index + 1}. satır şiddet`}
                   value={row.severity}
+                  disabled={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "severity", event.target.value)}
                 >
                   {[1, 2, 3, 4, 5].map((v) => <option key={v} value={v}>{v}</option>)}
@@ -482,6 +560,7 @@ function HazopTable({
                 <select
                   aria-label={`${index + 1}. satır olasılık`}
                   value={row.likelihood}
+                  disabled={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "likelihood", event.target.value)}
                 >
                   {[1, 2, 3, 4, 5].map((v) => <option key={v} value={v}>{v}</option>)}
@@ -494,6 +573,7 @@ function HazopTable({
                 <select
                   aria-label={`${index + 1}. satır inceleme durumu`}
                   value={row.status}
+                  disabled={readOnly}
                   className={`status-select status-${row.status.toLocaleLowerCase("tr")}`}
                   onChange={(event) => onUpdateRow(row.id, "status", event.target.value)}
                 >
@@ -519,6 +599,7 @@ function EvidencePanel({
   suggestions,
   state,
   error,
+  canRequest,
 }: {
   open: boolean;
   onClose: () => void;
@@ -528,6 +609,7 @@ function EvidencePanel({
   suggestions: Suggestion[];
   state: "idle" | "loading" | "ready" | "error";
   error: string | null;
+  canRequest: boolean;
 }) {
   return (
     <aside className={`evidence-panel ${open ? "is-open" : ""}`} aria-label="Kaynaklı öneriler">
@@ -555,7 +637,11 @@ function EvidencePanel({
             <Sparkles size={26} />
             <strong>Seçili sapma için kaynaklı aday üretin</strong>
             <p>İstek ekipman, tasarım niyeti, kılavuz kelime ve mevcut önlemleri kullanır.</p>
-            <button className="primary-button" onClick={onRequest} disabled={!selectedRow}>
+            <button
+              className="primary-button"
+              onClick={onRequest}
+              disabled={!selectedRow || !canRequest}
+            >
               Önerileri getir
             </button>
           </div>
@@ -568,7 +654,9 @@ function EvidencePanel({
             <AlertTriangle size={26} />
             <strong>Kaynaklı öneri üretilemedi</strong>
             <p>{error}</p>
-            <button className="secondary-button" onClick={onRequest}>Tekrar dene</button>
+            <button className="secondary-button" onClick={onRequest} disabled={!canRequest}>
+              Tekrar dene
+            </button>
           </div>
         )}
         {state === "ready" && suggestions.length === 0 && (
@@ -623,7 +711,13 @@ function EvidencePanel({
   );
 }
 
-function LopaWorkspace({ selectedRow }: { selectedRow: HazopRow | undefined }) {
+function LopaWorkspace({
+  selectedRow,
+  readOnly,
+}: {
+  selectedRow: HazopRow | undefined;
+  readOnly: boolean;
+}) {
   const [layers, setLayers] = useState<LopaLayer[]>([]);
   const [loading, setLoading] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
@@ -697,7 +791,11 @@ function LopaWorkspace({ selectedRow }: { selectedRow: HazopRow | undefined }) {
               : "HAZOP sekmesinden bir satır seçin."}
           </p>
         </div>
-        <button className="secondary-button" onClick={() => setAddOpen(true)} disabled={!selectedRow}>
+        <button
+          className="secondary-button"
+          onClick={() => setAddOpen(true)}
+          disabled={!selectedRow || readOnly}
+        >
           <Plus size={16} />
           IPL ekle
         </button>
@@ -1177,7 +1275,13 @@ function CreateNodeDialog({
   );
 }
 
-function WorkspaceApp() {
+function WorkspaceApp({
+  user,
+  onLogout,
+}: {
+  user: AuthUser;
+  onLogout: () => void;
+}) {
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("HAZOP");
   const [railSection, setRailSection] = useState<RailSection>("studies");
   const [rows, setRows] = useState<HazopRow[]>([]);
@@ -1200,6 +1304,9 @@ function WorkspaceApp() {
   const [navOpen, setNavOpen] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const saveTimers = useRef<Record<string, number>>({});
+  const canWrite = user.permissions.includes("workspace:write");
+  const canDelete = user.permissions.includes("workspace:delete");
+  const canUseRag = user.permissions.includes("rag:use");
 
   const selected = useMemo(
     () => rows.find((row) => row.id === selectedRow) ?? rows[0],
@@ -1456,6 +1563,7 @@ function WorkspaceApp() {
         onCreateNode={() => setNodeDialogOpen(true)}
         studies={studyOptions}
         onSelectStudy={selectStudy}
+        canWrite={canWrite}
       />
       <div className="workspace-shell">
         <TopBar
@@ -1466,6 +1574,8 @@ function WorkspaceApp() {
           activeNode={activeNode}
           studyTitle={study.title}
           apiConnected={apiConnected}
+          user={user}
+          onLogout={onLogout}
         />
 
         <main id="main-content" className="main-workspace">
@@ -1541,6 +1651,8 @@ function WorkspaceApp() {
                 evidenceOpen={evidenceOpen}
                 onToggleEvidence={() => setEvidenceOpen((current) => !current)}
                 suggestionCount={workspaceSuggestions.length}
+                canWrite={canWrite}
+                canDelete={canDelete}
               />
               <div className={`hazop-layout ${evidenceOpen ? "with-evidence" : ""}`}>
                 {loadingRows ? (
@@ -1557,6 +1669,7 @@ function WorkspaceApp() {
                   selectedRow={selectedRow}
                   onSelectRow={setSelectedRow}
                   onUpdateRow={updateRow}
+                  readOnly={!canWrite}
                 />}
                 <EvidencePanel
                   open={evidenceOpen}
@@ -1567,11 +1680,14 @@ function WorkspaceApp() {
                   suggestions={workspaceSuggestions}
                   state={evidenceState}
                   error={evidenceError}
+                  canRequest={canUseRag}
                 />
               </div>
             </>
           )}
-          {activeTab === "LOPA" && <LopaWorkspace selectedRow={selected} />}
+          {activeTab === "LOPA" && (
+            <LopaWorkspace selectedRow={selected} readOnly={!canWrite} />
+          )}
           {activeTab === "Risk matrisi" && <RiskMatrix />}
           {activeTab === "Kaynaklar" && <SourcesWorkspace />}
           {activeTab === "Ürün durumu" && <ProductStatusWorkspace status={productStatus} />}
@@ -1635,13 +1751,51 @@ function WorkspaceApp() {
           notify("Node oluşturuldu.");
         }}
       />
-      <button className="floating-create-study" onClick={() => setStudyDialogOpen(true)}>
-        <Plus size={17} /> Yeni çalışma
-      </button>
+      {canWrite && (
+        <button className="floating-create-study" onClick={() => setStudyDialogOpen(true)}>
+          <Plus size={17} /> Yeni çalışma
+        </button>
+      )}
     </div>
   );
 }
 
 export default function App() {
-  return window.location.pathname.startsWith("/app") ? <WorkspaceApp /> : <LandingPage />;
+  const appRoute = window.location.pathname.startsWith("/app");
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [authLoading, setAuthLoading] = useState(appRoute);
+
+  useEffect(() => {
+    if (!appRoute) return;
+    fetchSession()
+      .then((session) => setUser(session.user))
+      .catch(() => setUser(null))
+      .finally(() => setAuthLoading(false));
+  }, [appRoute]);
+
+  if (!appRoute) return <LandingPage />;
+  if (authLoading) {
+    return (
+      <main className="auth-loading">
+        <ShieldCheck />
+        <strong>PreventA hazırlanıyor</strong>
+        <span>Güvenli oturum kontrol ediliyor...</span>
+      </main>
+    );
+  }
+  if (!user) return <LoginPage onLogin={setUser} />;
+
+  return (
+    <WorkspaceApp
+      user={user}
+      onLogout={async () => {
+        setUser(null);
+        try {
+          await logoutSession();
+        } catch {
+          // The local session is closed even if the server is temporarily unreachable.
+        }
+      }}
+    />
+  );
 }

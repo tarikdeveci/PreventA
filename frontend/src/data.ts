@@ -1,5 +1,19 @@
 export type RiskLevel = "Düşük" | "Orta" | "Yüksek" | "Kritik";
 
+export type UserRole = "admin" | "facilitator" | "viewer";
+
+export type AuthUser = {
+  id: string;
+  email: string;
+  full_name: string;
+  role: UserRole;
+  permissions: string[];
+};
+
+export type SessionResponse = {
+  user: AuthUser;
+};
+
 export type LopaLayer = {
   id: string;
   row_id: number;

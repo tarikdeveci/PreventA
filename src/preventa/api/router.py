@@ -3,11 +3,12 @@ import os
 
 from fastapi import APIRouter
 
-from preventa.api.routes import workspace
+from preventa.api.routes import auth, workspace
 
 logger = logging.getLogger(__name__)
 
 api_router = APIRouter()
+api_router.include_router(auth.router, prefix="/auth", tags=["authentication"])
 api_router.include_router(workspace.router, tags=["workspace"])
 
 # RAG routes depend on pgvector which requires a native C extension.
