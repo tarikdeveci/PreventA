@@ -47,6 +47,7 @@ import {
   fetchProductStatus,
   fetchRows,
   fetchStudies,
+  fetchWorkspace,
   reportUrl,
   updateHazopRow,
 } from "./api";
@@ -1228,40 +1229,17 @@ function WorkspaceApp() {
 
   useEffect(() => {
     let active = true;
-    Promise.all([fetchProductStatus(), fetchStudies()])
-      .then(async ([status, studies]) => {
+    Promise.all([fetchProductStatus(), fetchStudies(), fetchWorkspace()])
+      .then(([status, studies, workspace]) => {
         if (!active) return;
         setProductStatus(status);
         setApiConnected(status.api_connected);
         setStudyOptions(studies);
-        const firstStudy = studies[0];
-        if (!firstStudy) {
-          setRows([]);
-          setWorkspaceNodes([]);
-          setActiveNodeId("");
-          return;
-        }
-
-        setStudy({
-          ...firstStudy,
-          progress: 0,
-          reviewed_scenarios: 0,
-          total_scenarios: 0,
-        });
-        const studyNodes = await fetchNodes(firstStudy.id);
-        if (!active) return;
-        setWorkspaceNodes(studyNodes);
-        const firstNode = studyNodes[0];
-        if (!firstNode) {
-          setRows([]);
-          setActiveNodeId("");
-          return;
-        }
-        setActiveNodeId(firstNode.id);
-        const nodeRows = await fetchRows(firstNode.id);
-        if (!active) return;
-        setRows(nodeRows);
-        setSelectedRow(nodeRows[0]?.id ?? 0);
+        setStudy(workspace.study);
+        setWorkspaceNodes(workspace.nodes);
+        setActiveNodeId(workspace.active_node_id);
+        setRows(workspace.rows);
+        setSelectedRow(workspace.rows[0]?.id ?? 0);
       })
       .catch(() => {
         if (!active) return;
