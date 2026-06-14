@@ -1,4 +1,4 @@
-import { AlertCircle, ArrowRight, Fingerprint, LockKeyhole, ShieldCheck } from "lucide-react";
+import { AlertCircle, ArrowRight, Fingerprint, LockKeyhole } from "lucide-react";
 import { useState } from "react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -32,8 +32,7 @@ export function LoginPage({ onLogin }: { onLogin: (user: AuthUser) => void }) {
     <main className="auth-page">
       <section className="auth-brand-panel">
         <a className="auth-brand" href="/">
-          <span><ShieldCheck /></span>
-          PreventA
+          <img src="/brand/preventa-logo.png" alt="PreventA — Intelligence for HAZOP" />
         </a>
         <div className="auth-brand-copy">
           <Badge variant="secondary">CONTROLLED ENGINEERING SYSTEM</Badge>

@@ -2877,25 +2877,15 @@ kbd {
 }
 
 .landing-brand {
-  color: var(--landing-ink);
-  font-size: 1rem;
-  letter-spacing: -0.025em;
-}
-
-.landing-brand-mark {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  color: #11150f;
-  background: var(--landing-lime);
-  border-radius: 50%;
-  box-shadow: 0 0 34px rgb(223 255 79 / 0.2);
 }
 
-.landing-brand svg {
-  color: inherit;
+.landing-brand img {
+  display: block;
+  width: auto;
+  height: 43px;
+  object-fit: contain;
 }
 
 .landing-nav nav {
@@ -3749,11 +3739,11 @@ kbd {
   z-index: 1;
 }
 
-.auth-brand > span {
-  color: #11150f;
-  background: var(--landing-lime, #dfff4f);
-  border: 0;
-  border-radius: 50%;
+.auth-brand img {
+  display: block;
+  width: auto;
+  height: clamp(50px, 5vw, 68px);
+  object-fit: contain;
 }
 
 .auth-brand-copy h1 {
@@ -4571,8 +4561,15 @@ select:disabled {
 
 .brand-mark {
   color: #10150f;
-  background: #dfff4f;
+  background: #0e1511;
   border-bottom-color: #273129;
+}
+
+.brand-mark img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgb(223 255 79 / 0.18));
 }
 
 .rail-button {

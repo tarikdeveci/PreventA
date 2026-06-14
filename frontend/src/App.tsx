@@ -114,7 +114,7 @@ function AppRail({
   return (
     <aside className="app-rail" aria-label="Main application">
       <button className="brand-mark" aria-label="PreventA home">
-        <ShieldCheck size={25} strokeWidth={2.2} />
+        <img src="/brand/preventa-mark.png" alt="" />
       </button>
       <nav className="rail-nav" aria-label="Application sections">
         <button
@@ -1058,8 +1058,7 @@ function LandingPage() {
     <div className="landing-page">
       <header className="landing-nav">
         <a className="landing-brand" href="/">
-          <span className="landing-brand-mark"><ShieldCheck size={20} /></span>
-          <span>PreventA</span>
+          <img src="/brand/preventa-logo.png" alt="PreventA — Intelligence for HAZOP" />
         </a>
         <nav aria-label="Primary navigation">
           <a href="#platform">Platform</a>
