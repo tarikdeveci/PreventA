@@ -25,19 +25,11 @@ def get_workspace(repository: WorkspaceRepository) -> WorkspaceResponse:
         node_data[0] if node_data else None,
     )
 
-    all_rows = [
-        row
-        for node in node_data
-        for row in repository.list_rows(str(node["id"]))
-    ]
+    all_rows = [row for node in node_data for row in repository.list_rows(str(node["id"]))]
     reviewed_scenarios = sum(row["status"] == "İncelendi" for row in all_rows)
     total_scenarios = len(all_rows)
     progress = round(reviewed_scenarios * 100 / total_scenarios) if total_scenarios else 0
-    active_rows = (
-        repository.list_rows(str(active_node["id"]))
-        if active_node is not None
-        else []
-    )
+    active_rows = repository.list_rows(str(active_node["id"])) if active_node is not None else []
 
     return WorkspaceResponse(
         source="database",
@@ -60,7 +52,7 @@ def get_workspace(repository: WorkspaceRepository) -> WorkspaceResponse:
 def get_product_status() -> ProductStatusResponse:
     return ProductStatusResponse(
         release="MVP beta",
-        stage="Canlı CRUD + RAG istemcisi",
+        stage="Live CRUD + RAG client",
         overall_progress=58,
         api_connected=True,
         persistence="volatile_sqlite",
@@ -69,68 +61,71 @@ def get_product_status() -> ProductStatusResponse:
         modules=[
             DeliveryModule(
                 id="ui",
-                name="Ürün arayüzü",
+                name="Product interface",
                 status="in_progress",
                 progress=78,
                 detail=(
-                    "Canlı CRUD ve kaynaklı öneri paneli bağlı; App.tsx modülerleştirmesi "
-                    "ve responsive doğrulama sürüyor."
+                    "Live CRUD and grounded suggestions are connected; App.tsx "
+                    "modularization and responsive validation remain in progress."
                 ),
             ),
             DeliveryModule(
                 id="api",
-                name="Frontend API bağlantısı",
+                name="Frontend API integration",
                 status="complete",
                 progress=100,
-                detail="Study, node, worksheet, LOPA, rapor ve RAG istemcileri API'ye bağlı.",
+                detail="Study, node, worksheet, LOPA, report and RAG clients are connected.",
             ),
             DeliveryModule(
                 id="database",
-                name="Production kalıcılığı",
+                name="Production persistence",
                 status="in_progress",
                 progress=45,
                 detail=(
-                    "SQLite repository ve gerçek workspace özeti çalışıyor; Vercel için "
-                    "yönetilen PostgreSQL geçişi tamamlanmadı."
+                    "The SQLite repository and live workspace summary are operational; "
+                    "managed PostgreSQL migration for Vercel is not complete."
                 ),
             ),
             DeliveryModule(
                 id="rag",
-                name="Kaynaklı RAG önerileri",
+                name="Grounded RAG suggestions",
                 status="in_progress",
                 progress=55,
                 detail=(
-                    "UI sözleşmesi, citation gösterimi ve guardrail hataları bağlı; canlı "
-                    "Ollama, corpus ingestion ve uçtan uca smoke test eksik."
+                    "UI contracts, citation display and guardrail errors are connected; "
+                    "live Ollama, corpus ingestion and end-to-end smoke tests remain."
                 ),
             ),
             DeliveryModule(
                 id="crud",
-                name="Study ve HAZOP CRUD",
+                name="Study and HAZOP CRUD",
                 status="complete",
                 progress=100,
-                detail="Study, node, worksheet ve LOPA create/update/delete akışları çalışıyor.",
+                detail=(
+                    "Study, node, worksheet and LOPA create/update/delete "
+                    "flows are operational."
+                ),
             ),
             DeliveryModule(
                 id="report",
-                name="DOCX/PDF rapor",
+                name="DOCX/PDF reporting",
                 status="in_progress",
                 progress=55,
-                detail="Canlı DOCX üretiliyor; PDF ve müşteri şablonu henüz tamamlanmadı.",
+                detail="Live DOCX generation works; PDF and client templates remain incomplete.",
             ),
             DeliveryModule(
                 id="import",
-                name="Excel ve geçmiş çalışma import",
+                name="Excel and historical study import",
                 status="planned",
                 progress=0,
-                detail="Veri eşleme ve doğrulama akışı henüz uygulanmadı.",
+                detail="Data mapping and validation have not been implemented.",
             ),
             DeliveryModule(
                 id="pilot",
-                name="Gerçek pilot çalışma",
+                name="Production pilot study",
                 status="planned",
                 progress=0,
-                detail="Gerçek müşteri verisiyle uçtan uca pilot henüz yapılmadı.",
+                detail="An end-to-end pilot with real client data has not been completed.",
             ),
         ],
     )

@@ -2,6 +2,7 @@ import {
   Activity,
   AlertTriangle,
   Archive,
+  ArrowUpRight,
   BookOpen,
   Bot,
   Check,
@@ -13,18 +14,23 @@ import {
   Cloud,
   Clock3,
   Download,
+  Database,
   FileClock,
   FileOutput,
   Files,
+  Fingerprint,
   Gauge,
   History,
   LayoutGrid,
+  Layers3,
   ListChecks,
+  Lock,
   Menu,
   MoreHorizontal,
   PanelRightClose,
   Plus,
   Search,
+  ScanLine,
   Settings,
   ShieldCheck,
   Sparkles,
@@ -79,20 +85,21 @@ import {
   unavailableStatus,
 } from "./data";
 
-type WorkspaceTab = "HAZOP" | "LOPA" | "Risk matrisi" | "Kaynaklar" | "Ürün durumu";
+type WorkspaceTab = "HAZOP" | "LOPA" | "Risk matrix" | "Sources" | "Product status";
 
 function workspaceTabs(rowCount: number, lopaCount: number): { label: WorkspaceTab; count?: number }[] {
   return [
     { label: "HAZOP", count: rowCount || undefined },
     { label: "LOPA", count: lopaCount || undefined },
-    { label: "Risk matrisi" },
-    { label: "Kaynaklar" },
-    { label: "Ürün durumu" },
+    { label: "Risk matrix" },
+    { label: "Sources" },
+    { label: "Product status" },
   ];
 }
 
 function RiskBadge({ level }: { level: HazopRow["risk"] }) {
-  return <span className={`risk-badge risk-${level.toLocaleLowerCase("tr")}`}>{level}</span>;
+  const labels = { Düşük: "Low", Orta: "Medium", Yüksek: "High", Kritik: "Critical" };
+  return <span className={`risk-badge risk-${level.toLocaleLowerCase("tr")}`}>{labels[level]}</span>;
 }
 
 type RailSection = "studies" | "library" | "reports" | "history";
@@ -105,23 +112,23 @@ function AppRail({
   onSelect: (section: RailSection) => void;
 }) {
   return (
-    <aside className="app-rail" aria-label="Ana uygulama">
-      <button className="brand-mark" aria-label="PreventA ana sayfa">
+    <aside className="app-rail" aria-label="Main application">
+      <button className="brand-mark" aria-label="PreventA home">
         <ShieldCheck size={25} strokeWidth={2.2} />
       </button>
-      <nav className="rail-nav" aria-label="Uygulama bölümleri">
+      <nav className="rail-nav" aria-label="Application sections">
         <button
           className={`rail-button ${active === "studies" ? "is-active" : ""}`}
-          aria-label="Çalışmalar"
-          title="Çalışmalar"
+          aria-label="Studies"
+          title="Studies"
           onClick={() => onSelect("studies")}
         >
           <Files size={20} />
         </button>
         <button
           className={`rail-button ${active === "library" ? "is-active" : ""}`}
-          aria-label="Senaryo kütüphanesi"
-          title="Senaryo kütüphanesi"
+          aria-label="Scenario library"
+          title="Scenario library"
           onClick={() => onSelect("library")}
         >
           <BookOpen size={20} />
@@ -136,21 +143,21 @@ function AppRail({
         </button>
         <button
           className={`rail-button ${active === "history" ? "is-active" : ""}`}
-          aria-label="Denetim geçmişi"
-          title="Denetim geçmişi"
+          aria-label="Audit history"
+          title="Audit history"
           onClick={() => onSelect("history")}
         >
           <History size={20} />
         </button>
       </nav>
       <div className="rail-footer">
-        <button className="rail-button" aria-label="Yardım" title="Yardım">
+        <button className="rail-button" aria-label="Help" title="Help">
           <CircleHelp size={20} />
         </button>
-        <button className="rail-button" aria-label="Ayarlar" title="Ayarlar">
+        <button className="rail-button" aria-label="Settings" title="Settings">
           <Settings size={20} />
         </button>
-        <button className="avatar-button" aria-label="Kullanıcı hesabı" title="Kullanıcı">
+        <button className="avatar-button" aria-label="User account" title="User">
           P
         </button>
       </div>
@@ -188,14 +195,14 @@ function StudyNavigator({
 
   return (
     <>
-      {open && <button className="nav-scrim" onClick={onClose} aria-label="Navigasyonu kapat" />}
-      <aside className={`study-nav ${open ? "is-open" : ""}`} aria-label="Çalışma navigasyonu">
+      {open && <button className="nav-scrim" onClick={onClose} aria-label="Close navigation" />}
+      <aside className={`study-nav ${open ? "is-open" : ""}`} aria-label="Study navigation">
         <div className="study-nav-header">
           <div>
-            <span className="context-label">Aktif çalışma</span>
+            <span className="context-label">Active study</span>
             <strong>{study.title}</strong>
           </div>
-          <button className="icon-button mobile-only" onClick={onClose} aria-label="Navigasyonu kapat">
+          <button className="icon-button mobile-only" onClick={onClose} aria-label="Close navigation">
             <X size={18} />
           </button>
         </div>
@@ -203,7 +210,7 @@ function StudyNavigator({
         <div className="study-switcher">
           <span className="study-monogram">RA</span>
           <span>
-            <label className="sr-only" htmlFor="study-selector">Aktif çalışmayı seç</label>
+            <label className="sr-only" htmlFor="study-selector">Select active study</label>
             <select
               id="study-selector"
               value={study.id}
@@ -220,10 +227,10 @@ function StudyNavigator({
 
         <div className="nav-section">
           <div className="nav-section-title">
-            <span>Çalışma yapısı</span>
+            <span>Study structure</span>
             <button
               className="compact-icon"
-              aria-label="Yeni node ekle"
+              aria-label="Add node"
               onClick={onCreateNode}
               disabled={!canWrite}
             >
@@ -232,31 +239,31 @@ function StudyNavigator({
           </div>
           <button className="nav-row">
             <LayoutGrid size={17} />
-            <span>Genel bakış</span>
+            <span>Overview</span>
           </button>
           <button className="nav-row">
             <ClipboardCheck size={17} />
-            <span>Çalışma bilgileri</span>
+            <span>Study information</span>
           </button>
           <button className="nav-row">
             <Gauge size={17} />
-            <span>Risk matrisi</span>
+            <span>Risk matrix</span>
             <span className="nav-meta">5 × 5</span>
           </button>
         </div>
 
         <div className="nav-section nodes-section">
           <div className="nav-section-title">
-            <span>Node'lar</span>
+            <span>Nodes</span>
             <span className="nav-count">{nodes.length}</span>
           </div>
           <label className="node-search">
             <Search size={15} aria-hidden="true" />
-            <span className="sr-only">Node ara</span>
+            <span className="sr-only">Search nodes</span>
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Node ara"
+              placeholder="Search nodes"
             />
           </label>
           <div className="node-list">
@@ -279,17 +286,17 @@ function StudyNavigator({
 
         <div className="study-nav-footer">
           <div className="progress-copy">
-            <span>Çalışma ilerlemesi</span>
+            <span>Study progress</span>
             <strong>%{study.progress}</strong>
           </div>
           <div
             className="progress-track"
-            aria-label={`Çalışma ilerlemesi yüzde ${study.progress}`}
+            aria-label={`Study progress ${study.progress} percent`}
           >
             <span style={{ width: `${study.progress}%` }} />
           </div>
           <small>
-            {study.reviewed_scenarios} / {study.total_scenarios} senaryo incelendi
+            {study.reviewed_scenarios} / {study.total_scenarios} scenarios reviewed
           </small>
         </div>
       </aside>
@@ -315,19 +322,19 @@ function TopBar({
   onLogout: () => void;
 }) {
   const roleLabels = {
-    admin: "Yönetici",
-    facilitator: "Fasilitatör",
-    viewer: "Görüntüleyici",
+    admin: "Administrator",
+    facilitator: "Facilitator",
+    viewer: "Viewer",
   } as const;
   return (
     <header className="top-bar">
       <div className="top-context">
-        <button className="icon-button nav-trigger" onClick={onOpenNav} aria-label="Çalışma navigasyonunu aç">
+        <button className="icon-button nav-trigger" onClick={onOpenNav} aria-label="Open study navigation">
           <Menu size={20} />
         </button>
         <div>
           <div className="breadcrumb">
-            <span>Çalışmalar</span>
+            <span>Studies</span>
             <ChevronRight size={13} />
             <span>{studyTitle}</span>
           </div>
@@ -340,19 +347,19 @@ function TopBar({
       <div className="top-actions">
         <Badge variant={apiConnected ? "secondary" : "outline"} className="api-state">
           <Cloud size={14} />
-          {apiConnected ? "API bağlı" : "API bağlantısı yok"}
+          {apiConnected ? "API connected" : "API disconnected"}
         </Badge>
         <span className="save-state">
           <Check size={14} />
-          Tüm değişiklikler kaydedildi
+          All changes saved
         </span>
         <Button variant="outline" size="sm">
           <History size={16} />
-          Geçmiş
+          History
         </Button>
         <Button size="sm" onClick={onExport}>
           <Download size={16} />
-          Rapor oluştur
+          Generate report
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -378,11 +385,11 @@ function TopBar({
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <ShieldCheck />
-                Rol: {roleLabels[user.role]}
+                Role: {roleLabels[user.role]}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={onLogout}>
                 <X />
-                Oturumu kapat
+                Sign out
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
@@ -414,7 +421,7 @@ function WorksheetToolbar({
       <div className="toolbar-group">
         <button className="secondary-button compact" onClick={onAddRow} disabled={!canWrite}>
           <Plus size={16} />
-          Satır ekle
+          Add row
         </button>
         <button
           className="secondary-button compact danger-action"
@@ -422,23 +429,23 @@ function WorksheetToolbar({
           disabled={!canDelete}
         >
           <Trash2 size={16} />
-          Satırı sil
+          Delete row
         </button>
-        <button className="secondary-button compact" disabled title="Yakında">
+        <button className="secondary-button compact" disabled title="Coming soon">
           <Archive size={16} />
-          Kütüphaneden ekle
+          Add from library
         </button>
         <span className="toolbar-divider" />
         <label className="table-search">
           <Search size={15} />
-          <span className="sr-only">Çalışma sayfasında ara</span>
-          <input placeholder="Çalışma sayfasında ara" />
+          <span className="sr-only">Search worksheet</span>
+          <input placeholder="Search worksheet" />
         </label>
       </div>
       <div className="toolbar-group">
         <button className="secondary-button compact">
           <Table2 size={16} />
-          Sütunlar
+          Columns
         </button>
         <button
           className={`evidence-toggle ${evidenceOpen ? "is-active" : ""}`}
@@ -446,7 +453,7 @@ function WorksheetToolbar({
           aria-pressed={evidenceOpen}
         >
           <Sparkles size={16} />
-          Kaynaklı öneriler
+          Grounded suggestions
           <span>{suggestionCount}</span>
         </button>
       </div>
@@ -473,15 +480,15 @@ function HazopTable({
         <thead>
           <tr>
             <th className="row-index">#</th>
-            <th className="col-guideword">Kılavuz kelime</th>
-            <th className="col-deviation">Sapma</th>
-            <th className="col-text">Neden</th>
-            <th className="col-text">Sonuç</th>
-            <th className="col-text">Mevcut önlemler</th>
+            <th className="col-guideword">Guideword</th>
+            <th className="col-deviation">Deviation</th>
+            <th className="col-text">Cause</th>
+            <th className="col-text">Consequence</th>
+            <th className="col-text">Existing safeguards</th>
             <th className="col-score">S</th>
             <th className="col-score">O</th>
             <th className="col-risk">Risk</th>
-            <th className="col-status">İnceleme</th>
+            <th className="col-status">Review</th>
           </tr>
         </thead>
         <tbody>
@@ -494,7 +501,7 @@ function HazopTable({
               <td className="row-index">
                 <button
                   className="row-selector"
-                  aria-label={`${index + 1}. satırı seç`}
+                  aria-label={`${index + 1}. select row`}
                   aria-pressed={row.id === selectedRow}
                 >
                   {index + 1}
@@ -502,21 +509,21 @@ function HazopTable({
               </td>
               <td>
                 <select
-                  aria-label={`${index + 1}. satır kılavuz kelimesi`}
+                  aria-label={`${index + 1}. row guideword`}
                   value={row.guideword}
                   disabled={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "guideword", event.target.value)}
                 >
-                  <option>Yok</option>
-                  <option>Fazla</option>
-                  <option>Az</option>
-                  <option>Ters</option>
-                  <option>Başka</option>
+                  <option value="Yok">No</option>
+                  <option value="Fazla">More</option>
+                  <option value="Az">Less</option>
+                  <option value="Ters">Reverse</option>
+                  <option value="Başka">Other</option>
                 </select>
               </td>
               <td>
                 <textarea
-                  aria-label={`${index + 1}. satır sapması`}
+                  aria-label={`${index + 1}. row deviation`}
                   value={row.deviation}
                   readOnly={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "deviation", event.target.value)}
@@ -524,7 +531,7 @@ function HazopTable({
               </td>
               <td>
                 <textarea
-                  aria-label={`${index + 1}. satır nedeni`}
+                  aria-label={`${index + 1}. row cause`}
                   value={row.cause}
                   readOnly={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "cause", event.target.value)}
@@ -532,7 +539,7 @@ function HazopTable({
               </td>
               <td>
                 <textarea
-                  aria-label={`${index + 1}. satır sonucu`}
+                  aria-label={`${index + 1}. row consequence`}
                   value={row.consequence}
                   readOnly={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "consequence", event.target.value)}
@@ -540,7 +547,7 @@ function HazopTable({
               </td>
               <td>
                 <textarea
-                  aria-label={`${index + 1}. satır mevcut önlemleri`}
+                  aria-label={`${index + 1}. row existing safeguards`}
                   value={row.safeguard}
                   readOnly={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "safeguard", event.target.value)}
@@ -548,7 +555,7 @@ function HazopTable({
               </td>
               <td className="score-cell">
                 <select
-                  aria-label={`${index + 1}. satır şiddet`}
+                  aria-label={`${index + 1}. row severity`}
                   value={row.severity}
                   disabled={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "severity", event.target.value)}
@@ -558,7 +565,7 @@ function HazopTable({
               </td>
               <td className="score-cell">
                 <select
-                  aria-label={`${index + 1}. satır olasılık`}
+                  aria-label={`${index + 1}. row likelihood`}
                   value={row.likelihood}
                   disabled={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "likelihood", event.target.value)}
@@ -571,15 +578,15 @@ function HazopTable({
               </td>
               <td>
                 <select
-                  aria-label={`${index + 1}. satır inceleme durumu`}
+                  aria-label={`${index + 1}. row review status`}
                   value={row.status}
                   disabled={readOnly}
                   className={`status-select status-${row.status.toLocaleLowerCase("tr")}`}
                   onChange={(event) => onUpdateRow(row.id, "status", event.target.value)}
                 >
-                  <option>Eksik</option>
-                  <option>Taslak</option>
-                  <option>İncelendi</option>
+                  <option value="Eksik">Incomplete</option>
+                  <option value="Taslak">Draft</option>
+                  <option value="İncelendi">Reviewed</option>
                 </select>
               </td>
             </tr>
@@ -612,88 +619,90 @@ function EvidencePanel({
   canRequest: boolean;
 }) {
   return (
-    <aside className={`evidence-panel ${open ? "is-open" : ""}`} aria-label="Kaynaklı öneriler">
+    <aside className={`evidence-panel ${open ? "is-open" : ""}`} aria-label="Grounded suggestions">
       <div className="evidence-header">
         <div>
           <div className="panel-title">
             <Sparkles size={18} />
-            <h2>Kaynaklı öneriler</h2>
+            <h2>Grounded suggestions</h2>
           </div>
-          <p>Seçili satır: {selectedRow?.deviation || "Sapma seçilmedi"}</p>
+          <p>Selected row: {selectedRow?.deviation || "No deviation selected"}</p>
         </div>
-        <button className="icon-button" onClick={onClose} aria-label="Öneri panelini kapat">
+        <button className="icon-button" onClick={onClose} aria-label="Close suggestion panel">
           <PanelRightClose size={19} />
         </button>
       </div>
 
       <div className="grounding-note">
         <ShieldCheck size={17} />
-        <span>Her aday yalnızca erişilebilir çalışma ve standart kaynaklarına dayanır.</span>
+        <span>Every candidate is grounded only in accessible study and standards evidence.</span>
       </div>
 
       <div className="suggestion-list">
         {state === "idle" && (
           <div className="functional-empty">
             <Sparkles size={26} />
-            <strong>Seçili sapma için kaynaklı aday üretin</strong>
-            <p>İstek ekipman, tasarım niyeti, kılavuz kelime ve mevcut önlemleri kullanır.</p>
+            <strong>Generate grounded candidates for the selected deviation</strong>
+            <p>The request uses equipment, design intent, guideword and existing safeguards.</p>
             <button
               className="primary-button"
               onClick={onRequest}
               disabled={!selectedRow || !canRequest}
             >
-              Önerileri getir
+              Generate suggestions
             </button>
           </div>
         )}
         {state === "loading" && (
-          <div className="table-loading">Kaynaklar taranıyor ve atıflar doğrulanıyor...</div>
+          <div className="table-loading">Searching sources and validating citations...</div>
         )}
         {state === "error" && (
           <div className="functional-empty">
             <AlertTriangle size={26} />
-            <strong>Kaynaklı öneri üretilemedi</strong>
+            <strong>Grounded suggestions could not be generated</strong>
             <p>{error}</p>
             <button className="secondary-button" onClick={onRequest} disabled={!canRequest}>
-              Tekrar dene
+              Try again
             </button>
           </div>
         )}
         {state === "ready" && suggestions.length === 0 && (
           <div className="functional-empty">
             <ShieldCheck size={26} />
-            <strong>Yeterli kaynak bulunamadı</strong>
-            <p>Atıfsız içerik gösterilmedi. Corpus kapsamını genişletip yeniden deneyin.</p>
+            <strong>Insufficient evidence found</strong>
+            <p>Uncited content was withheld. Expand the corpus and try again.</p>
           </div>
         )}
         {suggestions.map((suggestion) => (
           <article className="suggestion-item" key={suggestion.id}>
             <div className="suggestion-meta">
               <span className={`suggestion-kind kind-${suggestion.target}`}>
-                {suggestion.kind}
+                {{ Neden: "Cause", Sonuç: "Consequence", Önlem: "Safeguard" }[suggestion.kind]}
               </span>
-              <span className="confidence">{suggestion.confidence} eşleşme</span>
+              <span className="confidence">
+                {{ Düşük: "Low", Orta: "Medium", Yüksek: "High" }[suggestion.confidence]} match
+              </span>
             </div>
             <p>{suggestion.text}</p>
             {suggestion.citations.map((citation) => (
               <button
                 className="citation-button"
                 key={citation.chunk_id}
-                title={`${citation.source_ref} · ${citation.section_ref ?? "Bölüm belirtilmedi"} · ${citation.excerpt}`}
+                title={`${citation.source_ref} · ${citation.section_ref ?? "Section not specified"} · ${citation.excerpt}`}
               >
                 <FileClock size={14} />
                 <span>
                   <strong>{citation.source_ref}</strong>
-                  {citation.section_ref ?? "Bölüm belirtilmedi"}
+                  {citation.section_ref ?? "Section not specified"}
                 </span>
                 <ChevronRight size={14} />
               </button>
             ))}
             <div className="suggestion-actions">
-              <button className="text-button">Kaynağı aç</button>
+              <button className="text-button">Open source</button>
               <button className="apply-button" onClick={() => onApply(suggestion.id)}>
                 <Plus size={15} />
-                Taslağa ekle
+                Add to draft
               </button>
             </div>
           </article>
@@ -703,8 +712,8 @@ function EvidencePanel({
       <div className="evidence-footer">
         <Bot size={18} />
         <div>
-          <strong>İnsan incelemesi zorunlu</strong>
-          <p>Öneriler karar değil, fasilitatör tarafından değerlendirilecek taslaklardır.</p>
+          <strong>Human review required</strong>
+          <p>Suggestions are reviewable drafts, not engineering decisions.</p>
         </div>
       </div>
     </aside>
@@ -751,7 +760,7 @@ function LopaWorkspace({
   };
 
   const handleDelete = async (layerId: string) => {
-    if (!window.confirm("Bu IPL kaydı silinsin mi?")) return;
+    if (!window.confirm("Delete this IPL record?")) return;
     await deleteLopaLayer(layerId);
     setLayers((current) => current.filter((l) => l.id !== layerId));
   };
@@ -764,31 +773,31 @@ function LopaWorkspace({
     <section className="lopa-workspace">
       <div className="lopa-summary">
         <div>
-          <span>Başlatıcı olay sıklığı</span>
-          <strong className="mono">{initiatorFreq.toExponential(1)} /yıl</strong>
+          <span>Initiating event frequency</span>
+          <strong className="mono">{initiatorFreq.toExponential(1)} /year</strong>
         </div>
         <ChevronRight size={18} />
         <div>
-          <span>Toplam risk azaltma</span>
+          <span>Total risk reduction</span>
           <strong className="mono">{totalReduction.toExponential(1)}</strong>
         </div>
         <ChevronRight size={18} />
         <div>
-          <span>Sonuç sıklığı</span>
-          <strong className="mono">{outcomeFreq.toExponential(1)} /yıl</strong>
+          <span>Outcome frequency</span>
+          <strong className="mono">{outcomeFreq.toExponential(1)} /year</strong>
         </div>
         <div className="sil-result">
-          <span>Seçili senaryo</span>
-          <strong>{selectedRow ? `Satır ${selectedRow.id}` : "—"}</strong>
+          <span>Selected scenario</span>
+          <strong>{selectedRow ? `Row ${selectedRow.id}` : "—"}</strong>
         </div>
       </div>
       <div className="section-heading">
         <div>
-          <h2>Bağımsız koruma katmanları</h2>
+          <h2>Independent protection layers</h2>
           <p>
             {selectedRow
-              ? `Senaryo: ${selectedRow.deviation || "Sapmayı tanımlayın"}`
-              : "HAZOP sekmesinden bir satır seçin."}
+              ? `Scenario: ${selectedRow.deviation || "Define the deviation"}`
+              : "Select a row from the HAZOP tab."}
           </p>
         </div>
         <button
@@ -797,25 +806,25 @@ function LopaWorkspace({
           disabled={!selectedRow || readOnly}
         >
           <Plus size={16} />
-          IPL ekle
+          Add IPL
         </button>
       </div>
 
       {loading ? (
-        <div className="table-loading">IPL katmanları yükleniyor...</div>
+        <div className="table-loading">Loading IPL layers...</div>
       ) : layers.length === 0 ? (
         <div className="table-empty">
           <CheckCircle2 size={28} />
-          <strong>Bu senaryo için henüz IPL kaydı yok</strong>
-          <p>Koruma katmanını eklemek için "IPL ekle" düğmesini kullanın.</p>
+          <strong>No IPL records exist for this scenario</strong>
+          <p>Use Add IPL to register a protection layer.</p>
         </div>
       ) : (
         <div className="ipl-table">
           <div className="ipl-header">
-            <span>Koruma katmanı</span>
-            <span>Tipik PFD</span>
-            <span>IPL uygunluğu</span>
-            <span>Değerlendirme</span>
+            <span>Protection layer</span>
+            <span>Typical PFD</span>
+            <span>IPL validity</span>
+            <span>Assessment</span>
             <span />
           </div>
           {layers.map((layer) => (
@@ -824,12 +833,12 @@ function LopaWorkspace({
               <span className="mono">{layer.pfd.toExponential(1)}</span>
               <span className={layer.is_valid ? "ipl-valid" : "ipl-invalid"}>
                 {layer.is_valid ? <CheckCircle2 size={15} /> : <AlertTriangle size={15} />}
-                {layer.is_valid ? "Uygun" : "Kredi verilmedi"}
+                {layer.is_valid ? "Valid" : "No credit"}
               </span>
               <p>{layer.note}</p>
               <button
                 className="icon-button"
-                aria-label="IPL sil"
+                aria-label="Delete IPL"
                 onClick={() => handleDelete(layer.id)}
               >
                 <Trash2 size={15} />
@@ -843,19 +852,19 @@ function LopaWorkspace({
         <div className="modal-backdrop" role="presentation">
           <form className="form-dialog" onSubmit={handleAdd}>
             <div className="dialog-heading">
-              <div><h2>IPL ekle</h2><p>Bağımsız koruma katmanı bilgilerini girin.</p></div>
-              <button type="button" className="icon-button" onClick={() => setAddOpen(false)} aria-label="Kapat"><X size={18} /></button>
+              <div><h2>Add IPL</h2><p>Enter the independent protection layer details.</p></div>
+              <button type="button" className="icon-button" onClick={() => setAddOpen(false)} aria-label="Close"><X size={18} /></button>
             </div>
-            <label>Tanım<input required value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></label>
-            <label>PFD (örn: 1e-2)<input required value={form.pfd} onChange={(e) => setForm({ ...form, pfd: e.target.value })} /></label>
+            <label>Description<input required value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></label>
+            <label>PFD (e.g. 1e-2)<input required value={form.pfd} onChange={(e) => setForm({ ...form, pfd: e.target.value })} /></label>
             <label>
               <input type="checkbox" checked={form.is_valid} onChange={(e) => setForm({ ...form, is_valid: e.target.checked })} />
-              {" "}IPL uygunluk kriterini karşılıyor
+              {" "}Meets IPL validity criteria
             </label>
-            <label>Not<textarea value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} /></label>
+            <label>Note<textarea value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} /></label>
             <div className="dialog-actions">
-              <button type="button" className="secondary-button" onClick={() => setAddOpen(false)}>Vazgeç</button>
-              <button className="primary-button">Kaydet</button>
+              <button type="button" className="secondary-button" onClick={() => setAddOpen(false)}>Cancel</button>
+              <button className="primary-button">Save</button>
             </div>
           </form>
         </div>
@@ -864,19 +873,19 @@ function LopaWorkspace({
   );
 }
 function RiskMatrix() {
-  const riskZone = { low: "Düşük", medium: "Orta", high: "Yüksek", critical: "Kritik" } as const;
+  const riskZone = { low: "Low", medium: "Medium", high: "High", critical: "Critical" } as const;
   return (
     <section className="matrix-workspace">
       <div className="section-heading">
         <div>
-          <h2>Müşteri risk matrisi</h2>
-          <p>ACWA Power 5 × 5 matrisi · Revizyon 3 · 12 Mayıs 2026</p>
+          <h2>Client risk matrix</h2>
+          <p>ACWA Power 5 × 5 matrix · Revision 3 · May 12, 2026</p>
         </div>
-        <button className="secondary-button">Matrisi düzenle</button>
+        <button className="secondary-button">Edit matrix</button>
       </div>
       <div className="matrix-layout">
-        <div className="matrix-y-label">Olasılık</div>
-        <div className="matrix-grid" role="grid" aria-label="5 çarpı 5 risk matrisi">
+        <div className="matrix-y-label">Likelihood</div>
+        <div className="matrix-grid" role="grid" aria-label="5 by 5 risk matrix">
           {[5, 4, 3, 2, 1].map((likelihood) =>
             [1, 2, 3, 4, 5].map((severity) => {
               const score = likelihood * severity;
@@ -886,7 +895,7 @@ function RiskMatrix() {
                 <button
                   key={`${likelihood}-${severity}`}
                   className={`matrix-cell matrix-${level}`}
-                  aria-label={`Olasılık ${likelihood}, şiddet ${severity}, skor ${score}, risk ${zone}`}
+                  aria-label={`Likelihood ${likelihood}, severity ${severity}, score ${score}, risk ${zone}`}
                 >
                   <strong>{score}</strong>
                   <span>{zone}</span>
@@ -895,7 +904,7 @@ function RiskMatrix() {
             }),
           )}
         </div>
-        <div className="matrix-x-label">Şiddet</div>
+        <div className="matrix-x-label">Severity</div>
       </div>
     </section>
   );
@@ -906,20 +915,20 @@ function SourcesWorkspace() {
     <section className="sources-workspace">
       <div className="section-heading">
         <div>
-          <h2>Çalışma kaynakları</h2>
-          <p>Öneri motorunun bu çalışma için erişebildiği kontrollü bilgi tabanı.</p>
+          <h2>Study sources</h2>
+          <p>The controlled knowledge base available to the suggestion engine for this study.</p>
         </div>
         <button className="secondary-button">
           <Plus size={16} />
-          Kaynak ekle
+          Add source
         </button>
       </div>
       <div className="source-list">
         {[
-          ["IEC 61882:2016", "Standart", "42 bölüm", "12 Haz 2026"],
-          ["IEC 61511-1:2016", "Standart", "67 bölüm", "12 Haz 2026"],
-          ["HAZOP-2024-018 · Amin Ünitesi", "Geçmiş çalışma", "238 senaryo", "08 Haz 2026"],
-          ["HAZOP-2023-041 · Tank Sahası", "Geçmiş çalışma", "184 senaryo", "08 Haz 2026"],
+          ["IEC 61882:2016", "Standard", "42 sections", "Jun 12, 2026"],
+          ["IEC 61511-1:2016", "Standard", "67 sections", "Jun 12, 2026"],
+          ["HAZOP-2024-018 · Amine Unit", "Historical study", "238 scenarios", "Jun 08, 2026"],
+          ["HAZOP-2023-041 · Tank Farm", "Historical study", "184 scenarios", "Jun 08, 2026"],
         ].map(([title, type, count, date]) => (
           <div className="source-row" key={title}>
             <span className="source-icon">
@@ -930,8 +939,8 @@ function SourcesWorkspace() {
               <span>{type}</span>
             </div>
             <span>{count}</span>
-            <span>İndekslendi · {date}</span>
-            <button className="icon-button" aria-label={`${title} işlemleri`}>
+            <span>Indexed · {date}</span>
+            <button className="icon-button" aria-label={`${title} actions`}>
               <MoreHorizontal size={18} />
             </button>
           </div>
@@ -943,9 +952,9 @@ function SourcesWorkspace() {
 
 function ProductStatusWorkspace({ status }: { status: ProductStatus }) {
   const statusCopy = {
-    complete: "Tamamlandı",
-    in_progress: "Devam ediyor",
-    planned: "Planlandı",
+    complete: "Complete",
+    in_progress: "In progress",
+    planned: "Planned",
   } as const;
 
   return (
@@ -955,8 +964,8 @@ function ProductStatusWorkspace({ status }: { status: ProductStatus }) {
           <span className="context-label">{status.release}</span>
           <h2>{status.stage}</h2>
           <p>
-            Arayüz canlı API'ye bağlı. Kalıcı PostgreSQL CRUD, canlı Ollama corpus'u ve
-            rapor üretimi tamamlanmadan ürün pilot kullanıma hazır sayılmayacak.
+            The interface is connected to the live API. Persistent PostgreSQL CRUD,
+            a live Ollama corpus and report generation are required before pilot use.
           </p>
           <div className="delivery-progress-row">
             <div className="delivery-progress-track">
@@ -969,23 +978,23 @@ function ProductStatusWorkspace({ status }: { status: ProductStatus }) {
           <div>
             <dt>API</dt>
             <dd className={status.api_connected ? "fact-ok" : "fact-warn"}>
-              {status.api_connected ? "Bağlı" : "Bağlantı yok"}
+              {status.api_connected ? "Connected" : "Disconnected"}
             </dd>
           </div>
           <div>
-            <dt>Veri kalıcılığı</dt>
+            <dt>Data persistence</dt>
             <dd className={status.persistence === "postgresql" ? "fact-ok" : "fact-warn"}>
               {status.persistence === "postgresql"
                 ? "PostgreSQL"
                 : status.persistence === "volatile_sqlite"
-                  ? "Geçici SQLite"
+                  ? "Temporary SQLite"
                   : "API seed"}
             </dd>
           </div>
           <div>
-            <dt>AI çalışma zamanı</dt>
+            <dt>AI runtime</dt>
             <dd className={status.ai_runtime === "ollama_connected" ? "fact-ok" : "fact-warn"}>
-              {status.ai_runtime === "ollama_connected" ? "Ollama bağlı" : "Sözleşme hazır"}
+              {status.ai_runtime === "ollama_connected" ? "Ollama connected" : "Contract ready"}
             </dd>
           </div>
           <div>
@@ -997,8 +1006,8 @@ function ProductStatusWorkspace({ status }: { status: ProductStatus }) {
 
       <div className="section-heading delivery-heading">
         <div>
-          <h2>Modül teslim durumu</h2>
-          <p>PRD kabul kriterlerine göre mevcut teknik ilerleme.</p>
+          <h2>Module delivery status</h2>
+          <p>Current engineering progress against PRD acceptance criteria.</p>
         </div>
       </div>
       <div className="delivery-list">
@@ -1033,10 +1042,10 @@ function ProductStatusWorkspace({ status }: { status: ProductStatus }) {
       <div className="next-milestone">
         <ListChecks size={20} />
         <div>
-          <strong>Sıradaki gerçek kilometre taşı</strong>
+          <strong>Next material milestone</strong>
           <p>
-            Study, node ve worksheet create/update endpoint'lerini PostgreSQL'e bağlamak;
-            ardından aynı akışla ilk gerçek pilot çalışmayı kaydetmek.
+            Connect study, node and worksheet create/update endpoints to PostgreSQL,
+            then record the first real pilot study through the same workflow.
           </p>
         </div>
       </div>
@@ -1049,131 +1058,205 @@ function LandingPage() {
     <div className="landing-page">
       <header className="landing-nav">
         <a className="landing-brand" href="/">
-          <ShieldCheck size={28} />
+          <span className="landing-brand-mark"><ShieldCheck size={20} /></span>
           <span>PreventA</span>
         </a>
-        <nav aria-label="Landing navigasyonu">
-          <a href="#urun">Ürün</a>
-          <a href="#guvenlik">Veri güvenliği</a>
-          <a href="#akis">İş akışı</a>
+        <nav aria-label="Primary navigation">
+          <a href="#platform">Platform</a>
+          <a href="#assurance">Assurance</a>
+          <a href="#workflow">Workflow</a>
         </nav>
-        <a className="primary-button landing-login" href="/app">
-          Çalışma alanını aç
+        <a className="landing-login" href="/app">
+          Enter workspace <ArrowUpRight size={15} />
         </a>
       </header>
 
       <main>
         <section className="landing-hero">
           <div className="hero-copy">
-            <span className="hero-kicker">HAZOP · LOPA · Kurumsal tehlike hafızası</span>
-            <h1>Proses güvenliği çalışmalarını tekrar kullanılabilir bilgiye dönüştürün.</h1>
+            <div className="hero-kicker">
+              <span className="signal-dot" />
+              Process intelligence for high-consequence operations
+            </div>
+            <h1>
+              Make every hazard study
+              <span> compound into intelligence.</span>
+            </h1>
             <p>
-              PreventA, fasilitatörlerin HAZOP ve LOPA çalışmalarını yapılandırılmış
-              biçimde yürütmesini, geçmiş senaryolardan kaynaklı öneriler almasını ve
-              müşteri raporunu aynı çalışma alanından üretmesini sağlar.
+              PreventA is the operating layer for HAZOP and LOPA teams: structured
+              facilitation, evidence-grounded assistance, controlled decisions and
+              audit-ready deliverables in one system.
             </p>
             <div className="hero-actions">
-              <a className="primary-button landing-cta" href="/app">
-                MVP çalışma alanını aç
-                <ChevronRight size={17} />
+              <a className="hero-primary" href="/app">
+                Launch workspace
+                <ArrowUpRight size={18} />
               </a>
-              <a className="secondary-button landing-cta" href="#akis">
-                İş akışını incele
+              <a className="hero-secondary" href="#platform">
+                Explore the platform
               </a>
             </div>
             <div className="hero-trust">
-              <span><ShieldCheck size={16} /> Yerel veri seçeneği</span>
-              <span><FileClock size={16} /> Kaynak ve değişiklik izi</span>
-              <span><Download size={16} /> DOCX rapor çıktısı</span>
+              <span><Lock size={15} /> Role-controlled</span>
+              <span><Database size={15} /> Deploy on your terms</span>
+              <span><Fingerprint size={15} /> Every decision traceable</span>
             </div>
           </div>
-          <div className="hero-product" aria-label="PreventA ürün önizlemesi">
-            <div className="mini-window-bar">
-              <span />
-              <span />
-              <span />
-              <strong>Ünite 200 HAZOP</strong>
-            </div>
-            <div className="mini-workspace">
-              <div className="mini-sidebar">
-                <span className="mini-node complete">N-01</span>
-                <span className="mini-node active">N-02</span>
-                <span className="mini-node">N-03</span>
-                <span className="mini-node">N-04</span>
-              </div>
-              <div className="mini-table">
-                <div className="mini-table-head">
-                  <span>Sapma</span><span>Neden</span><span>Sonuç</span><span>Risk</span>
+
+          <div className="hero-stage" aria-label="PreventA product intelligence preview">
+            <div className="hero-orbit orbit-one" />
+            <div className="hero-orbit orbit-two" />
+            <div className="hero-system-card">
+              <div className="system-card-head">
+                <div>
+                  <span className="eyebrow">LIVE STUDY / UNIT 200</span>
+                  <strong>Feed Pump P-101</strong>
                 </div>
-                {["Akış yok", "Yüksek akış", "Ters akış", "Düşük akış"].map((item, index) => (
-                  <div className="mini-table-row" key={item}>
-                    <strong>{item}</strong>
-                    <span />
-                    <span />
-                    <em className={`mini-risk risk-${index}`}>{index === 2 ? "Kritik" : "Orta"}</em>
-                  </div>
-                ))}
+                <span className="system-status"><i /> Synced</span>
               </div>
-              <div className="mini-evidence">
-                <strong>Kaynaklı öneriler</strong>
-                <div><Sparkles size={14} /> Çekvalf arızası</div>
-                <div><Sparkles size={14} /> Düşük akış alarmı</div>
-                <div><Sparkles size={14} /> IEC 61882 §6.3</div>
+              <div className="system-metrics">
+                <div><span>Scenarios</span><strong>24</strong><small>+4 this session</small></div>
+                <div><span>Critical</span><strong className="metric-alert">03</strong><small>Review required</small></div>
+                <div><span>Coverage</span><strong>87%</strong><small>Evidence mapped</small></div>
               </div>
+              <div className="system-grid">
+                <div className="risk-radar">
+                  <span className="radar-label">RISK SIGNAL</span>
+                  <div className="radar-core"><ScanLine /><strong>12</strong><small>risk score</small></div>
+                  <span className="radar-node node-a" />
+                  <span className="radar-node node-b" />
+                  <span className="radar-node node-c" />
+                </div>
+                <div className="scenario-stream">
+                  <div className="stream-head"><span>Deviation stream</span><small>4 active</small></div>
+                  {[
+                    ["NO FLOW", "Isolation valve closed", "MEDIUM"],
+                    ["MORE FLOW", "FV-101 failed open", "HIGH"],
+                    ["REVERSE FLOW", "Check valve leakage", "CRITICAL"],
+                  ].map(([deviation, cause, risk]) => (
+                    <div className="stream-row" key={deviation}>
+                      <span className={`stream-signal signal-${risk.toLowerCase()}`} />
+                      <div><strong>{deviation}</strong><small>{cause}</small></div>
+                      <em>{risk}</em>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="floating-card evidence-float">
+              <span><Sparkles size={14} /> EVIDENCE ENGINE</span>
+              <strong>3 grounded safeguards found</strong>
+              <div className="evidence-line"><i /><span>IEC 61882 §6.3</span><b>98%</b></div>
+              <div className="evidence-line"><i /><span>HAZOP-2024-018</span><b>91%</b></div>
+            </div>
+            <div className="floating-card control-float">
+              <ShieldCheck size={18} />
+              <div><strong>Human approval gate</strong><span>AI cannot commit decisions</span></div>
+            </div>
+            <div className="hero-index">
+              <span>01</span>
+              <div />
+              <span>CONTROLLED INTELLIGENCE</span>
             </div>
           </div>
         </section>
 
-        <section className="landing-section" id="urun">
+        <section className="signal-strip">
+          <span>BUILT FOR</span>
+          <div>Process safety teams</div>
+          <div>Engineering consultancies</div>
+          <div>Asset operators</div>
+          <div>Regulated facilities</div>
+        </section>
+
+        <section className="landing-section platform-section" id="platform">
+          <div className="section-number">02 / PLATFORM</div>
           <div className="landing-section-heading">
-            <h2>Toplantı boyunca tek çalışma yüzeyi</h2>
+            <h2>One operational surface.<br />No fragmented decisions.</h2>
             <p>
-              Study yapısı, worksheet, risk değerlendirmesi, LOPA ve kanıtlar aynı
-              bağlamda kalır.
+              Facilitation, risk evaluation, protection layers, evidence and reporting
+              stay connected to the same scenario context.
             </p>
           </div>
-          <div className="capability-list">
+          <div className="capability-grid">
             {[
-              ["01", "Klavye odaklı HAZOP", "Satırları hızla oluşturun, düzenleyin ve risk derecesini otomatik hesaplayın."],
-              ["02", "Kaynaklı öneriler", "Geçmiş çalışmalar ve standartlardan gelen önerilerin kaynağını inceleyin."],
-              ["03", "LOPA ve IPL kaydı", "Koruma katmanlarını PFD ve uygunluk değerlendirmesiyle senaryoya bağlayın."],
-              ["04", "Teslim edilebilir rapor", "Çalışmayı tek tıkla düzenlenebilir DOCX raporuna dönüştürün."],
-            ].map(([number, title, detail]) => (
-              <article key={number}>
-                <span>{number}</span>
-                <h3>{title}</h3>
-                <p>{detail}</p>
-              </article>
-            ))}
+              [Layers3, "Structured studies", "Run keyboard-first HAZOP sessions with a model that preserves study, node and scenario context."],
+              [Sparkles, "Grounded assistance", "Retrieve candidate causes and safeguards only when accessible evidence can be cited."],
+              [ShieldCheck, "Decision controls", "Separate machine suggestions from approved engineering decisions with explicit review gates."],
+              [FileOutput, "Audit-ready output", "Generate editable deliverables while retaining source, role and change history."],
+            ].map(([Icon, title, detail], index) => {
+              const CapabilityIcon = Icon as typeof Layers3;
+              return (
+                <article key={title as string}>
+                  <div className="capability-top"><span>0{index + 1}</span><CapabilityIcon size={22} /></div>
+                  <h3>{title as string}</h3>
+                  <p>{detail as string}</p>
+                  <ArrowUpRight size={17} className="capability-arrow" />
+                </article>
+              );
+            })}
           </div>
         </section>
 
-        <section className="security-section" id="guvenlik">
-          <div>
-            <ShieldCheck size={34} />
-            <h2>Hassas tesis verisi için açık mimari sınırlar</h2>
+        <section className="assurance-section" id="assurance">
+          <div className="assurance-visual">
+            <div className="assurance-ring ring-outer" />
+            <div className="assurance-ring ring-inner" />
+            <div className="assurance-core"><Fingerprint /><strong>CONTROL</strong><span>BY DESIGN</span></div>
+            <span className="assurance-tag tag-one">RBAC</span>
+            <span className="assurance-tag tag-two">AUDIT LOG</span>
+            <span className="assurance-tag tag-three">ON-PREM READY</span>
           </div>
-          <p>
-            PreventA, öneri ve veri katmanlarını ayrı sözleşmelerle yönetir. Üretim
-            kurulumunda PostgreSQL ve Ollama müşteri ortamında çalıştırılabilir; model
-            önerileri mühendis onayı olmadan çalışma kararına dönüşmez.
-          </p>
+          <div className="assurance-copy">
+            <span className="section-number">03 / ASSURANCE</span>
+            <h2>Your engineering data stays governed.</h2>
+            <p>
+              PreventA keeps retrieval, generation and approval as explicit system
+              boundaries. Deploy the data and model layers in your environment, control
+              capabilities by role, and retain a trace for every material change.
+            </p>
+            <div className="assurance-list">
+              <span><CheckCircle2 /> Opaque, expiring sessions</span>
+              <span><CheckCircle2 /> Administrator, facilitator and viewer roles</span>
+              <span><CheckCircle2 /> Evidence required before AI output is shown</span>
+            </div>
+          </div>
         </section>
 
-        <section className="workflow-section" id="akis">
-          <h2>Bir çalışmanın PreventA akışı</h2>
+        <section className="workflow-section" id="workflow">
+          <div className="section-number">04 / WORKFLOW</div>
+          <div className="workflow-heading">
+            <h2>From design intent<br />to defensible report.</h2>
+            <a href="/app">Start a study <ArrowUpRight size={16} /></a>
+          </div>
           <ol>
-            <li><strong>Study açın</strong><span>Müşteri, tesis ve risk bağlamını kaydedin.</span></li>
-            <li><strong>Node'ları tanımlayın</strong><span>Ekipman tipi ve tasarım niyetini standardize edin.</span></li>
-            <li><strong>HAZOP ve LOPA'yı yürütün</strong><span>Senaryoları kaydedin, kaynaklı önerileri inceleyin.</span></li>
-            <li><strong>Raporu teslim edin</strong><span>Denetim iziyle birlikte DOCX çıktısını indirin.</span></li>
+            {[
+              ["Frame", "Capture the facility, system boundaries and risk context."],
+              ["Explore", "Run HAZOP and LOPA with structured scenarios and protection layers."],
+              ["Challenge", "Review grounded candidates and preserve engineering ownership."],
+              ["Deliver", "Export an editable report with its decision trail intact."],
+            ].map(([title, detail], index) => (
+              <li key={title}>
+                <span>0{index + 1}</span>
+                <div><strong>{title}</strong><p>{detail}</p></div>
+              </li>
+            ))}
           </ol>
-          <a className="primary-button landing-cta" href="/app">Çalışma alanına geç</a>
+        </section>
+
+        <section className="landing-closing">
+          <span className="section-number">READY WHEN THE ROOM IS</span>
+          <h2>Turn the next study into institutional memory.</h2>
+          <a href="/app">Enter PreventA <ArrowUpRight size={20} /></a>
+          <div className="closing-grid" aria-hidden="true">
+            {Array.from({ length: 36 }).map((_, index) => <span key={index} />)}
+          </div>
         </section>
       </main>
       <footer className="landing-footer">
-        <span>PreventA · Process Safety Workspace</span>
-        <span>MVP · Haziran 2026</span>
+        <span>PreventA / Process Safety Intelligence</span>
+        <span>Built for controlled engineering decisions</span>
+        <span>© 2026</span>
       </footer>
     </div>
   );
@@ -1204,22 +1287,22 @@ function CreateStudyDialog({
             const created = await createStudy(values);
             onCreated(created);
           } catch {
-            onError("Çalışma oluşturulamadı. API bağlantısını kontrol edin.");
+            onError("The study could not be created. Check the API connection.");
           } finally {
             setSaving(false);
           }
         }}
       >
         <div className="dialog-heading">
-          <div><h2>Yeni çalışma</h2><p>Müşteri ve tesis bağlamını tanımlayın.</p></div>
-          <button type="button" className="icon-button" onClick={onClose} aria-label="Kapat"><X size={18} /></button>
+          <div><h2>New study</h2><p>Define the client and facility context.</p></div>
+          <button type="button" className="icon-button" onClick={onClose} aria-label="Close"><X size={18} /></button>
         </div>
-        <label>Çalışma adı<input required value={values.title} onChange={(e) => setValues({...values, title: e.target.value})} /></label>
-        <label>Müşteri<input required value={values.client} onChange={(e) => setValues({...values, client: e.target.value})} /></label>
-        <label>Tesis<input required value={values.facility} onChange={(e) => setValues({...values, facility: e.target.value})} /></label>
+        <label>Study name<input required value={values.title} onChange={(e) => setValues({...values, title: e.target.value})} /></label>
+        <label>Client<input required value={values.client} onChange={(e) => setValues({...values, client: e.target.value})} /></label>
+        <label>Facility<input required value={values.facility} onChange={(e) => setValues({...values, facility: e.target.value})} /></label>
         <div className="dialog-actions">
-          <button type="button" className="secondary-button" onClick={onClose}>Vazgeç</button>
-          <button className="primary-button" disabled={saving}>{saving ? "Oluşturuluyor" : "Çalışma oluştur"}</button>
+          <button type="button" className="secondary-button" onClick={onClose}>Cancel</button>
+          <button className="primary-button" disabled={saving}>{saving ? "Creating" : "Create study"}</button>
         </div>
       </form>
     </div>
@@ -1252,23 +1335,23 @@ function CreateNodeDialog({
           try {
             onCreated(await createNode(studyId, values));
           } catch {
-            onError("Node oluşturulamadı. API bağlantısını kontrol edin.");
+            onError("The node could not be created. Check the API connection.");
           } finally {
             setSaving(false);
           }
         }}
       >
         <div className="dialog-heading">
-          <div><h2>Yeni node</h2><p>Öneri kalitesi için ekipman tipini açık yazın.</p></div>
-          <button type="button" className="icon-button" onClick={onClose} aria-label="Kapat"><X size={18} /></button>
+          <div><h2>New node</h2><p>Use a precise equipment type to improve suggestion quality.</p></div>
+          <button type="button" className="icon-button" onClick={onClose} aria-label="Close"><X size={18} /></button>
         </div>
-        <label>Node kodu<input required placeholder="N-06" value={values.code} onChange={(e) => setValues({...values, code: e.target.value})} /></label>
-        <label>Node adı<input required value={values.name} onChange={(e) => setValues({...values, name: e.target.value})} /></label>
-        <label>Ekipman tipi<input required value={values.equipment_type} onChange={(e) => setValues({...values, equipment_type: e.target.value})} /></label>
-        <label>Tasarım niyeti<textarea required value={values.design_intent} onChange={(e) => setValues({...values, design_intent: e.target.value})} /></label>
+        <label>Node code<input required placeholder="N-06" value={values.code} onChange={(e) => setValues({...values, code: e.target.value})} /></label>
+        <label>Node name<input required value={values.name} onChange={(e) => setValues({...values, name: e.target.value})} /></label>
+        <label>Equipment type<input required value={values.equipment_type} onChange={(e) => setValues({...values, equipment_type: e.target.value})} /></label>
+        <label>Design intent<textarea required value={values.design_intent} onChange={(e) => setValues({...values, design_intent: e.target.value})} /></label>
         <div className="dialog-actions">
-          <button type="button" className="secondary-button" onClick={onClose}>Vazgeç</button>
-          <button className="primary-button" disabled={saving}>{saving ? "Oluşturuluyor" : "Node oluştur"}</button>
+          <button type="button" className="secondary-button" onClick={onClose}>Cancel</button>
+          <button className="primary-button" disabled={saving}>{saving ? "Creating" : "Create node"}</button>
         </div>
       </form>
     </div>
@@ -1325,9 +1408,9 @@ function WorkspaceApp({
       {
         id: "",
         code: "",
-        name: "Node seçilmedi",
-        equipment_type: "Çalışma bekleniyor",
-        design_intent: "Başlamak için bir çalışma ve node seçin.",
+        name: "No node selected",
+        equipment_type: "Waiting for study",
+        design_intent: "Select a study and node to begin.",
         scenario_count: 0,
         state: "empty" as const,
       },
@@ -1395,23 +1478,23 @@ function WorkspaceApp({
         setApiConnected(true);
       } catch {
         setApiConnected(false);
-        notify("Değişiklik yerel taslakta kaldı. API bağlantısını kontrol edin.", "error");
+        notify("The change remains in the local draft. Check the API connection.", "error");
       }
     }, 550);
   };
 
   const addRow = async () => {
     if (!activeNodeId) {
-      notify("Satır eklemek için önce bir node oluşturun.", "error");
+      notify("Create a node before adding a row.", "error");
       return;
     }
     try {
       const created = await createHazopRow(activeNodeId);
       setRows((current) => [...current, created]);
       setSelectedRow(created.id);
-      notify("Yeni HAZOP satırı veritabanına eklendi.");
+      notify("A new HAZOP row was added.");
     } catch {
-      notify("Satır oluşturulamadı. API bağlantısını kontrol edin.", "error");
+      notify("The row could not be created. Check the API connection.", "error");
     }
   };
 
@@ -1420,15 +1503,15 @@ function WorkspaceApp({
 
   const removeSelectedRow = async () => {
     if (!selected) return;
-    if (!window.confirm("Seçili HAZOP satırı kalıcı olarak silinsin mi?")) return;
+    if (!window.confirm("Permanently delete the selected HAZOP row?")) return;
     try {
       await deleteHazopRow(selected.id);
       const remaining = rows.filter((row) => row.id !== selected.id);
       setRows(remaining);
       setSelectedRow(remaining[0]?.id ?? 0);
-      notify("HAZOP satırı silindi.");
+      notify("HAZOP row deleted.");
     } catch {
-      notify("Satır silinemedi.", "error");
+      notify("The row could not be deleted.", "error");
     }
   };
 
@@ -1479,7 +1562,7 @@ function WorkspaceApp({
       setWorkspaceNodes([]);
       setActiveNodeId("");
       setApiConnected(false);
-      notify("Çalışma yüklenemedi. API bağlantısını kontrol edin.", "error");
+      notify("The study could not be loaded. Check the API connection.", "error");
     } finally {
       setLoadingRows(false);
     }
@@ -1494,13 +1577,14 @@ function WorkspaceApp({
       suggestion.target,
       existing ? `${existing}\n${suggestion.text}` : suggestion.text,
     );
-    notify(`${suggestion.kind} önerisi ${selected.id}. satır taslağına eklendi.`);
+    const kind = { Neden: "Cause", Sonuç: "Consequence", Önlem: "Safeguard" }[suggestion.kind];
+    notify(`${kind} suggestion added to row ${selected.id}.`);
   };
 
   const requestSuggestions = async () => {
     if (!selected || !activeNode.id) {
       setEvidenceState("error");
-      setEvidenceError("Öneri üretmek için bir node ve HAZOP satırı seçin.");
+      setEvidenceError("Select a node and HAZOP row before generating suggestions.");
       return;
     }
 
@@ -1514,7 +1598,7 @@ function WorkspaceApp({
         design_intent: activeNode.design_intent,
         parameter: selected.deviation.trim() || selected.guideword,
         guideword: selected.guideword,
-        deviation: selected.deviation.trim() || `${selected.guideword} sapması`,
+        deviation: selected.deviation.trim() || `${selected.guideword} deviation`,
         existing_safeguards: selected.safeguard.trim() ? [selected.safeguard.trim()] : [],
       });
       const kindLabel = {
@@ -1544,8 +1628,8 @@ function WorkspaceApp({
       setEvidenceState("error");
       setEvidenceError(
         error instanceof ApiError && error.code === "ungrounded_suggestion"
-          ? "Model yeterli ve doğrulanabilir atıf üretemedi; güvenlik kuralı yanıtı engelledi."
-          : "RAG servisine ulaşılamadı. PostgreSQL, corpus ve Ollama bağlantılarını kontrol edin.",
+          ? "The model could not produce sufficient verifiable citations, so the safety rule blocked the response."
+          : "The RAG service is unavailable. Check PostgreSQL, corpus and Ollama connectivity.",
       );
     }
   };
@@ -1585,50 +1669,50 @@ function WorkspaceApp({
                 <div>
                   <h2>
                     {railSection === "library"
-                      ? "Senaryo kütüphanesi"
+                      ? "Scenario library"
                       : railSection === "reports"
-                        ? "Raporlar"
-                        : "Denetim geçmişi"}
+                        ? "Reports"
+                        : "Audit history"}
                   </h2>
                   <p>
                     {railSection === "library"
-                      ? "Onaylanmış neden, sonuç ve önlem kayıtlarını ekipman tipine göre yönetin."
+                      ? "Manage approved cause, consequence and safeguard records by equipment type."
                       : railSection === "reports"
-                        ? "Çalışmalardan üretilen DOCX raporlarını indirin."
-                        : "Study, node ve worksheet değişikliklerinin audit kaydı."}
+                        ? "Download DOCX reports generated from studies."
+                        : "Audit trail for study, node and worksheet changes."}
                   </p>
                 </div>
                 {railSection === "reports" && (
                   <button className="primary-button" onClick={() => { window.location.href = reportUrl(study.id, activeNode.id); }}>
-                    <Download size={16} /> Aktif node raporunu indir
+                    <Download size={16} /> Download active node report
                   </button>
                 )}
               </div>
               <div className="functional-empty">
                 {railSection === "library" ? <BookOpen size={28} /> : railSection === "reports" ? <FileOutput size={28} /> : <History size={28} />}
-                <strong>{railSection === "history" ? "Audit kayıtları backend'de tutuluyor" : "Bu modül MVP akışına bağlı"}</strong>
+                <strong>{railSection === "history" ? "Audit records are retained by the backend" : "This module is connected to the MVP workflow"}</strong>
                 <p>
                   {railSection === "library"
-                    ? `${workspaceSuggestions.length} kaynaklı öneri aktif çalışma bağlamında kullanılabilir.`
+                    ? `${workspaceSuggestions.length} grounded suggestions are available in the active study context.`
                     : railSection === "reports"
-                      ? "Rapor düğmesi canlı API üzerinden düzenlenebilir DOCX üretir."
-                      : "Create, update ve delete işlemleri mvp_audit tablosuna yazılır."}
+                      ? "The report action generates an editable DOCX through the live API."
+                      : "Create, update and delete actions are recorded in the mvp_audit table."}
                 </p>
-                <button className="secondary-button" onClick={() => setRailSection("studies")}>Çalışmaya dön</button>
+                <button className="secondary-button" onClick={() => setRailSection("studies")}>Return to study</button>
               </div>
             </section>
           ) : (
           <>
           <div className="design-intent">
             <div>
-              <span className="context-label">Tasarım niyeti</span>
+              <span className="context-label">Design intent</span>
               <p>
                 {activeNode.design_intent}
               </p>
             </div>
           </div>
 
-          <div className="tab-bar" role="tablist" aria-label="Node çalışma alanları">
+          <div className="tab-bar" role="tablist" aria-label="Node workspaces">
             {workspaceTabs(rows.length, lopaLayerCount).map((tab) => (
               <button
                 key={tab.label}
@@ -1656,13 +1740,13 @@ function WorkspaceApp({
               />
               <div className={`hazop-layout ${evidenceOpen ? "with-evidence" : ""}`}>
                 {loadingRows ? (
-                  <div className="table-loading">Node satırları yükleniyor...</div>
+                  <div className="table-loading">Loading node rows...</div>
                 ) : rows.length === 0 ? (
                   <div className="table-empty">
                     <Table2 size={28} />
-                    <strong>Bu node için HAZOP satırı yok</strong>
-                    <p>İlk sapmayı kaydetmek için yeni satır oluşturun.</p>
-                    <button className="primary-button" onClick={addRow}><Plus size={16} /> İlk satırı ekle</button>
+                    <strong>No HAZOP rows exist for this node</strong>
+                    <p>Create the first row to capture a deviation.</p>
+                    <button className="primary-button" onClick={addRow}><Plus size={16} /> Add first row</button>
                   </div>
                 ) : <HazopTable
                   rows={rows}
@@ -1688,9 +1772,9 @@ function WorkspaceApp({
           {activeTab === "LOPA" && (
             <LopaWorkspace selectedRow={selected} readOnly={!canWrite} />
           )}
-          {activeTab === "Risk matrisi" && <RiskMatrix />}
-          {activeTab === "Kaynaklar" && <SourcesWorkspace />}
-          {activeTab === "Ürün durumu" && <ProductStatusWorkspace status={productStatus} />}
+          {activeTab === "Risk matrix" && <RiskMatrix />}
+          {activeTab === "Sources" && <SourcesWorkspace />}
+          {activeTab === "Product status" && <ProductStatusWorkspace status={productStatus} />}
           </>
           )}
         </main>
@@ -1698,17 +1782,17 @@ function WorkspaceApp({
         <footer className="status-bar">
           <div>
             <Activity size={14} />
-            <span>{rows.length} satır</span>
+            <span>{rows.length} rows</span>
             <span className="status-separator" />
-            <span>{rows.filter((r) => r.status === "Eksik").length} eksik</span>
+            <span>{rows.filter((r) => r.status === "Eksik").length} incomplete</span>
             <span className="status-separator" />
             <span className="local-data">
               <ShieldCheck size={14} />
-              Veri yerel ortamda
+              Data stored locally
             </span>
           </div>
           <div className="shortcut-hints">
-            <span><kbd>Ctrl</kbd><kbd>Enter</kbd> Satır ekle</span>
+            <span><kbd>Ctrl</kbd><kbd>Enter</kbd> Add row</span>
           </div>
         </footer>
       </div>
@@ -1735,7 +1819,7 @@ function WorkspaceApp({
           setRows([]);
           setStudyDialogOpen(false);
           setNodeDialogOpen(true);
-          notify("Çalışma oluşturuldu. Şimdi ilk node'u ekleyin.");
+          notify("Study created. Add the first node.");
         }}
       />
       <CreateNodeDialog
@@ -1748,12 +1832,12 @@ function WorkspaceApp({
           setActiveNodeId(created.id);
           setRows([]);
           setNodeDialogOpen(false);
-          notify("Node oluşturuldu.");
+          notify("Create nodeuldu.");
         }}
       />
       {canWrite && (
         <button className="floating-create-study" onClick={() => setStudyDialogOpen(true)}>
-          <Plus size={17} /> Yeni çalışma
+          <Plus size={17} /> New study
         </button>
       )}
     </div>
@@ -1778,8 +1862,8 @@ export default function App() {
     return (
       <main className="auth-loading">
         <ShieldCheck />
-        <strong>PreventA hazırlanıyor</strong>
-        <span>Güvenli oturum kontrol ediliyor...</span>
+        <strong>Preparing PreventA</strong>
+        <span>Verifying secure session...</span>
       </main>
     );
   }

@@ -1,4 +1,4 @@
-import { AlertCircle, ArrowRight, LockKeyhole, ShieldCheck } from "lucide-react";
+import { AlertCircle, ArrowRight, Fingerprint, LockKeyhole, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -36,27 +36,27 @@ export function LoginPage({ onLogin }: { onLogin: (user: AuthUser) => void }) {
           PreventA
         </a>
         <div className="auth-brand-copy">
-          <Badge variant="secondary">Process Safety Workspace</Badge>
-          <h1>Mühendislik kararları için kontrollü çalışma alanı.</h1>
+          <Badge variant="secondary">CONTROLLED ENGINEERING SYSTEM</Badge>
+          <h1>Risk decisions deserve more than a spreadsheet.</h1>
           <p>
-            HAZOP ve LOPA çalışmalarını kaynak, rol ve denetim iziyle yönetin.
-            Yapay zekâ çıktıları karar değil, incelemeye açık taslaklardır.
+            Run HAZOP and LOPA studies with evidence, role controls and a complete
+            decision trail. AI output remains a reviewable candidate, never a decision.
           </p>
         </div>
         <div className="auth-trust-grid">
-          <div><strong>RBAC</strong><span>Rol bazlı erişim</span></div>
-          <div><strong>Atıflı AI</strong><span>Kaynak zorunluluğu</span></div>
-          <div><strong>On-prem</strong><span>Müşteri veri sahipliği</span></div>
+          <div><strong>RBAC</strong><span>Capability by role</span></div>
+          <div><strong>CITED AI</strong><span>Evidence required</span></div>
+          <div><strong>ON-PREM</strong><span>Your data boundary</span></div>
         </div>
       </section>
 
       <section className="auth-form-panel">
         <Card className="auth-card">
           <CardHeader>
-            <div className="auth-icon"><LockKeyhole /></div>
-            <CardTitle>Çalışma alanına giriş</CardTitle>
+            <div className="auth-icon"><Fingerprint /></div>
+            <CardTitle>Enter the workspace</CardTitle>
             <CardDescription>
-              Kurumsal hesabınızla devam edin. Oturum 12 saat sonra otomatik kapanır.
+              Continue with your organization account. Sessions expire after 12 hours.
             </CardDescription>
           </CardHeader>
           <form
@@ -69,7 +69,7 @@ export function LoginPage({ onLogin }: { onLogin: (user: AuthUser) => void }) {
                 onLogin(session.user);
                 window.history.replaceState({}, "", "/app");
               } catch {
-                setError("Email veya parola doğrulanamadı.");
+                setError("The email or password could not be verified.");
               } finally {
                 setPending(false);
               }
@@ -90,7 +90,7 @@ export function LoginPage({ onLogin }: { onLogin: (user: AuthUser) => void }) {
                   />
                 </Field>
                 <Field data-invalid={Boolean(error)}>
-                  <FieldLabel htmlFor="password">Parola</FieldLabel>
+                  <FieldLabel htmlFor="password">Password</FieldLabel>
                   <Input
                     id="password"
                     type="password"
@@ -101,7 +101,7 @@ export function LoginPage({ onLogin }: { onLogin: (user: AuthUser) => void }) {
                     required
                   />
                   <FieldDescription>
-                    Hesabınız ve rolünüz sistem yöneticiniz tarafından tanımlanır.
+                    Your account and role are managed by your system administrator.
                   </FieldDescription>
                 </Field>
               </FieldGroup>
@@ -114,14 +114,14 @@ export function LoginPage({ onLogin }: { onLogin: (user: AuthUser) => void }) {
             </CardContent>
             <CardFooter>
               <Button type="submit" size="lg" disabled={pending} className="auth-submit">
-                {pending ? "Oturum açılıyor..." : "Giriş yap"}
+                {pending ? "Authenticating..." : "Continue securely"}
                 <ArrowRight data-icon="inline-end" />
               </Button>
             </CardFooter>
           </form>
         </Card>
         <p className="auth-footnote">
-          Erişim sorunları için sistem yöneticinizle iletişime geçin.
+          <LockKeyhole size={13} /> Access is protected by an encrypted session cookie.
         </p>
       </section>
     </main>
