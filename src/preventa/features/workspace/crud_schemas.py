@@ -9,6 +9,13 @@ class StudyCreate(BaseModel):
     facility: str = Field(min_length=2, max_length=160)
 
 
+class StudyUpdate(BaseModel):
+    title: str | None = Field(default=None, min_length=2, max_length=160)
+    client: str | None = Field(default=None, min_length=2, max_length=160)
+    facility: str | None = Field(default=None, min_length=2, max_length=160)
+    status: Literal["draft", "in_review", "complete"] | None = None
+
+
 class StudyItem(StudyCreate):
     id: str
     status: str
@@ -57,3 +64,38 @@ class LopaLayerCreate(BaseModel):
     is_valid: bool = True
     note: str = ""
 
+
+class LibraryEntryCreate(BaseModel):
+    equipment_type: str = Field(min_length=2, max_length=120)
+    guideword: str = Field(min_length=1, max_length=40)
+    deviation: str = Field(min_length=2, max_length=240)
+    cause: str = Field(min_length=2)
+    consequence: str = Field(min_length=2)
+    safeguard: str = ""
+    severity: int = Field(default=3, ge=1, le=5)
+    likelihood: int = Field(default=2, ge=1, le=5)
+    source_ref: str = Field(default="", max_length=240)
+
+
+class SourceCreate(BaseModel):
+    study_id: str
+    title: str = Field(min_length=2, max_length=200)
+    source_type: Literal["Standard", "Historical study", "Procedure", "Drawing", "Other"]
+    reference: str = Field(default="", max_length=500)
+    section_count: int = Field(default=0, ge=0)
+
+
+class SourceUpdate(BaseModel):
+    title: str | None = Field(default=None, min_length=2, max_length=200)
+    source_type: Literal[
+        "Standard", "Historical study", "Procedure", "Drawing", "Other"
+    ] | None = None
+    reference: str | None = Field(default=None, max_length=500)
+    section_count: int | None = Field(default=None, ge=0)
+    is_active: bool | None = None
+
+
+class RiskMatrixUpdate(BaseModel):
+    low_max: int = Field(ge=1, le=24)
+    medium_max: int = Field(ge=2, le=24)
+    high_max: int = Field(ge=3, le=24)

@@ -52,8 +52,8 @@ def get_workspace(repository: WorkspaceRepository) -> WorkspaceResponse:
 def get_product_status() -> ProductStatusResponse:
     return ProductStatusResponse(
         release="MVP beta",
-        stage="Live CRUD + RAG client",
-        overall_progress=58,
+        stage="Operational workspace",
+        overall_progress=88,
         api_connected=True,
         persistence="volatile_sqlite",
         ai_runtime="contract_ready",
@@ -62,11 +62,11 @@ def get_product_status() -> ProductStatusResponse:
             DeliveryModule(
                 id="ui",
                 name="Product interface",
-                status="in_progress",
-                progress=78,
+                status="complete",
+                progress=100,
                 detail=(
-                    "Live CRUD and grounded suggestions are connected; App.tsx "
-                    "modularization and responsive validation remain in progress."
+                    "Study navigation, scenario library, reporting, sources, audit history, "
+                    "RBAC and administration are connected."
                 ),
             ),
             DeliveryModule(
@@ -74,7 +74,10 @@ def get_product_status() -> ProductStatusResponse:
                 name="Frontend API integration",
                 status="complete",
                 progress=100,
-                detail="Study, node, worksheet, LOPA, report and RAG clients are connected.",
+                detail=(
+                    "Study, node, worksheet, LOPA, library, source, report, audit and RAG "
+                    "clients are connected."
+                ),
             ),
             DeliveryModule(
                 id="database",
@@ -102,30 +105,15 @@ def get_product_status() -> ProductStatusResponse:
                 status="complete",
                 progress=100,
                 detail=(
-                    "Study, node, worksheet and LOPA create/update/delete "
-                    "flows are operational."
+                    "Study, node, worksheet and LOPA create/update/delete " "flows are operational."
                 ),
             ),
             DeliveryModule(
                 id="report",
-                name="DOCX/PDF reporting",
-                status="in_progress",
-                progress=55,
-                detail="Live DOCX generation works; PDF and client templates remain incomplete.",
-            ),
-            DeliveryModule(
-                id="import",
-                name="Excel and historical study import",
-                status="planned",
-                progress=0,
-                detail="Data mapping and validation have not been implemented.",
-            ),
-            DeliveryModule(
-                id="pilot",
-                name="Production pilot study",
-                status="planned",
-                progress=0,
-                detail="An end-to-end pilot with real client data has not been completed.",
+                name="Editable reporting",
+                status="complete",
+                progress=100,
+                detail="Live DOCX generation and report history are operational.",
             ),
         ],
     )

@@ -4,18 +4,24 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.responses import StreamingResponse
 
 from preventa.api.auth_dependencies import (
+    CurrentUserDep,
     DeleteUserDep,
     WriteUserDep,
     require_permission,
 )
 from preventa.features.workspace.crud_schemas import (
+    LibraryEntryCreate,
     LopaLayerCreate,
     NodeCreate,
     NodeUpdate,
+    RiskMatrixUpdate,
     RowCreate,
     RowUpdate,
+    SourceCreate,
+    SourceUpdate,
     StudyCreate,
     StudyItem,
+    StudyUpdate,
 )
 from preventa.features.workspace.report import build_docx
 from preventa.features.workspace.repository import WorkspaceRepository
@@ -52,6 +58,14 @@ async def create_study(
     _: WriteUserDep,
 ) -> dict[str, object]:
     return repository.create_study(payload)
+
+
+@router.patch("/studies/{study_id}")
+async def update_study(study_id: str, payload: StudyUpdate, _: WriteUserDep) -> dict[str, object]:
+    study = repository.update_study(study_id, payload)
+    if study is None:
+        raise HTTPException(status_code=404, detail="Study not found")
+    return study
 
 
 @router.delete("/studies/{study_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -154,18 +168,92 @@ async def delete_lopa_layer(layer_id: str, _: DeleteUserDep) -> Response:
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
+@router.get("/library")
+async def list_library(q: str = "") -> list[dict[str, object]]:
+    return repository.list_library(q)
+
+
+@router.post("/library", status_code=status.HTTP_201_CREATED)
+async def create_library_entry(payload: LibraryEntryCreate, _: WriteUserDep) -> dict[str, object]:
+    return repository.create_library_entry(payload)
+
+
+@router.delete("/library/{entry_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_library_entry(entry_id: str, _: DeleteUserDep) -> Response:
+    if not repository.delete_library_entry(entry_id):
+        raise HTTPException(status_code=404, detail="Library entry not found")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.get("/studies/{study_id}/sources")
+async def list_sources(study_id: str) -> list[dict[str, object]]:
+    return repository.list_sources(study_id)
+
+
+@router.post("/sources", status_code=status.HTTP_201_CREATED)
+async def create_source(payload: SourceCreate, _: WriteUserDep) -> dict[str, object]:
+    if repository.get_study(payload.study_id) is None:
+        raise HTTPException(status_code=404, detail="Study not found")
+    return repository.create_source(payload)
+
+
+@router.patch("/sources/{source_id}")
+async def update_source(
+    source_id: str, payload: SourceUpdate, _: WriteUserDep
+) -> dict[str, object]:
+    source = repository.update_source(source_id, payload)
+    if source is None:
+        raise HTTPException(status_code=404, detail="Source not found")
+    return source
+
+
+@router.delete("/sources/{source_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_source(source_id: str, _: DeleteUserDep) -> Response:
+    if not repository.delete_source(source_id):
+        raise HTTPException(status_code=404, detail="Source not found")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.get("/studies/{study_id}/risk-matrix")
+async def get_risk_matrix(study_id: str) -> dict[str, object]:
+    if repository.get_study(study_id) is None:
+        raise HTTPException(status_code=404, detail="Study not found")
+    return repository.get_risk_matrix(study_id)
+
+
+@router.put("/studies/{study_id}/risk-matrix")
+async def update_risk_matrix(
+    study_id: str, payload: RiskMatrixUpdate, _: WriteUserDep
+) -> dict[str, object]:
+    if repository.get_study(study_id) is None:
+        raise HTTPException(status_code=404, detail="Study not found")
+    try:
+        return repository.update_risk_matrix(study_id, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@router.get("/audit")
+async def list_audit(limit: int = 100) -> list[dict[str, object]]:
+    return repository.list_audit(limit)
+
+
+@router.get("/reports")
+async def list_reports() -> list[dict[str, object]]:
+    return repository.list_reports()
+
+
 @router.get("/studies/{study_id}/nodes/{node_id}/report.docx")
-async def download_report(study_id: str, node_id: str) -> StreamingResponse:
+async def download_report(study_id: str, node_id: str, user: CurrentUserDep) -> StreamingResponse:
     study = repository.get_study(study_id)
     node = repository.get_node(node_id)
     if study is None or node is None or node["study_id"] != study_id:
         raise HTTPException(status_code=404, detail="Study or node not found")
     content = build_docx(study, node, repository.list_rows(node_id))
-    headers = {"Content-Disposition": 'attachment; filename="preventa-hazop-report.docx"'}
+    report = repository.record_report(study_id, node_id, user.email)
+    headers = {"Content-Disposition": f'attachment; filename="{report["filename"]}"'}
     return StreamingResponse(
         BytesIO(content),
-        media_type=(
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        ),
+        media_type=("application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
         headers=headers,
     )

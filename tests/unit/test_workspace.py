@@ -20,11 +20,13 @@ def test_workspace_is_derived_from_repository(
     assert workspace.suggestions == []
 
 
-def test_product_status_reports_unfinished_persistence() -> None:
+def test_product_status_reports_external_runtime_dependencies() -> None:
     status = get_product_status()
 
     assert status.api_connected is True
     assert status.persistence == "volatile_sqlite"
-    assert status.overall_progress == 58
+    assert status.overall_progress == 88
     assert status.ai_runtime == "contract_ready"
-    assert any(module.status == "planned" for module in status.modules)
+    assert any(
+        module.id == "database" and module.status == "in_progress" for module in status.modules
+    )

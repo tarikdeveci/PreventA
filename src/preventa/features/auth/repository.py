@@ -41,19 +41,19 @@ class AuthRepository:
             (
                 "admin",
                 "admin@preventa.com",
-                "Sistem Yöneticisi",
+                "System Administrator",
                 "admin",
             ),
             (
                 "facilitator",
                 "facilitator@preventa.com",
-                "HAZOP Fasilitatörü",
+                "HAZOP Facilitator",
                 "facilitator",
             ),
             (
                 "viewer",
                 "viewer@preventa.com",
-                "Denetçi",
+                "Auditor",
                 "viewer",
             ),
         ]

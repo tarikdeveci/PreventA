@@ -26,7 +26,6 @@ import {
   ListChecks,
   Lock,
   Menu,
-  MoreHorizontal,
   PanelRightClose,
   Plus,
   Search,
@@ -38,7 +37,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ApiError,
   addLopaLayer,
@@ -57,6 +56,20 @@ import {
   reportUrl,
   updateHazopRow,
   fetchSession,
+  fetchLibrary,
+  createLibraryEntry,
+  deleteLibraryEntry,
+  fetchSources,
+  createSource,
+  updateSource,
+  deleteSource,
+  fetchRiskMatrix,
+  updateRiskMatrix,
+  fetchAudit,
+  fetchReports,
+  fetchUsers,
+  createUser,
+  updateStudy,
   logout as logoutSession,
 } from "./api";
 import { LoginPage } from "@/components/login-page";
@@ -82,6 +95,11 @@ import {
   type Suggestion,
   type WorkspaceNode,
   type WorkspaceStudy,
+  type LibraryEntry,
+  type StudySource,
+  type RiskMatrixSettings,
+  type AuditEntry,
+  type ReportEntry,
   unavailableStatus,
 } from "./data";
 
@@ -107,9 +125,15 @@ type RailSection = "studies" | "library" | "reports" | "history";
 function AppRail({
   active,
   onSelect,
+  onHelp,
+  onSettings,
+  user,
 }: {
   active: RailSection;
   onSelect: (section: RailSection) => void;
+  onHelp: () => void;
+  onSettings: () => void;
+  user: AuthUser;
 }) {
   return (
     <aside className="app-rail" aria-label="Main application">
@@ -151,14 +175,14 @@ function AppRail({
         </button>
       </nav>
       <div className="rail-footer">
-        <button className="rail-button" aria-label="Help" title="Help">
+        <button className="rail-button" aria-label="Help" title="Help" onClick={onHelp}>
           <CircleHelp size={20} />
         </button>
-        <button className="rail-button" aria-label="Settings" title="Settings">
+        <button className="rail-button" aria-label="Settings" title="Settings" onClick={onSettings}>
           <Settings size={20} />
         </button>
-        <button className="avatar-button" aria-label="User account" title="User">
-          P
+        <button className="avatar-button" aria-label="User account" title={user.full_name} onClick={onSettings}>
+          {user.full_name.slice(0, 1).toUpperCase()}
         </button>
       </div>
     </aside>
@@ -176,6 +200,9 @@ function StudyNavigator({
   studies,
   onSelectStudy,
   canWrite,
+  onOverview,
+  onStudyInformation,
+  onRiskMatrix,
 }: {
   open: boolean;
   onClose: () => void;
@@ -187,6 +214,9 @@ function StudyNavigator({
   studies: StudyListItem[];
   onSelectStudy: (studyId: string) => void;
   canWrite: boolean;
+  onOverview: () => void;
+  onStudyInformation: () => void;
+  onRiskMatrix: () => void;
 }) {
   const [query, setQuery] = useState("");
   const filteredNodes = nodes.filter((node) =>
@@ -237,15 +267,15 @@ function StudyNavigator({
               <Plus size={15} />
             </button>
           </div>
-          <button className="nav-row">
+          <button className="nav-row" onClick={onOverview}>
             <LayoutGrid size={17} />
             <span>Overview</span>
           </button>
-          <button className="nav-row">
+          <button className="nav-row" onClick={onStudyInformation}>
             <ClipboardCheck size={17} />
             <span>Study information</span>
           </button>
-          <button className="nav-row">
+          <button className="nav-row" onClick={onRiskMatrix}>
             <Gauge size={17} />
             <span>Risk matrix</span>
             <span className="nav-meta">5 × 5</span>
@@ -312,6 +342,7 @@ function TopBar({
   apiConnected,
   user,
   onLogout,
+  onHistory,
 }: {
   onOpenNav: () => void;
   onExport: () => void;
@@ -320,6 +351,7 @@ function TopBar({
   apiConnected: boolean;
   user: AuthUser;
   onLogout: () => void;
+  onHistory: () => void;
 }) {
   const roleLabels = {
     admin: "Administrator",
@@ -353,7 +385,7 @@ function TopBar({
           <Check size={14} />
           All changes saved
         </span>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={onHistory}>
           <History size={16} />
           History
         </Button>
@@ -407,6 +439,11 @@ function WorksheetToolbar({
   suggestionCount,
   canWrite,
   canDelete,
+  query,
+  onQueryChange,
+  onOpenLibrary,
+  hiddenColumns,
+  onToggleColumn,
 }: {
   onAddRow: () => void;
   onDeleteRow: () => void;
@@ -415,6 +452,11 @@ function WorksheetToolbar({
   suggestionCount: number;
   canWrite: boolean;
   canDelete: boolean;
+  query: string;
+  onQueryChange: (value: string) => void;
+  onOpenLibrary: () => void;
+  hiddenColumns: Set<string>;
+  onToggleColumn: (column: string) => void;
 }) {
   return (
     <div className="worksheet-toolbar">
@@ -431,7 +473,7 @@ function WorksheetToolbar({
           <Trash2 size={16} />
           Delete row
         </button>
-        <button className="secondary-button compact" disabled title="Coming soon">
+        <button className="secondary-button compact" onClick={onOpenLibrary} disabled={!canWrite}>
           <Archive size={16} />
           Add from library
         </button>
@@ -439,14 +481,32 @@ function WorksheetToolbar({
         <label className="table-search">
           <Search size={15} />
           <span className="sr-only">Search worksheet</span>
-          <input placeholder="Search worksheet" />
+          <input
+            placeholder="Search worksheet"
+            value={query}
+            onChange={(event) => onQueryChange(event.target.value)}
+          />
         </label>
       </div>
       <div className="toolbar-group">
-        <button className="secondary-button compact">
-          <Table2 size={16} />
-          Columns
-        </button>
+        <details className="column-picker">
+          <summary className="secondary-button compact">
+            <Table2 size={16} />
+            Columns
+          </summary>
+          <div className="column-picker-menu">
+            {["cause", "consequence", "safeguard", "scores", "status"].map((column) => (
+              <label key={column}>
+                <input
+                  type="checkbox"
+                  checked={!hiddenColumns.has(column)}
+                  onChange={() => onToggleColumn(column)}
+                />
+                {column === "scores" ? "Risk scores" : column[0].toUpperCase() + column.slice(1)}
+              </label>
+            ))}
+          </div>
+        </details>
         <button
           className={`evidence-toggle ${evidenceOpen ? "is-active" : ""}`}
           onClick={onToggleEvidence}
@@ -467,12 +527,14 @@ function HazopTable({
   onSelectRow,
   onUpdateRow,
   readOnly,
+  hiddenColumns,
 }: {
   rows: HazopRow[];
   selectedRow: number;
   onSelectRow: (id: number) => void;
   onUpdateRow: (id: number, field: keyof HazopRow, value: string) => void;
   readOnly: boolean;
+  hiddenColumns: Set<string>;
 }) {
   return (
     <div className="table-frame">
@@ -482,13 +544,11 @@ function HazopTable({
             <th className="row-index">#</th>
             <th className="col-guideword">Guideword</th>
             <th className="col-deviation">Deviation</th>
-            <th className="col-text">Cause</th>
-            <th className="col-text">Consequence</th>
-            <th className="col-text">Existing safeguards</th>
-            <th className="col-score">S</th>
-            <th className="col-score">O</th>
-            <th className="col-risk">Risk</th>
-            <th className="col-status">Review</th>
+            {!hiddenColumns.has("cause") && <th className="col-text">Cause</th>}
+            {!hiddenColumns.has("consequence") && <th className="col-text">Consequence</th>}
+            {!hiddenColumns.has("safeguard") && <th className="col-text">Existing safeguards</th>}
+            {!hiddenColumns.has("scores") && <><th className="col-score">S</th><th className="col-score">O</th><th className="col-risk">Risk</th></>}
+            {!hiddenColumns.has("status") && <th className="col-status">Review</th>}
           </tr>
         </thead>
         <tbody>
@@ -529,31 +589,31 @@ function HazopTable({
                   onChange={(event) => onUpdateRow(row.id, "deviation", event.target.value)}
                 />
               </td>
-              <td>
+              {!hiddenColumns.has("cause") && <td>
                 <textarea
                   aria-label={`${index + 1}. row cause`}
                   value={row.cause}
                   readOnly={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "cause", event.target.value)}
                 />
-              </td>
-              <td>
+              </td>}
+              {!hiddenColumns.has("consequence") && <td>
                 <textarea
                   aria-label={`${index + 1}. row consequence`}
                   value={row.consequence}
                   readOnly={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "consequence", event.target.value)}
                 />
-              </td>
-              <td>
+              </td>}
+              {!hiddenColumns.has("safeguard") && <td>
                 <textarea
                   aria-label={`${index + 1}. row existing safeguards`}
                   value={row.safeguard}
                   readOnly={readOnly}
                   onChange={(event) => onUpdateRow(row.id, "safeguard", event.target.value)}
                 />
-              </td>
-              <td className="score-cell">
+              </td>}
+              {!hiddenColumns.has("scores") && <><td className="score-cell">
                 <select
                   aria-label={`${index + 1}. row severity`}
                   value={row.severity}
@@ -575,8 +635,8 @@ function HazopTable({
               </td>
               <td>
                 <RiskBadge level={row.risk} />
-              </td>
-              <td>
+              </td></>}
+              {!hiddenColumns.has("status") && <td>
                 <select
                   aria-label={`${index + 1}. row review status`}
                   value={row.status}
@@ -588,7 +648,7 @@ function HazopTable({
                   <option value="Taslak">Draft</option>
                   <option value="İncelendi">Reviewed</option>
                 </select>
-              </td>
+              </td>}
             </tr>
           ))}
         </tbody>
@@ -607,6 +667,7 @@ function EvidencePanel({
   state,
   error,
   canRequest,
+  onOpenCitation,
 }: {
   open: boolean;
   onClose: () => void;
@@ -617,6 +678,7 @@ function EvidencePanel({
   state: "idle" | "loading" | "ready" | "error";
   error: string | null;
   canRequest: boolean;
+  onOpenCitation: (citation: Suggestion["citations"][number]) => void;
 }) {
   return (
     <aside className={`evidence-panel ${open ? "is-open" : ""}`} aria-label="Grounded suggestions">
@@ -699,7 +761,13 @@ function EvidencePanel({
               </button>
             ))}
             <div className="suggestion-actions">
-              <button className="text-button">Open source</button>
+              <button
+                className="text-button"
+                onClick={() => suggestion.citations[0] && onOpenCitation(suggestion.citations[0])}
+                disabled={suggestion.citations.length === 0}
+              >
+                Open source
+              </button>
               <button className="apply-button" onClick={() => onApply(suggestion.id)}>
                 <Plus size={15} />
                 Add to draft
@@ -872,16 +940,31 @@ function LopaWorkspace({
     </section>
   );
 }
-function RiskMatrix() {
+function RiskMatrix({ studyId, canWrite, onError }: {
+  studyId: string;
+  canWrite: boolean;
+  onError: (message: string) => void;
+}) {
+  const [settings, setSettings] = useState<RiskMatrixSettings | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState({ low_max: 3, medium_max: 7, high_max: 11 });
+  useEffect(() => {
+    if (!studyId) return;
+    fetchRiskMatrix(studyId).then((value) => {
+      setSettings(value);
+      setDraft(value);
+    }).catch(() => onError("Risk matrix could not be loaded."));
+  }, [studyId, onError]);
+  const thresholds = settings ?? { low_max: 3, medium_max: 7, high_max: 11, revision: 1 };
   const riskZone = { low: "Low", medium: "Medium", high: "High", critical: "Critical" } as const;
   return (
     <section className="matrix-workspace">
       <div className="section-heading">
         <div>
           <h2>Client risk matrix</h2>
-          <p>ACWA Power 5 × 5 matrix · Revision 3 · May 12, 2026</p>
+          <p>5 × 5 matrix · Revision {thresholds.revision} · controlled per study</p>
         </div>
-        <button className="secondary-button">Edit matrix</button>
+        <button className="secondary-button" onClick={() => setEditing(true)} disabled={!canWrite}>Edit matrix</button>
       </div>
       <div className="matrix-layout">
         <div className="matrix-y-label">Likelihood</div>
@@ -889,7 +972,7 @@ function RiskMatrix() {
           {[5, 4, 3, 2, 1].map((likelihood) =>
             [1, 2, 3, 4, 5].map((severity) => {
               const score = likelihood * severity;
-              const level = score >= 12 ? "critical" : score >= 8 ? "high" : score >= 4 ? "medium" : "low";
+              const level = score > thresholds.high_max ? "critical" : score > thresholds.medium_max ? "high" : score > thresholds.low_max ? "medium" : "low";
               const zone = riskZone[level];
               return (
                 <button
@@ -906,11 +989,52 @@ function RiskMatrix() {
         </div>
         <div className="matrix-x-label">Severity</div>
       </div>
+      {editing && <div className="modal-backdrop" role="presentation">
+        <form className="form-dialog" onSubmit={async (event) => {
+          event.preventDefault();
+          try {
+            setSettings(await updateRiskMatrix(studyId, draft));
+            setEditing(false);
+          } catch (error) {
+            onError(error instanceof Error ? error.message : "Risk matrix could not be updated.");
+          }
+        }}>
+          <div className="dialog-heading">
+            <div><h2>Edit risk thresholds</h2><p>Scores above each boundary move to the next risk band.</p></div>
+            <button type="button" className="icon-button" onClick={() => setEditing(false)}><X size={18} /></button>
+          </div>
+          <label>Low maximum<input type="number" min="1" max="24" value={draft.low_max} onChange={(e) => setDraft({ ...draft, low_max: Number(e.target.value) })} /></label>
+          <label>Medium maximum<input type="number" min="2" max="24" value={draft.medium_max} onChange={(e) => setDraft({ ...draft, medium_max: Number(e.target.value) })} /></label>
+          <label>High maximum<input type="number" min="3" max="24" value={draft.high_max} onChange={(e) => setDraft({ ...draft, high_max: Number(e.target.value) })} /></label>
+          <div className="dialog-actions">
+            <button type="button" className="secondary-button" onClick={() => setEditing(false)}>Cancel</button>
+            <button className="primary-button">Save revision</button>
+          </div>
+        </form>
+      </div>}
     </section>
   );
 }
 
-function SourcesWorkspace() {
+function SourcesWorkspace({ studyId, canWrite, canDelete, onError }: {
+  studyId: string;
+  canWrite: boolean;
+  canDelete: boolean;
+  onError: (message: string) => void;
+}) {
+  const [sources, setSources] = useState<StudySource[]>([]);
+  const [adding, setAdding] = useState(false);
+  const [form, setForm] = useState({
+    title: "",
+    source_type: "Standard" as StudySource["source_type"],
+    reference: "",
+    section_count: 0,
+  });
+  useEffect(() => {
+    if (studyId) {
+      fetchSources(studyId).then(setSources).catch(() => onError("Study sources could not be loaded."));
+    }
+  }, [studyId, onError]);
   return (
     <section className="sources-workspace">
       <div className="section-heading">
@@ -918,36 +1042,175 @@ function SourcesWorkspace() {
           <h2>Study sources</h2>
           <p>The controlled knowledge base available to the suggestion engine for this study.</p>
         </div>
-        <button className="secondary-button">
+        <button className="secondary-button" onClick={() => setAdding(true)} disabled={!canWrite}>
           <Plus size={16} />
           Add source
         </button>
       </div>
       <div className="source-list">
-        {[
-          ["IEC 61882:2016", "Standard", "42 sections", "Jun 12, 2026"],
-          ["IEC 61511-1:2016", "Standard", "67 sections", "Jun 12, 2026"],
-          ["HAZOP-2024-018 · Amine Unit", "Historical study", "238 scenarios", "Jun 08, 2026"],
-          ["HAZOP-2023-041 · Tank Farm", "Historical study", "184 scenarios", "Jun 08, 2026"],
-        ].map(([title, type, count, date]) => (
-          <div className="source-row" key={title}>
+        {sources.map((source) => (
+          <div className={`source-row ${source.is_active ? "" : "is-muted"}`} key={source.id}>
             <span className="source-icon">
               <BookOpen size={18} />
             </span>
             <div>
-              <strong>{title}</strong>
-              <span>{type}</span>
+              <strong>{source.title}</strong>
+              <span>{source.source_type}</span>
             </div>
-            <span>{count}</span>
-            <span>Indexed · {date}</span>
-            <button className="icon-button" aria-label={`${title} actions`}>
-              <MoreHorizontal size={18} />
-            </button>
+            <span>{source.section_count} sections</span>
+            <span>{source.is_active ? "Available to retrieval" : "Excluded from retrieval"}</span>
+            <button className="text-button" disabled={!canWrite} onClick={async () => {
+              try {
+                const updated = await updateSource(source.id, { is_active: !source.is_active });
+                setSources((items) => items.map((item) => item.id === source.id ? updated : item));
+              } catch {
+                onError("Source state could not be changed.");
+              }
+            }}>{source.is_active ? "Disable" : "Enable"}</button>
+            {canDelete && <button className="icon-button" aria-label={`Delete ${source.title}`} onClick={async () => {
+              if (!window.confirm(`Delete ${source.title}?`)) return;
+              await deleteSource(source.id);
+              setSources((items) => items.filter((item) => item.id !== source.id));
+            }}><Trash2 size={16} /></button>}
           </div>
         ))}
       </div>
+      {adding && <div className="modal-backdrop" role="presentation">
+        <form className="form-dialog" onSubmit={async (event) => {
+          event.preventDefault();
+          try {
+            const created = await createSource({ study_id: studyId, ...form });
+            setSources((items) => [created, ...items]);
+            setAdding(false);
+            setForm({ title: "", source_type: "Standard", reference: "", section_count: 0 });
+          } catch {
+            onError("Source could not be added.");
+          }
+        }}>
+          <div className="dialog-heading">
+            <div><h2>Add controlled source</h2><p>Register the evidence available to this study.</p></div>
+            <button type="button" className="icon-button" onClick={() => setAdding(false)}><X size={18} /></button>
+          </div>
+          <label>Title<input required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></label>
+          <label>Type<select value={form.source_type} onChange={(e) => setForm({ ...form, source_type: e.target.value as StudySource["source_type"] })}>{["Standard", "Historical study", "Procedure", "Drawing", "Other"].map((type) => <option key={type}>{type}</option>)}</select></label>
+          <label>Reference<textarea value={form.reference} onChange={(e) => setForm({ ...form, reference: e.target.value })} /></label>
+          <label>Indexed sections<input type="number" min="0" value={form.section_count} onChange={(e) => setForm({ ...form, section_count: Number(e.target.value) })} /></label>
+          <div className="dialog-actions">
+            <button type="button" className="secondary-button" onClick={() => setAdding(false)}>Cancel</button>
+            <button className="primary-button">Add source</button>
+          </div>
+        </form>
+      </div>}
     </section>
   );
+}
+
+function LibraryWorkspace({
+  canWrite,
+  canDelete,
+  onApply,
+  onError,
+}: {
+  canWrite: boolean;
+  canDelete: boolean;
+  onApply: (entry: LibraryEntry) => void;
+  onError: (message: string) => void;
+}) {
+  const [entries, setEntries] = useState<LibraryEntry[]>([]);
+  const [query, setQuery] = useState("");
+  const [adding, setAdding] = useState(false);
+  const [form, setForm] = useState({
+    equipment_type: "", guideword: "Yok", deviation: "", cause: "", consequence: "",
+    safeguard: "", severity: 3, likelihood: 2, source_ref: "",
+  });
+  const load = useCallback(
+    () => fetchLibrary(query).then(setEntries).catch(() => onError("Scenario library could not be loaded.")),
+    [query, onError],
+  );
+  useEffect(() => { void load(); }, [load]);
+  return <section className="rail-section-page">
+    <div className="section-heading">
+      <div><h2>Scenario library</h2><p>Reusable, approved scenario patterns grouped by equipment type.</p></div>
+      <button className="primary-button" onClick={() => setAdding(true)} disabled={!canWrite}><Plus size={16} />New library entry</button>
+    </div>
+    <label className="table-search library-search"><Search size={15} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search equipment, deviation or source" /></label>
+    <div className="library-grid">
+      {entries.map((entry) => <article className="library-card" key={entry.id}>
+        <div className="library-card-head"><Badge variant="outline">{entry.equipment_type}</Badge><RiskBadge level={entry.risk} /></div>
+        <h3>{entry.guideword} · {entry.deviation}</h3>
+        <dl><div><dt>Cause</dt><dd>{entry.cause}</dd></div><div><dt>Consequence</dt><dd>{entry.consequence}</dd></div><div><dt>Safeguard</dt><dd>{entry.safeguard || "Not defined"}</dd></div></dl>
+        <small>{entry.source_ref || "Internal approved pattern"}</small>
+        <div className="library-actions">
+          <button className="secondary-button compact" onClick={() => onApply(entry)} disabled={!canWrite}><Plus size={15} />Add to active node</button>
+          {canDelete && <button className="icon-button" aria-label="Delete library entry" onClick={async () => {
+            if (!window.confirm("Delete this library entry?")) return;
+            await deleteLibraryEntry(entry.id);
+            setEntries((items) => items.filter((item) => item.id !== entry.id));
+          }}><Trash2 size={15} /></button>}
+        </div>
+      </article>)}
+    </div>
+    {adding && <div className="modal-backdrop" role="presentation"><form className="form-dialog wide-dialog" onSubmit={async (event) => {
+      event.preventDefault();
+      try {
+        const created = await createLibraryEntry(form);
+        setEntries((items) => [created, ...items]);
+        setAdding(false);
+      } catch { onError("Library entry could not be created."); }
+    }}>
+      <div className="dialog-heading"><div><h2>New scenario pattern</h2><p>Capture a reusable, reviewed scenario record.</p></div><button type="button" className="icon-button" onClick={() => setAdding(false)}><X size={18} /></button></div>
+      <label>Equipment type<input required value={form.equipment_type} onChange={(e) => setForm({ ...form, equipment_type: e.target.value })} /></label>
+      <label>Guideword<select value={form.guideword} onChange={(e) => setForm({ ...form, guideword: e.target.value })}>{["Yok", "Fazla", "Az", "Ters", "Başka"].map((word) => <option key={word}>{word}</option>)}</select></label>
+      <label>Deviation<input required value={form.deviation} onChange={(e) => setForm({ ...form, deviation: e.target.value })} /></label>
+      <label>Cause<textarea required value={form.cause} onChange={(e) => setForm({ ...form, cause: e.target.value })} /></label>
+      <label>Consequence<textarea required value={form.consequence} onChange={(e) => setForm({ ...form, consequence: e.target.value })} /></label>
+      <label>Safeguard<textarea value={form.safeguard} onChange={(e) => setForm({ ...form, safeguard: e.target.value })} /></label>
+      <label>Source reference<input value={form.source_ref} onChange={(e) => setForm({ ...form, source_ref: e.target.value })} /></label>
+      <div className="dialog-actions"><button type="button" className="secondary-button" onClick={() => setAdding(false)}>Cancel</button><button className="primary-button">Create entry</button></div>
+    </form></div>}
+  </section>;
+}
+
+function ReportsWorkspace({ studyId, nodeId, onError }: {
+  studyId: string;
+  nodeId: string;
+  onError: (message: string) => void;
+}) {
+  const [reports, setReports] = useState<ReportEntry[]>([]);
+  const load = useCallback(
+    () => fetchReports().then(setReports).catch(() => onError("Report history could not be loaded.")),
+    [onError],
+  );
+  useEffect(() => { void load(); }, [load]);
+  return <section className="rail-section-page">
+    <div className="section-heading">
+      <div><h2>Reports</h2><p>Generated, editable HAZOP deliverables and their authorship trail.</p></div>
+      <button className="primary-button" onClick={() => {
+        window.location.href = reportUrl(studyId, nodeId);
+        window.setTimeout(load, 1200);
+      }} disabled={!studyId || !nodeId}><Download size={16} />Generate active node report</button>
+    </div>
+    <div className="history-table">
+      <div className="history-head"><span>Report</span><span>Study / node</span><span>Created by</span><span>Date</span></div>
+      {reports.map((report) => <div className="history-row" key={report.id}><strong>{report.filename}</strong><span>{report.study_title} · {report.node_name}</span><span>{report.created_by}</span><time>{new Date(report.created_at).toLocaleString()}</time></div>)}
+      {reports.length === 0 && <div className="table-empty"><FileOutput size={28} /><strong>No reports generated yet</strong><p>Generate the active node report to create the first history record.</p></div>}
+    </div>
+  </section>;
+}
+
+function AuditWorkspace({ onError }: { onError: (message: string) => void }) {
+  const [entries, setEntries] = useState<AuditEntry[]>([]);
+  const [query, setQuery] = useState("");
+  useEffect(() => { fetchAudit().then(setEntries).catch(() => onError("Audit history could not be loaded.")); }, [onError]);
+  const filtered = entries.filter((entry) => `${entry.entity_type} ${entry.entity_id} ${entry.action}`.toLowerCase().includes(query.toLowerCase()));
+  return <section className="rail-section-page">
+    <div className="section-heading"><div><h2>Audit history</h2><p>Immutable create, update, delete and report events from the workspace backend.</p></div></div>
+    <label className="table-search library-search"><Search size={15} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Filter history" /></label>
+    <div className="history-table">
+      <div className="history-head"><span>Entity</span><span>Action</span><span>Identifier</span><span>Date</span></div>
+      {filtered.map((entry) => <div className="history-row" key={entry.id}><strong>{entry.entity_type.replace("_", " ")}</strong><Badge variant="outline">{entry.action}</Badge><span className="mono">{entry.entity_id}</span><time>{new Date(entry.created_at).toLocaleString()}</time></div>)}
+    </div>
+  </section>;
 }
 
 function ProductStatusWorkspace({ status }: { status: ProductStatus }) {
@@ -964,8 +1227,8 @@ function ProductStatusWorkspace({ status }: { status: ProductStatus }) {
           <span className="context-label">{status.release}</span>
           <h2>{status.stage}</h2>
           <p>
-            The interface is connected to the live API. Persistent PostgreSQL CRUD,
-            a live Ollama corpus and report generation are required before pilot use.
+            The operational workspace is connected end to end. Managed PostgreSQL and
+            the private AI corpus remain deployment-environment integrations.
           </p>
           <div className="delivery-progress-row">
             <div className="delivery-progress-track">
@@ -1044,8 +1307,8 @@ function ProductStatusWorkspace({ status }: { status: ProductStatus }) {
         <div>
           <strong>Next material milestone</strong>
           <p>
-            Connect study, node and worksheet create/update endpoints to PostgreSQL,
-            then record the first real pilot study through the same workflow.
+            Supply managed PostgreSQL and private model credentials, then ingest the
+            client-approved corpus for production-grounded assistance.
           </p>
         </div>
       </div>
@@ -1357,6 +1620,92 @@ function CreateNodeDialog({
   );
 }
 
+function HelpDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  if (!open) return null;
+  return <div className="modal-backdrop" role="presentation"><div className="form-dialog">
+    <div className="dialog-heading"><div><h2>PreventA workspace guide</h2><p>Core controls for facilitated studies.</p></div><button className="icon-button" onClick={onClose}><X size={18} /></button></div>
+    <div className="help-list">
+      <div><kbd>Ctrl</kbd> + <kbd>Enter</kbd><span>Add a HAZOP row to the active node.</span></div>
+      <div><BookOpen size={18} /><span>Use Scenario library to apply approved patterns as editable drafts.</span></div>
+      <div><Sparkles size={18} /><span>Grounded suggestions require indexed corpus evidence and facilitator access.</span></div>
+      <div><History size={18} /><span>Every material create, update, delete and report event appears in Audit history.</span></div>
+    </div>
+    <div className="dialog-actions"><button className="primary-button" onClick={onClose}>Close guide</button></div>
+  </div></div>;
+}
+
+function SettingsDialog({ open, user, onClose, onError }: {
+  open: boolean;
+  user: AuthUser;
+  onClose: () => void;
+  onError: (message: string) => void;
+}) {
+  const [users, setUsers] = useState<AuthUser[]>([]);
+  const [adding, setAdding] = useState(false);
+  const [form, setForm] = useState({ email: "", full_name: "", password: "", role: "viewer" as AuthUser["role"] });
+  useEffect(() => {
+    if (open && user.role === "admin") fetchUsers().then(setUsers).catch(() => onError("Users could not be loaded."));
+  }, [open, user.role, onError]);
+  if (!open) return null;
+  return <div className="modal-backdrop" role="presentation"><div className="form-dialog wide-dialog">
+    <div className="dialog-heading"><div><h2>Workspace settings</h2><p>Account, access and local interface preferences.</p></div><button className="icon-button" onClick={onClose}><X size={18} /></button></div>
+    <div className="account-summary"><Avatar><AvatarFallback>{user.full_name.slice(0, 2).toUpperCase()}</AvatarFallback></Avatar><div><strong>{user.full_name}</strong><span>{user.email} · {user.role}</span></div></div>
+    <label className="setting-toggle"><input type="checkbox" defaultChecked onChange={(e) => localStorage.setItem("preventa-autosave", String(e.target.checked))} /><span><strong>Automatic draft saving</strong><small>Persist worksheet edits after a short debounce.</small></span></label>
+    <label className="setting-toggle"><input type="checkbox" defaultChecked={localStorage.getItem("preventa-compact") === "true"} onChange={(e) => {
+      localStorage.setItem("preventa-compact", String(e.target.checked));
+      document.documentElement.classList.toggle("compact-workspace", e.target.checked);
+    }} /><span><strong>Compact worksheet density</strong><small>Reduce row padding for facilitated sessions.</small></span></label>
+    {user.role === "admin" && <div className="admin-users">
+      <div className="section-heading"><div><h3>User access</h3><p>Administrators can provision role-controlled accounts.</p></div><button className="secondary-button compact" onClick={() => setAdding(true)}><Plus size={15} />Add user</button></div>
+      {users.map((item) => <div className="user-access-row" key={item.id}><Avatar><AvatarFallback>{item.full_name.slice(0, 2).toUpperCase()}</AvatarFallback></Avatar><div><strong>{item.full_name}</strong><span>{item.email}</span></div><Badge variant="outline">{item.role}</Badge></div>)}
+    </div>}
+    <div className="dialog-actions"><button className="primary-button" onClick={onClose}>Done</button></div>
+    {adding && <div className="nested-dialog"><form onSubmit={async (event) => {
+      event.preventDefault();
+      try {
+        const created = await createUser(form);
+        setUsers((items) => [...items, created]);
+        setAdding(false);
+        setForm({ email: "", full_name: "", password: "", role: "viewer" });
+      } catch (error) { onError(error instanceof Error ? error.message : "User could not be created."); }
+    }}>
+      <div className="dialog-heading"><div><h3>Add user</h3><p>Password must contain at least 12 characters.</p></div><button type="button" className="icon-button" onClick={() => setAdding(false)}><X size={17} /></button></div>
+      <label>Full name<input required value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} /></label>
+      <label>Email<input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></label>
+      <label>Temporary password<input type="password" minLength={12} required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /></label>
+      <label>Role<select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value as AuthUser["role"] })}><option value="viewer">Viewer</option><option value="facilitator">Facilitator</option><option value="admin">Administrator</option></select></label>
+      <div className="dialog-actions"><button type="button" className="secondary-button" onClick={() => setAdding(false)}>Cancel</button><button className="primary-button">Create user</button></div>
+    </form></div>}
+  </div></div>;
+}
+
+function StudyInfoDialog({ open, study, canWrite, onClose, onSaved, onError }: {
+  open: boolean;
+  study: WorkspaceStudy;
+  canWrite: boolean;
+  onClose: () => void;
+  onSaved: (study: StudyListItem) => void;
+  onError: (message: string) => void;
+}) {
+  const [form, setForm] = useState({ title: study.title, client: study.client, facility: study.facility, status: "draft" });
+  useEffect(() => setForm({ title: study.title, client: study.client, facility: study.facility, status: "draft" }), [study]);
+  if (!open) return null;
+  return <div className="modal-backdrop" role="presentation"><form className="form-dialog" onSubmit={async (event) => {
+    event.preventDefault();
+    try {
+      onSaved(await updateStudy(study.id, form));
+      onClose();
+    } catch { onError("Study information could not be updated."); }
+  }}>
+    <div className="dialog-heading"><div><h2>Study information</h2><p>Controlled project context used across nodes and reports.</p></div><button type="button" className="icon-button" onClick={onClose}><X size={18} /></button></div>
+    <label>Study name<input readOnly={!canWrite} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></label>
+    <label>Client<input readOnly={!canWrite} value={form.client} onChange={(e) => setForm({ ...form, client: e.target.value })} /></label>
+    <label>Facility<input readOnly={!canWrite} value={form.facility} onChange={(e) => setForm({ ...form, facility: e.target.value })} /></label>
+    <label>Status<select disabled={!canWrite} value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}><option value="draft">Draft</option><option value="in_review">In review</option><option value="complete">Complete</option></select></label>
+    <div className="dialog-actions"><button type="button" className="secondary-button" onClick={onClose}>Cancel</button>{canWrite && <button className="primary-button">Save changes</button>}</div>
+  </form></div>;
+}
+
 function WorkspaceApp({
   user,
   onLogout,
@@ -1384,6 +1733,12 @@ function WorkspaceApp({
   const [selectedRow, setSelectedRow] = useState(1);
   const [evidenceOpen, setEvidenceOpen] = useState(true);
   const [navOpen, setNavOpen] = useState(false);
+  const [worksheetQuery, setWorksheetQuery] = useState("");
+  const [hiddenColumns, setHiddenColumns] = useState<Set<string>>(new Set());
+  const [studyInfoOpen, setStudyInfoOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [openCitation, setOpenCitation] = useState<Suggestion["citations"][number] | null>(null);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const saveTimers = useRef<Record<string, number>>({});
   const canWrite = user.permissions.includes("workspace:write");
@@ -1394,6 +1749,15 @@ function WorkspaceApp({
     () => rows.find((row) => row.id === selectedRow) ?? rows[0],
     [rows, selectedRow],
   );
+  const visibleRows = useMemo(() => {
+    const query = worksheetQuery.trim().toLowerCase();
+    if (!query) return rows;
+    return rows.filter((row) =>
+      `${row.guideword} ${row.deviation} ${row.cause} ${row.consequence} ${row.safeguard} ${row.status}`
+        .toLowerCase()
+        .includes(query),
+    );
+  }, [rows, worksheetQuery]);
 
   useEffect(() => {
     setWorkspaceSuggestions([]);
@@ -1453,10 +1817,11 @@ function WorkspaceApp({
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  const notify = (message: string, type: "success" | "error" = "success") => {
+  const notify = useCallback((message: string, type: "success" | "error" = "success") => {
     setToast({ message, type });
     window.setTimeout(() => setToast(null), 2800);
-  };
+  }, []);
+  const notifyError = useCallback((message: string) => notify(message, "error"), [notify]);
 
   const updateRow = (id: number, field: keyof HazopRow, value: string) => {
     setRows((current) =>
@@ -1494,6 +1859,31 @@ function WorkspaceApp({
       notify("A new HAZOP row was added.");
     } catch {
       notify("The row could not be created. Check the API connection.", "error");
+    }
+  };
+
+  const addFromLibrary = async (entry: LibraryEntry) => {
+    if (!activeNodeId) {
+      notify("Select a node before applying a library entry.", "error");
+      return;
+    }
+    try {
+      const created = await createHazopRow(activeNodeId, {
+        guideword: entry.guideword,
+        deviation: entry.deviation,
+        cause: entry.cause,
+        consequence: entry.consequence,
+        safeguard: entry.safeguard,
+        severity: entry.severity,
+        likelihood: entry.likelihood,
+        status: "Taslak",
+      });
+      setRows((current) => [...current, created]);
+      setSelectedRow(created.id);
+      setRailSection("studies");
+      notify("Scenario pattern added to the active node as a draft.");
+    } catch {
+      notify("The scenario pattern could not be added.", "error");
     }
   };
 
@@ -1635,7 +2025,13 @@ function WorkspaceApp({
 
   return (
     <div className="app-shell">
-      <AppRail active={railSection} onSelect={setRailSection} />
+      <AppRail
+        active={railSection}
+        onSelect={setRailSection}
+        onHelp={() => setHelpOpen(true)}
+        onSettings={() => setSettingsOpen(true)}
+        user={user}
+      />
       <StudyNavigator
         open={navOpen}
         onClose={() => setNavOpen(false)}
@@ -1647,6 +2043,20 @@ function WorkspaceApp({
         studies={studyOptions}
         onSelectStudy={selectStudy}
         canWrite={canWrite}
+        onOverview={() => {
+          setRailSection("studies");
+          setActiveTab("HAZOP");
+          setNavOpen(false);
+        }}
+        onStudyInformation={() => {
+          setStudyInfoOpen(true);
+          setNavOpen(false);
+        }}
+        onRiskMatrix={() => {
+          setRailSection("studies");
+          setActiveTab("Risk matrix");
+          setNavOpen(false);
+        }}
       />
       <div className="workspace-shell">
         <TopBar
@@ -1659,47 +2069,16 @@ function WorkspaceApp({
           apiConnected={apiConnected}
           user={user}
           onLogout={onLogout}
+          onHistory={() => setRailSection("history")}
         />
 
         <main id="main-content" className="main-workspace">
-          {railSection !== "studies" ? (
-            <section className="rail-section-page">
-              <div className="section-heading">
-                <div>
-                  <h2>
-                    {railSection === "library"
-                      ? "Scenario library"
-                      : railSection === "reports"
-                        ? "Reports"
-                        : "Audit history"}
-                  </h2>
-                  <p>
-                    {railSection === "library"
-                      ? "Manage approved cause, consequence and safeguard records by equipment type."
-                      : railSection === "reports"
-                        ? "Download DOCX reports generated from studies."
-                        : "Audit trail for study, node and worksheet changes."}
-                  </p>
-                </div>
-                {railSection === "reports" && (
-                  <button className="primary-button" onClick={() => { window.location.href = reportUrl(study.id, activeNode.id); }}>
-                    <Download size={16} /> Download active node report
-                  </button>
-                )}
-              </div>
-              <div className="functional-empty">
-                {railSection === "library" ? <BookOpen size={28} /> : railSection === "reports" ? <FileOutput size={28} /> : <History size={28} />}
-                <strong>{railSection === "history" ? "Audit records are retained by the backend" : "This module is connected to the MVP workflow"}</strong>
-                <p>
-                  {railSection === "library"
-                    ? `${workspaceSuggestions.length} grounded suggestions are available in the active study context.`
-                    : railSection === "reports"
-                      ? "The report action generates an editable DOCX through the live API."
-                      : "Create, update and delete actions are recorded in the mvp_audit table."}
-                </p>
-                <button className="secondary-button" onClick={() => setRailSection("studies")}>Return to study</button>
-              </div>
-            </section>
+          {railSection === "library" ? (
+            <LibraryWorkspace canWrite={canWrite} canDelete={canDelete} onApply={addFromLibrary} onError={notifyError} />
+          ) : railSection === "reports" ? (
+            <ReportsWorkspace studyId={study.id} nodeId={activeNode.id} onError={notifyError} />
+          ) : railSection === "history" ? (
+            <AuditWorkspace onError={notifyError} />
           ) : (
           <>
           <div className="design-intent">
@@ -1736,6 +2115,15 @@ function WorkspaceApp({
                 suggestionCount={workspaceSuggestions.length}
                 canWrite={canWrite}
                 canDelete={canDelete}
+                query={worksheetQuery}
+                onQueryChange={setWorksheetQuery}
+                onOpenLibrary={() => setRailSection("library")}
+                hiddenColumns={hiddenColumns}
+                onToggleColumn={(column) => setHiddenColumns((current) => {
+                  const next = new Set(current);
+                  if (next.has(column)) next.delete(column); else next.add(column);
+                  return next;
+                })}
               />
               <div className={`hazop-layout ${evidenceOpen ? "with-evidence" : ""}`}>
                 {loadingRows ? (
@@ -1748,11 +2136,12 @@ function WorkspaceApp({
                     <button className="primary-button" onClick={addRow}><Plus size={16} /> Add first row</button>
                   </div>
                 ) : <HazopTable
-                  rows={rows}
+                  rows={visibleRows}
                   selectedRow={selectedRow}
                   onSelectRow={setSelectedRow}
                   onUpdateRow={updateRow}
                   readOnly={!canWrite}
+                  hiddenColumns={hiddenColumns}
                 />}
                 <EvidencePanel
                   open={evidenceOpen}
@@ -1764,6 +2153,7 @@ function WorkspaceApp({
                   state={evidenceState}
                   error={evidenceError}
                   canRequest={canUseRag}
+                  onOpenCitation={setOpenCitation}
                 />
               </div>
             </>
@@ -1771,8 +2161,8 @@ function WorkspaceApp({
           {activeTab === "LOPA" && (
             <LopaWorkspace selectedRow={selected} readOnly={!canWrite} />
           )}
-          {activeTab === "Risk matrix" && <RiskMatrix />}
-          {activeTab === "Sources" && <SourcesWorkspace />}
+          {activeTab === "Risk matrix" && <RiskMatrix studyId={study.id} canWrite={canWrite} onError={notifyError} />}
+          {activeTab === "Sources" && <SourcesWorkspace studyId={study.id} canWrite={canWrite} canDelete={canDelete} onError={notifyError} />}
           {activeTab === "Product status" && <ProductStatusWorkspace status={productStatus} />}
           </>
           )}
@@ -1787,7 +2177,7 @@ function WorkspaceApp({
             <span className="status-separator" />
             <span className="local-data">
               <ShieldCheck size={14} />
-              Data stored locally
+              Connected workspace data
             </span>
           </div>
           <div className="shortcut-hints">
@@ -1834,6 +2224,31 @@ function WorkspaceApp({
           notify("Create nodeuldu.");
         }}
       />
+      <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
+      <SettingsDialog
+        open={settingsOpen}
+        user={user}
+        onClose={() => setSettingsOpen(false)}
+        onError={notifyError}
+      />
+      <StudyInfoDialog
+        open={studyInfoOpen}
+        study={study}
+        canWrite={canWrite}
+        onClose={() => setStudyInfoOpen(false)}
+        onError={notifyError}
+        onSaved={(updated) => {
+          setStudy((current) => ({ ...current, ...updated }));
+          setStudyOptions((items) => items.map((item) => item.id === updated.id ? updated : item));
+          notify("Study information updated.");
+        }}
+      />
+      {openCitation && <div className="modal-backdrop" role="presentation"><div className="form-dialog">
+        <div className="dialog-heading"><div><h2>{openCitation.source_ref}</h2><p>{openCitation.section_ref ?? "Section not specified"}</p></div><button className="icon-button" onClick={() => setOpenCitation(null)}><X size={18} /></button></div>
+        <div className="grounding-note"><FileClock size={17} /><span>Retrieved evidence excerpt</span></div>
+        <p className="citation-excerpt">{openCitation.excerpt}</p>
+        <div className="dialog-actions"><button className="primary-button" onClick={() => setOpenCitation(null)}>Close source</button></div>
+      </div></div>}
       {canWrite && (
         <button className="floating-create-study" onClick={() => setStudyDialogOpen(true)}>
           <Plus size={17} /> New study

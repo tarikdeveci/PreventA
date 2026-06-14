@@ -80,6 +80,45 @@ def initialize_store() -> None:
                 detail TEXT NOT NULL,
                 created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
+            CREATE TABLE IF NOT EXISTS mvp_library (
+                id TEXT PRIMARY KEY,
+                equipment_type TEXT NOT NULL,
+                guideword TEXT NOT NULL,
+                deviation TEXT NOT NULL,
+                cause TEXT NOT NULL,
+                consequence TEXT NOT NULL,
+                safeguard TEXT NOT NULL DEFAULT '',
+                severity INTEGER NOT NULL DEFAULT 3,
+                likelihood INTEGER NOT NULL DEFAULT 2,
+                source_ref TEXT NOT NULL DEFAULT '',
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS mvp_sources (
+                id TEXT PRIMARY KEY,
+                study_id TEXT NOT NULL REFERENCES mvp_studies(id) ON DELETE CASCADE,
+                title TEXT NOT NULL,
+                source_type TEXT NOT NULL,
+                reference TEXT NOT NULL DEFAULT '',
+                section_count INTEGER NOT NULL DEFAULT 0,
+                is_active INTEGER NOT NULL DEFAULT 1,
+                indexed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS mvp_risk_matrix (
+                study_id TEXT PRIMARY KEY REFERENCES mvp_studies(id) ON DELETE CASCADE,
+                low_max INTEGER NOT NULL DEFAULT 3,
+                medium_max INTEGER NOT NULL DEFAULT 7,
+                high_max INTEGER NOT NULL DEFAULT 11,
+                revision INTEGER NOT NULL DEFAULT 1,
+                updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS mvp_reports (
+                id TEXT PRIMARY KEY,
+                study_id TEXT NOT NULL REFERENCES mvp_studies(id) ON DELETE CASCADE,
+                node_id TEXT NOT NULL REFERENCES mvp_nodes(id) ON DELETE CASCADE,
+                filename TEXT NOT NULL,
+                created_by TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
             CREATE TABLE IF NOT EXISTS app_users (
                 id TEXT PRIMARY KEY,
                 email TEXT NOT NULL UNIQUE,
@@ -99,6 +138,92 @@ def initialize_store() -> None:
         )
         # Use INSERT OR IGNORE to be safe in multi-process deployments
         _seed(database)
+        _seed_reference_data(database)
+
+
+def _seed_reference_data(database: sqlite3.Connection) -> None:
+    database.executemany(
+        """
+        INSERT OR IGNORE INTO mvp_library
+            (id, equipment_type, guideword, deviation, cause, consequence,
+             safeguard, severity, likelihood, source_ref)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        [
+            (
+                "lib-pump-no-flow",
+                "Centrifugal pump",
+                "Yok",
+                "No flow",
+                "Suction isolation closed, low vessel level or blocked strainer",
+                "Loss of downstream feed, pump overheating and potential seal failure",
+                "Low-flow alarm; standby pump auto-start; operator response procedure",
+                3,
+                2,
+                "IEC 61882 / pump study pattern",
+            ),
+            (
+                "lib-vessel-high-pressure",
+                "Pressure vessel",
+                "Fazla",
+                "High pressure",
+                "Blocked outlet, external fire or pressure-control failure",
+                "Loss of containment and personnel exposure",
+                "PSV; high-pressure alarm; independent shutdown",
+                5,
+                2,
+                "IEC 61882 / pressure protection pattern",
+            ),
+            (
+                "lib-heat-exchanger-cross-leak",
+                "Shell-and-tube heat exchanger",
+                "Başka",
+                "Cross contamination",
+                "Tube rupture caused by corrosion, vibration or differential pressure",
+                "Higher-pressure fluid enters the low-pressure side",
+                "Leak detection; material inspection; pressure relief",
+                4,
+                2,
+                "Historical heat-exchanger studies",
+            ),
+        ],
+    )
+    studies = database.execute("SELECT id FROM mvp_studies").fetchall()
+    for study in studies:
+        database.execute(
+            """
+            INSERT OR IGNORE INTO mvp_risk_matrix
+                (study_id, low_max, medium_max, high_max)
+            VALUES (?, 3, 7, 11)
+            """,
+            (study["id"],),
+        )
+    for study in studies:
+        database.executemany(
+            """
+                INSERT OR IGNORE INTO mvp_sources
+                    (id, study_id, title, source_type, reference, section_count)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """,
+            [
+                (
+                    f"source-iec-61882-{study['id']}",
+                    study["id"],
+                    "IEC 61882:2016",
+                    "Standard",
+                    "Hazard and operability studies application guide",
+                    42,
+                ),
+                (
+                    f"source-iec-61511-{study['id']}",
+                    study["id"],
+                    "IEC 61511-1:2016",
+                    "Standard",
+                    "Functional safety for the process industry sector",
+                    67,
+                ),
+            ],
+        )
 
 
 def _seed(database: sqlite3.Connection) -> None:

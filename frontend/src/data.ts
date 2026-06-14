@@ -93,6 +93,60 @@ export type StudyListItem = {
   node_count: number;
 };
 
+export type LibraryEntry = {
+  id: string;
+  equipment_type: string;
+  guideword: string;
+  deviation: string;
+  cause: string;
+  consequence: string;
+  safeguard: string;
+  severity: number;
+  likelihood: number;
+  source_ref: string;
+  risk: RiskLevel;
+};
+
+export type StudySource = {
+  id: string;
+  study_id: string;
+  title: string;
+  source_type: "Standard" | "Historical study" | "Procedure" | "Drawing" | "Other";
+  reference: string;
+  section_count: number;
+  is_active: boolean;
+  indexed_at: string;
+};
+
+export type RiskMatrixSettings = {
+  study_id: string;
+  low_max: number;
+  medium_max: number;
+  high_max: number;
+  revision: number;
+  updated_at: string;
+};
+
+export type AuditEntry = {
+  id: number;
+  entity_type: string;
+  entity_id: string;
+  action: string;
+  detail: string;
+  created_at: string;
+};
+
+export type ReportEntry = {
+  id: string;
+  study_id: string;
+  node_id: string;
+  filename: string;
+  created_by: string;
+  created_at: string;
+  study_title: string;
+  node_name: string;
+};
+
 export type WorkspaceNode = {
   id: string;
   code: string;
