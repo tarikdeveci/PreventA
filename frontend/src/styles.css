@@ -3607,6 +3607,7 @@ kbd {
   gap: 0;
   margin: 0;
   padding: 0;
+  background: transparent;
   border-top: 1px solid rgb(255 255 255 / 0.13);
   list-style: none;
 }
@@ -3617,21 +3618,37 @@ kbd {
   gap: 12px;
   min-height: 220px;
   padding: 25px 20px;
+  color: var(--landing-ink);
+  background: rgb(255 255 255 / 0.018);
   border-right: 1px solid rgb(255 255 255 / 0.13);
 }
 
+.workflow-section li::before {
+  display: none;
+  content: none;
+}
+
 .workflow-section li > span {
+  display: block;
   color: var(--landing-lime);
   font-family: "Cascadia Mono", Consolas, monospace;
   font-size: 0.59rem;
 }
 
+.workflow-section li > div {
+  min-width: 0;
+}
+
 .workflow-section li strong {
+  display: block;
+  margin: 0;
+  color: #eef4e8;
   font-size: 1.05rem;
   font-weight: 610;
 }
 
 .workflow-section li p {
+  max-width: 27ch;
   margin: 15px 0 0;
   color: #7f8881;
   font-size: 0.72rem;
