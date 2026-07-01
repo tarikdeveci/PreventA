@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.responses import StreamingResponse
 
 from preventa.api.auth_dependencies import (
@@ -9,6 +9,7 @@ from preventa.api.auth_dependencies import (
     WriteUserDep,
     require_permission,
 )
+from preventa.features.opha import loads_opha
 from preventa.features.workspace.crud_schemas import (
     LibraryEntryCreate,
     LopaLayerCreate,
@@ -23,9 +24,14 @@ from preventa.features.workspace.crud_schemas import (
     StudyItem,
     StudyUpdate,
 )
+from preventa.features.workspace.opha_import import import_opha_study
 from preventa.features.workspace.report import build_docx
 from preventa.features.workspace.repository import WorkspaceRepository
-from preventa.features.workspace.schemas import ProductStatusResponse, WorkspaceResponse
+from preventa.features.workspace.schemas import (
+    OphaImportResult,
+    ProductStatusResponse,
+    WorkspaceResponse,
+)
 from preventa.features.workspace.service import get_product_status, get_workspace
 
 router = APIRouter(
@@ -58,6 +64,21 @@ async def create_study(
     _: WriteUserDep,
 ) -> dict[str, object]:
     return repository.create_study(payload)
+
+
+@router.post(
+    "/studies/import",
+    response_model=OphaImportResult,
+    status_code=status.HTTP_201_CREATED,
+)
+async def import_opha(request: Request, _: WriteUserDep) -> OphaImportResult:
+    """Import an OpenPHA study. POST the raw ``.opha`` file bytes as the body."""
+    raw = await request.body()
+    try:
+        study = loads_opha(raw.decode("utf-8"))
+    except (ValueError, UnicodeDecodeError) as exc:
+        raise HTTPException(status_code=422, detail=f"Invalid .opha file: {exc}") from exc
+    return OphaImportResult(**import_opha_study(repository, study))
 
 
 @router.patch("/studies/{study_id}")
