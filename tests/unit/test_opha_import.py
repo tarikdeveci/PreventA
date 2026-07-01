@@ -90,3 +90,49 @@ def test_import_endpoint_requires_auth(
     client = TestClient(create_app())
     response = client.post("/api/v1/studies/import", content=FIXTURE.read_bytes())
     assert response.status_code == 401
+
+
+def test_import_maps_risk_rank_not_flat_low(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setenv("PREVENTA_DB_PATH", str(tmp_path / "preventa.db"))
+    repo = WorkspaceRepository()
+    result = import_opha_study(repo, load_opha(FIXTURE))
+    nodes = repo.list_nodes(result["study_id"])
+    rows = repo.list_rows(str(nodes[0]["id"]))
+    con1 = next(r for r in rows if r["consequence"].startswith("Loss of feed"))
+    con2 = next(r for r in rows if r["consequence"].startswith("Overpressure"))
+    # "Yuksek" rank maps to a genuine high risk, not a defaulted low.
+    assert con1["risk"] == "Yüksek"
+    # No rank -> flagged ungraded rather than shown as low.
+    assert con2["status"] == "Eksik"
+    assert result["dropped"]["Scenarios with an unmapped risk rank"] == 1
+
+
+def test_import_scenario_cap_rejects_large_study(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setenv("PREVENTA_DB_PATH", str(tmp_path / "preventa.db"))
+    repo = WorkspaceRepository()
+    with pytest.raises(ValueError, match="exceeding the import limit"):
+        import_opha_study(repo, load_opha(FIXTURE), max_scenarios=1)
+
+
+def test_import_is_idempotent(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    client = _client(monkeypatch, tmp_path)
+    body = FIXTURE.read_bytes()
+    first = client.post("/api/v1/studies/import", content=body).json()
+    count_after_first = len(WorkspaceRepository().list_studies())
+    second = client.post("/api/v1/studies/import", content=body).json()
+    assert first["study_id"] == second["study_id"]
+    # The same file must not create a duplicate study.
+    assert len(WorkspaceRepository().list_studies()) == count_after_first
+
+
+def test_import_rejects_oversized_body(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    client = _client(monkeypatch, tmp_path)
+    oversized = b"x" * (5_000_001)
+    response = client.post("/api/v1/studies/import", content=oversized)
+    assert response.status_code == 413

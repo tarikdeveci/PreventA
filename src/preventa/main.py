@@ -24,19 +24,25 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    # CORS — tighten allowed_origins in production via env var
-    allowed_origins = [
+    # CORS — configurable via ALLOWED_ORIGINS (comma-separated); otherwise a
+    # default allow-list covering local dev and the known production domains.
+    default_origins = [
         "http://localhost:5173",
         "http://localhost:4173",
         "https://preventa.vercel.app",
         "https://preventa-ui.vercel.app",
+        "https://preventa-nu.vercel.app",
+        "https://preventa-api.vercel.app",
+    ]
+    configured_origins = [
+        origin.strip() for origin in settings.allowed_origins.split(",") if origin.strip()
     ]
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=allowed_origins,
+        allow_origins=configured_origins or default_origins,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+        allow_headers=["Accept", "Content-Type", "Authorization"],
     )
 
     app.include_router(api_router, prefix=settings.api_v1_prefix)

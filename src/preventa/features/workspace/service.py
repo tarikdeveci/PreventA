@@ -53,7 +53,7 @@ def get_product_status() -> ProductStatusResponse:
     return ProductStatusResponse(
         release="MVP beta",
         stage="Operational workspace",
-        overall_progress=88,
+        overall_progress=62,
         api_connected=True,
         persistence="volatile_sqlite",
         ai_runtime="contract_ready",
@@ -83,19 +83,21 @@ def get_product_status() -> ProductStatusResponse:
                 id="database",
                 name="Production persistence",
                 status="in_progress",
-                progress=45,
+                progress=35,
                 detail=(
-                    "The SQLite repository and live workspace summary are operational; "
-                    "managed PostgreSQL migration for Vercel is not complete."
+                    "SQLite persistence is volatile on serverless (/tmp is per-instance "
+                    "and reset on cold start), so imported studies are not durable. A "
+                    "managed PostgreSQL migration is required for production."
                 ),
             ),
             DeliveryModule(
                 id="rag",
                 name="Grounded RAG suggestions",
                 status="in_progress",
-                progress=55,
+                progress=45,
                 detail=(
-                    "UI contracts, citation display and guardrail errors are connected; "
+                    "UI contracts, citation display and guardrail errors are connected, "
+                    "but RAG is not live on Vercel (pgvector native extension unavailable); "
                     "live Ollama, corpus ingestion and end-to-end smoke tests remain."
                 ),
             ),

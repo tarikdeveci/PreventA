@@ -1,3 +1,4 @@
+import hashlib
 from io import BytesIO
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
@@ -9,6 +10,7 @@ from preventa.api.auth_dependencies import (
     WriteUserDep,
     require_permission,
 )
+from preventa.core.config import get_settings
 from preventa.features.opha import loads_opha
 from preventa.features.workspace.crud_schemas import (
     LibraryEntryCreate,
@@ -73,12 +75,35 @@ async def create_study(
 )
 async def import_opha(request: Request, _: WriteUserDep) -> OphaImportResult:
     """Import an OpenPHA study. POST the raw ``.opha`` file bytes as the body."""
+    settings = get_settings()
     raw = await request.body()
+    if len(raw) > settings.import_max_bytes:
+        raise HTTPException(
+            status_code=413,
+            detail="The .opha file is too large to import.",
+        )
+    # Idempotency: the same file re-uploaded returns the existing import.
+    content_hash = hashlib.sha256(raw).hexdigest()
+    existing = repository.find_import(content_hash)
+    if existing is not None:
+        return OphaImportResult(**existing)
     try:
         study = loads_opha(raw.decode("utf-8"))
-    except (ValueError, UnicodeDecodeError) as exc:
-        raise HTTPException(status_code=422, detail=f"Invalid .opha file: {exc}") from exc
-    return OphaImportResult(**import_opha_study(repository, study))
+    except (ValueError, UnicodeDecodeError, RecursionError):
+        raise HTTPException(
+            status_code=422,
+            detail="The file is not a valid OpenPHA (.opha) document.",
+        ) from None
+    try:
+        result = import_opha_study(
+            repository, study, max_scenarios=settings.import_max_scenarios
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=413, detail=str(exc)
+        ) from exc
+    repository.record_import(content_hash, result["study_id"], result)
+    return OphaImportResult(**result)
 
 
 @router.patch("/studies/{study_id}")

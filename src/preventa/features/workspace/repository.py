@@ -1,4 +1,5 @@
-from typing import Any
+import json
+from typing import Any, cast
 
 from preventa.features.workspace.crud_schemas import (
     LibraryEntryCreate,
@@ -445,6 +446,53 @@ class WorkspaceRepository:
                 """
             ).fetchall()
             return [row_dict(row) for row in rows]
+
+    def find_import(self, content_hash: str) -> dict[str, Any] | None:
+        """Return a previous import's report for this exact file, if still present."""
+        with connection() as database:
+            row = database.execute(
+                "SELECT study_id, result_json FROM mvp_imports WHERE content_hash = ?",
+                (content_hash,),
+            ).fetchone()
+            if row is None:
+                return None
+            study = database.execute(
+                "SELECT 1 FROM mvp_studies WHERE id = ?", (row["study_id"],)
+            ).fetchone()
+            if study is None:
+                # The imported study was deleted; allow a fresh import.
+                database.execute(
+                    "DELETE FROM mvp_imports WHERE content_hash = ?", (content_hash,)
+                )
+                return None
+        return cast(dict[str, Any], json.loads(row["result_json"]))
+
+    def record_import(self, content_hash: str, study_id: str, result: dict[str, Any]) -> None:
+        """Persist an import fingerprint (for dedup) and an auditable loss report."""
+        with connection() as database:
+            database.execute(
+                """
+                INSERT OR REPLACE INTO mvp_imports (content_hash, study_id, result_json)
+                VALUES (?, ?, ?)
+                """,
+                (content_hash, study_id, json.dumps(result)),
+            )
+            detail = json.dumps(
+                {
+                    "nodes": result.get("nodes"),
+                    "rows": result.get("rows"),
+                    "lopa_layers": result.get("lopa_layers"),
+                    "dropped": result.get("dropped", {}),
+                },
+                ensure_ascii=False,
+            )
+            database.execute(
+                """
+                INSERT INTO mvp_audit (entity_type, entity_id, action, detail)
+                VALUES (?, ?, ?, ?)
+                """,
+                ("import", study_id, "imported", detail),
+            )
 
     @staticmethod
     def _serialize_library(row: Any) -> dict[str, Any]:

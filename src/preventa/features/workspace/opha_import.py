@@ -34,8 +34,43 @@ def _atleast(value: str | None, fallback: str, *, limit: int = 160) -> str:
     return text[:limit]
 
 
-def import_opha_study(repo: WorkspaceRepository, opha: OphaStudy) -> dict[str, Any]:
+def _risk_from_rank(label: str | None) -> tuple[int, int, str]:
+    """Map an OpenPHA risk-rank label to a 5x5 severity/likelihood + row status.
+
+    OpenPHA stores risk as a rank label (localised, e.g. "Yüksek"/"Aşırı") rather
+    than a 1-5 pair, so a defaulted (1, 1) would misrepresent critical scenarios
+    as low risk — unacceptable in a safety tool. Unmapped/blank ranks are marked
+    "Eksik" (ungraded) rather than shown as genuinely low.
+    """
+    text = (label or "").strip().lower()
+    if not text:
+        return 1, 1, "Eksik"
+    if any(k in text for k in ("kritik", "aşırı", "asiri", "extreme", "critical")):
+        return 5, 5, "Taslak"
+    if any(k in text for k in ("yüksek", "yuksek", "high")):
+        return 4, 2, "Taslak"
+    if any(k in text for k in ("orta", "medium", "moderate")):
+        return 2, 2, "Taslak"
+    if any(k in text for k in ("düşük", "dusuk", "low")):
+        return 1, 1, "Taslak"
+    return 1, 1, "Eksik"
+
+
+def import_opha_study(
+    repo: WorkspaceRepository,
+    opha: OphaStudy,
+    *,
+    max_scenarios: int | None = None,
+) -> dict[str, Any]:
     """Flatten an OpenPHA study into the workspace store; return an import report."""
+    if max_scenarios is not None:
+        scenario_count = opha.summary()["consequences"]
+        if scenario_count > max_scenarios:
+            raise ValueError(
+                f"Study has {scenario_count} scenarios, exceeding the import limit "
+                f"of {max_scenarios}."
+            )
+
     dropped: Counter[str] = Counter()
 
     study = repo.create_study(
@@ -85,6 +120,11 @@ def import_opha_study(repo: WorkspaceRepository, opha: OphaStudy) -> dict[str, A
                     if con.tmel is not None or con.rrf is not None:
                         dropped["LOPA metrics (TMEL/MEL/RRF) dropped"] += 1
 
+                    severity, likelihood, row_status = _risk_from_rank(
+                        con.raw.get("Risk_Rank_ID")
+                    )
+                    if row_status == "Eksik":
+                        dropped["Scenarios with an unmapped risk rank"] += 1
                     row = repo.create_row(
                         node_id,
                         RowCreate(
@@ -93,9 +133,9 @@ def import_opha_study(repo: WorkspaceRepository, opha: OphaStudy) -> dict[str, A
                             cause=cause.text or "",
                             consequence=con.text or "",
                             safeguard=" | ".join(t for t in sg_texts if t),
-                            severity=1,
-                            likelihood=1,
-                            status="Taslak",
+                            severity=severity,
+                            likelihood=likelihood,
+                            status=row_status,
                         ),
                     )
                     rows_created += 1
