@@ -1,9 +1,35 @@
-from preventa.db.models.hazop import HazopNode, HazopWorksheetRow, Study
+from preventa.db.models.hazop import (
+    AnalysisMode,
+    Cause,
+    Consequence,
+    Deviation,
+    Lopa,
+    Node,
+    Recommendation,
+    RecommendationKind,
+    ReviewStatus,
+    RiskMatrix,
+    Safeguard,
+    Study,
+    StudyStatus,
+    consequence_safeguard,
+)
 
 __all__ = [
-    "HazopNode",
-    "HazopWorksheetRow",
+    "AnalysisMode",
+    "Cause",
+    "Consequence",
+    "Deviation",
+    "Lopa",
+    "Node",
+    "Recommendation",
+    "RecommendationKind",
+    "ReviewStatus",
+    "RiskMatrix",
+    "Safeguard",
     "Study",
+    "StudyStatus",
+    "consequence_safeguard",
 ]
 
 

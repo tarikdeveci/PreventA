@@ -71,9 +71,11 @@ class KnowledgeChunk(UUIDPrimaryKeyMixin, TimestampMixin, Base):
 class RagSuggestion(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "rag_suggestions"
 
-    worksheet_row_id: Mapped[UUID | None] = mapped_column(
+    # OpenPHA refactor: a suggestion now grounds a Consequence (the HAZOP
+    # scenario) rather than the dropped flat ``hazop_worksheet_rows`` row.
+    consequence_id: Mapped[UUID | None] = mapped_column(
         PGUUID(as_uuid=True),
-        ForeignKey("hazop_worksheet_rows.id", ondelete="SET NULL"),
+        ForeignKey("consequences.id", ondelete="SET NULL"),
         index=True,
     )
     prompt_version: Mapped[str] = mapped_column(String(50), nullable=False)
