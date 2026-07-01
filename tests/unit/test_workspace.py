@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+
 from preventa.features.workspace.repository import WorkspaceRepository
 from preventa.features.workspace.service import get_product_status, get_workspace
 

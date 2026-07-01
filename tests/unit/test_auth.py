@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 from fastapi import HTTPException
+
 from preventa.api.auth_dependencies import require_permission
 from preventa.features.auth.repository import AuthRepository
 from preventa.features.auth.schemas import AuthUser
