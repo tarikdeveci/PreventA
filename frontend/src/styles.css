@@ -2291,6 +2291,33 @@ kbd {
   margin-top: 20px;
 }
 
+.import-opha-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 12px;
+  font-size: 12px;
+  color: oklch(0.55 0.01 120);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.import-opha-divider::before,
+.import-opha-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.import-opha-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
 .floating-create-study {
   position: fixed;
   z-index: 35;
