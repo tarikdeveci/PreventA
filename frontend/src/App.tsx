@@ -35,6 +35,7 @@ import {
   Sparkles,
   Table2,
   Trash2,
+  Upload,
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -44,6 +45,7 @@ import {
   createHazopRow,
   createNode,
   createStudy,
+  importOphaStudy,
   deleteHazopRow,
   deleteLopaLayer,
   fetchDeviationAssist,
@@ -72,6 +74,7 @@ import {
   updateStudy,
   logout as logoutSession,
 } from "./api";
+import type { OphaImportResult } from "./api";
 import { LoginPage } from "@/components/login-page";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -1528,16 +1531,39 @@ function CreateStudyDialog({
   open,
   onClose,
   onCreated,
+  onImported,
   onError,
 }: {
   open: boolean;
   onClose: () => void;
   onCreated: (study: StudyListItem) => void;
+  onImported: (result: OphaImportResult) => void;
   onError: (msg: string) => void;
 }) {
   const [values, setValues] = useState({ title: "", client: "", facility: "" });
   const [saving, setSaving] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   if (!open) return null;
+
+  const handleImportFile = async (file: File) => {
+    setImporting(true);
+    try {
+      const text = await file.text();
+      const result = await importOphaStudy(text);
+      onImported(result);
+    } catch (error) {
+      onError(
+        error instanceof ApiError
+          ? `The .opha file could not be imported: ${error.message}`
+          : "The .opha file could not be imported. Check the file and API connection.",
+      );
+    } finally {
+      setImporting(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   return (
     <div className="modal-backdrop" role="presentation">
       <form
@@ -1566,6 +1592,25 @@ function CreateStudyDialog({
           <button type="button" className="secondary-button" onClick={onClose}>Cancel</button>
           <button className="primary-button" disabled={saving}>{saving ? "Creating" : "Create study"}</button>
         </div>
+        <div className="import-opha-divider" role="separator">or import an existing study</div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".opha,application/json"
+          hidden
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) void handleImportFile(file);
+          }}
+        />
+        <button
+          type="button"
+          className="secondary-button import-opha-button"
+          disabled={importing}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <Upload size={16} /> {importing ? "Importing .opha..." : "Import OpenPHA (.opha) file"}
+        </button>
       </form>
     </div>
   );
@@ -2209,6 +2254,44 @@ function WorkspaceApp({
           setStudyDialogOpen(false);
           setNodeDialogOpen(true);
           notify("Study created. Add the first node.");
+        }}
+        onImported={async (result) => {
+          setStudyDialogOpen(false);
+          try {
+            const studies = await fetchStudies();
+            setStudyOptions(studies);
+            const imported = studies.find((item) => item.id === result.study_id);
+            if (imported) {
+              setStudy({
+                ...imported,
+                progress: 0,
+                reviewed_scenarios: 0,
+                total_scenarios: 0,
+              });
+              const studyNodes = await fetchNodes(result.study_id);
+              setWorkspaceNodes(studyNodes);
+              const firstNode = studyNodes[0];
+              if (firstNode) {
+                setActiveNodeId(firstNode.id);
+                const nodeRows = await fetchRows(firstNode.id);
+                setRows(nodeRows);
+                setSelectedRow(nodeRows[0]?.id ?? 0);
+              } else {
+                setRows([]);
+                setActiveNodeId("");
+              }
+            }
+            setApiConnected(true);
+          } catch {
+            notify("Study imported, but the workspace could not be refreshed.", "error");
+            return;
+          }
+          const droppedTotal = Object.values(result.dropped).reduce((sum, n) => sum + n, 0);
+          notify(
+            `Imported "${result.study_title}": ${result.nodes} nodes, ${result.rows} scenarios, ` +
+              `${result.lopa_layers} LOPA layers. ${droppedTotal} data points from the OpenPHA ` +
+              `model could not be mapped to the flat worksheet.`,
+          );
         }}
       />
       <CreateNodeDialog

@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 import pytest
+
 from preventa.features.rag.guardrails import (
     UngroundedSuggestionError,
     require_citations,

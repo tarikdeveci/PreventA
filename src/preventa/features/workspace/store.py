@@ -134,6 +134,16 @@ def initialize_store() -> None:
                 expires_at TEXT NOT NULL,
                 created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
+            CREATE TABLE IF NOT EXISTS app_revoked_sessions (
+                token_hash TEXT PRIMARY KEY,
+                revoked_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS mvp_imports (
+                content_hash TEXT PRIMARY KEY,
+                study_id TEXT NOT NULL REFERENCES mvp_studies(id) ON DELETE CASCADE,
+                result_json TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
             """
         )
         # Use INSERT OR IGNORE to be safe in multi-process deployments

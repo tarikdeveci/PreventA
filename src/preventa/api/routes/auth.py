@@ -1,3 +1,5 @@
+import time
+
 from fastapi import APIRouter, HTTPException, Request, Response, status
 
 from preventa.api.auth_dependencies import (
@@ -15,6 +17,33 @@ from preventa.features.auth.schemas import (
 
 router = APIRouter()
 
+# Best-effort in-memory login throttle (per worker). A shared store (Redis /
+# Postgres) is required for cross-instance limiting once persistence moves off
+# volatile SQLite, but this already blunts brute-force / credential stuffing.
+_LOGIN_WINDOW_SECONDS = 300
+_LOGIN_MAX_ATTEMPTS = 8
+_login_attempts: dict[str, list[float]] = {}
+
+
+def _throttle_key(request: Request, email: str) -> str:
+    client = request.client.host if request.client else "unknown"
+    return f"{client}:{email.strip().lower()}"
+
+
+def _check_login_rate(key: str) -> None:
+    now = time.time()
+    recent = [t for t in _login_attempts.get(key, []) if now - t < _LOGIN_WINDOW_SECONDS]
+    _login_attempts[key] = recent
+    if len(recent) >= _LOGIN_MAX_ATTEMPTS:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many login attempts. Try again in a few minutes.",
+        )
+
+
+def _record_login_failure(key: str) -> None:
+    _login_attempts.setdefault(key, []).append(time.time())
+
 
 @router.post("/login", response_model=SessionResponse)
 async def login(
@@ -22,12 +51,16 @@ async def login(
     request: Request,
     response: Response,
 ) -> SessionResponse:
+    throttle_key = _throttle_key(request, str(payload.email))
+    _check_login_rate(throttle_key)
     user = auth_repository.authenticate(str(payload.email), payload.password)
     if user is None:
+        _record_login_failure(throttle_key)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Email or password is incorrect.",
         )
+    _login_attempts.pop(throttle_key, None)
     token = auth_repository.create_session(user.id)
     response.set_cookie(
         SESSION_COOKIE,

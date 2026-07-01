@@ -1,0 +1,114 @@
+{
+  "Overview": {
+    "Study_Name": "Synthetic Demo HAZOP & LOPA",
+    "Study_Coordinator": "Test Coordinator",
+    "Pha_Type": "null",
+    "Study_Status": "null",
+    "Facility": "Demo Facility",
+    "Unit": "Demo Unit"
+  },
+  "Settings": {
+    "Analysis_Mode": "HAZOP",
+    "Lopa_Mode": "true"
+  },
+  "Team_Members": [
+    {"ID": "tm1", "Name": "Alice"},
+    {"ID": "tm2", "Name": "Bob"}
+  ],
+  "Sessions": [
+    {"ID": "ses1", "Date": "2026-01-01"}
+  ],
+  "Nodes": [
+    {
+      "ID": "node1",
+      "Node_Description": "Feed Pump P-101",
+      "Intention": "Provide continuous feed",
+      "Equipment_Tags": "P-101",
+      "Deviations": [
+        {
+          "ID": "dev1",
+          "Parameter": "Flow",
+          "Guide_Word": "No",
+          "Deviation": "No flow",
+          "Causes": [
+            {
+              "ID": "cau1",
+              "Cause": "Suction valve closed",
+              "Cause_Type": "null",
+              "Frequency": "1E-1",
+              "Enabling_Events": [{"ID": "empty", "EE_Description": "", "EE_Probability": ""}],
+              "Consequences": [
+                {
+                  "ID": "con1",
+                  "Consequence": "Loss of feed and pump damage",
+                  "Consequence_Type_ID": "Safety",
+                  "Lopa_Required": "true",
+                  "Recommended_Sil": "SIL 2",
+                  "Likelihood_ID": "lk1",
+                  "Risk_Rank_ID": "Yuksek",
+                  "Tmel": "1E-5",
+                  "Mel": "1E-2",
+                  "Lopa_Ratio": "1E-3",
+                  "Rrf": "1000",
+                  "Alarp_Required": "false",
+                  "Safeguard_IDs": [{"ID": "sg1"}, {"ID": "sg2"}],
+                  "Pha_Recommendation_IDs": [{"ID": "phar1"}],
+                  "Lopa_Recommendation_IDs": [{"ID": "lopar1"}],
+                  "Conditional_Modifiers": [{"ID": "empty", "CM_Description": "", "CM_Probability": ""}]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ID": "dev2",
+          "Parameter": "Pressure",
+          "Guide_Word": "High",
+          "Deviation": "High pressure",
+          "Causes": [
+            {
+              "ID": "cau2",
+              "Cause": "Blocked outlet",
+              "Frequency": "1E-2",
+              "Consequences": [
+                {
+                  "ID": "con2",
+                  "Consequence": "Overpressure and loss of containment",
+                  "Lopa_Required": "false",
+                  "Safeguard_IDs": [{"ID": "sg2"}]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "Safeguards": [
+    {
+      "ID": "sg1",
+      "Safeguard": "Low-flow alarm FAL-101",
+      "Is_Ipl": "false",
+      "Pfd": "1E-1",
+      "Selected_Sil": ""
+    },
+    {
+      "ID": "sg2",
+      "Safeguard": "Independent high-pressure trip (SIS)",
+      "Is_Ipl": "true",
+      "Pfd": "1E-2",
+      "Selected_Sil": "SIL 2"
+    }
+  ],
+  "Pha_Recommendations": [
+    {"ID": "phar1", "Pha_Recommendation": "Install standby pump auto-start"}
+  ],
+  "Lopa_Recommendations": [
+    {"ID": "lopar1", "Lopa_Recommendation": "Add SIL-2 pressure trip", "Lopa_Recommendation_Pfd": "1E-2"}
+  ],
+  "Risk_Criteria": {
+    "Likelihoods": [{"ID": "lk1", "Name": "Occasional"}],
+    "Severities": [],
+    "Intersections": []
+  }
+}

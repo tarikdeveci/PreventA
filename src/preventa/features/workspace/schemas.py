@@ -55,6 +55,15 @@ class WorkspaceResponse(BaseModel):
     suggestions: list[WorkspaceSuggestion]
 
 
+class OphaImportResult(BaseModel):
+    study_id: str
+    study_title: str
+    nodes: int
+    rows: int
+    lopa_layers: int
+    dropped: dict[str, int]
+
+
 class DeliveryModule(BaseModel):
     id: str
     name: str

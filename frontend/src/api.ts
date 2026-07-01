@@ -190,6 +190,28 @@ export function deleteStudy(studyId: string): Promise<void> {
   return sendJson(`/api/v1/studies/${studyId}`, "DELETE");
 }
 
+export interface OphaImportResult {
+  study_id: string;
+  study_title: string;
+  nodes: number;
+  rows: number;
+  lopa_layers: number;
+  dropped: Record<string, number>;
+}
+
+export async function importOphaStudy(fileText: string): Promise<OphaImportResult> {
+  const response = await fetch(`${API_BASE}/api/v1/studies/import`, {
+    method: "POST",
+    credentials: "include",
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    body: fileText,
+  });
+  if (!response.ok) {
+    throw await apiError(response);
+  }
+  return response.json() as Promise<OphaImportResult>;
+}
+
 export function deleteNode(nodeId: string): Promise<void> {
   return sendJson(`/api/v1/nodes/${nodeId}`, "DELETE");
 }

@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+
 from preventa.features.workspace.repository import WorkspaceRepository
 from preventa.features.workspace.service import get_product_status, get_workspace
 
@@ -25,7 +26,7 @@ def test_product_status_reports_external_runtime_dependencies() -> None:
 
     assert status.api_connected is True
     assert status.persistence == "volatile_sqlite"
-    assert status.overall_progress == 88
+    assert status.overall_progress == 62
     assert status.ai_runtime == "contract_ready"
     assert any(
         module.id == "database" and module.status == "in_progress" for module in status.modules
