@@ -9,7 +9,10 @@ round-trip stays lossless.
 
 from __future__ import annotations
 
+import re
+
 _NULLISH = {"", "null", "none", "undefined"}
+_DIGITS = re.compile(r"\d+")
 
 
 def as_str(value: object) -> str | None:
@@ -58,6 +61,15 @@ def as_bool(value: object) -> bool | None:
     if lowered in {"false", "0", "no", "n"}:
         return False
     return None
+
+
+def as_sil(value: object) -> int | None:
+    """Parse an OpenPHA SIL label (``"SIL 3"``, ``"3"``) into its integer level."""
+    text = as_str(value)
+    if text is None:
+        return None
+    match = _DIGITS.search(text)
+    return int(match.group()) if match else None
 
 
 def id_list(value: object) -> list[str]:

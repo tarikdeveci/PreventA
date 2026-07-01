@@ -16,8 +16,16 @@ from pathlib import Path
 from typing import Any
 
 from preventa.features.opha.model import OphaStudy
+from preventa.features.opha.orm_mapping import to_orm
 
-__all__ = ["OphaStudy", "dump_opha", "dumps_opha", "load_opha", "loads_opha"]
+__all__ = [
+    "OphaStudy",
+    "dump_opha",
+    "dumps_opha",
+    "load_opha",
+    "loads_opha",
+    "to_orm",
+]
 
 
 def load_opha(source: str | Path | dict[str, Any]) -> OphaStudy:

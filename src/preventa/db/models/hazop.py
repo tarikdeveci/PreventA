@@ -166,6 +166,7 @@ class Node(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         index=True,
         nullable=False,
     )
+    opha_id: Mapped[str | None] = mapped_column(String(64), index=True)  # OpenPHA Nodes[].ID
     description: Mapped[str] = mapped_column(Text, nullable=False)  # Node_Description
     intention: Mapped[str | None] = mapped_column(Text)  # Intention
     boundary: Mapped[str | None] = mapped_column(Text)  # Boundary
@@ -196,6 +197,7 @@ class Deviation(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         index=True,
         nullable=False,
     )
+    opha_id: Mapped[str | None] = mapped_column(String(64), index=True)  # OpenPHA Deviations[].ID
     parameter: Mapped[str] = mapped_column(String(100), nullable=False)  # Parameter
     guideword: Mapped[str] = mapped_column(String(100), nullable=False)  # Guide_Word
     deviation: Mapped[str] = mapped_column(Text, nullable=False)  # Deviation
@@ -222,6 +224,7 @@ class Cause(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         index=True,
         nullable=False,
     )
+    opha_id: Mapped[str | None] = mapped_column(String(64), index=True)  # OpenPHA Causes[].ID
     cause: Mapped[str] = mapped_column(Text, nullable=False)  # Cause
     cause_type: Mapped[str | None] = mapped_column(String(100))  # Cause_Type
     enabling_events: Mapped[str | None] = mapped_column(Text)  # Enabling_Events
@@ -252,6 +255,7 @@ class Consequence(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         index=True,
         nullable=False,
     )
+    opha_id: Mapped[str | None] = mapped_column(String(64), index=True)  # OpenPHA Consequences[].ID
     consequence: Mapped[str] = mapped_column(Text, nullable=False)  # Consequence
     consequence_type_id: Mapped[str | None] = mapped_column(String(64))
 
@@ -300,6 +304,7 @@ class Safeguard(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         index=True,
         nullable=False,
     )
+    opha_id: Mapped[str | None] = mapped_column(String(64), index=True)  # OpenPHA Safeguards[].ID
     description: Mapped[str] = mapped_column(Text, nullable=False)  # Safeguard
     safeguard_type: Mapped[str | None] = mapped_column(String(100))  # Safeguard_Type
     category: Mapped[str | None] = mapped_column(String(100))  # Safeguard_Category
@@ -376,6 +381,9 @@ class Recommendation(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         ForeignKey("consequences.id", ondelete="SET NULL"),
         index=True,
     )
+    opha_id: Mapped[str | None] = mapped_column(
+        String(64), index=True
+    )  # OpenPHA Pha_/Lopa_Recommendations[].ID
     kind: Mapped[RecommendationKind] = mapped_column(
         Enum(RecommendationKind, name="recommendation_kind"), nullable=False
     )
