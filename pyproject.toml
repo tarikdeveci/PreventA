@@ -24,6 +24,10 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "mypy>=1.14,<2",
+  # Alembic's online migrations use a sync driver (env.py strips ``+asyncpg``),
+  # so running ``alembic upgrade head`` needs psycopg2 even though the app runs
+  # on asyncpg. Kept out of runtime deps — it is only needed to apply migrations.
+  "psycopg2-binary>=2.9,<3",
   "pytest>=8.3,<9",
   "pytest-asyncio>=0.25,<1",
   "ruff>=0.9,<1",
