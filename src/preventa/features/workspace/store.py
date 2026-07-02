@@ -20,14 +20,32 @@ except ImportError:  # pragma: no cover - SQLite-only environments
     _psycopg2 = None
 
 
+def _sync_dsn(url: str) -> str:
+    """Normalise a DSN for psycopg2 (a sync driver): drop any ``+asyncpg`` marker."""
+    return re.sub(r"^(postgres(?:ql)?)\+\w+://", r"\1://", url)
+
+
 def _store_dsn() -> str | None:
     """Postgres DSN for durable storage, or ``None`` to use local SQLite.
 
-    Set ``PREVENTA_STORE_DSN`` (a ``postgresql://`` URL) in production to make all
-    workspace and auth data durable; unset means a local SQLite file — the
-    default for development and tests.
+    Resolution order:
+
+    1. ``PREVENTA_STORE_DSN`` — explicit opt-in that works anywhere (e.g. pointing
+       local runs or tests at a managed Postgres).
+    2. On Vercel (``VERCEL`` set), the ``DATABASE_URL`` / ``POSTGRES_URL`` injected
+       by the Neon–Vercel integration, so durability needs no extra config.
+
+    Unset in every other case → a local SQLite file (the development/test default).
     """
-    return os.getenv("PREVENTA_STORE_DSN") or None
+    explicit = os.getenv("PREVENTA_STORE_DSN")
+    if explicit:
+        return _sync_dsn(explicit)
+    if os.getenv("VERCEL"):
+        for var in ("DATABASE_URL", "POSTGRES_URL"):
+            injected = os.getenv(var)
+            if injected:
+                return _sync_dsn(injected)
+    return None
 
 
 def _use_postgres() -> bool:
