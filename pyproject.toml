@@ -15,6 +15,10 @@ dependencies = [
   "fastapi>=0.115,<1",
   "httpx>=0.28,<1",
   "pgvector>=0.3,<1",
+  # Sync Postgres driver: used by the workspace/auth store when PREVENTA_STORE_DSN
+  # points at Postgres, and by Alembic's online migrations (env.py strips
+  # ``+asyncpg``). The app's async ORM path uses asyncpg.
+  "psycopg2-binary>=2.9,<3",
   "pydantic-settings>=2.7,<3",
   "python-docx>=1.1,<2",
   "sqlalchemy[asyncio]>=2.0.36,<3",
@@ -24,10 +28,6 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "mypy>=1.14,<2",
-  # Alembic's online migrations use a sync driver (env.py strips ``+asyncpg``),
-  # so running ``alembic upgrade head`` needs psycopg2 even though the app runs
-  # on asyncpg. Kept out of runtime deps — it is only needed to apply migrations.
-  "psycopg2-binary>=2.9,<3",
   "pytest>=8.3,<9",
   "pytest-asyncio>=0.25,<1",
   "ruff>=0.9,<1",
@@ -52,3 +52,7 @@ select = ["E", "F", "I", "B", "UP", "ASYNC"]
 python_version = "3.12"
 strict = true
 plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["psycopg2.*"]
+ignore_missing_imports = true
