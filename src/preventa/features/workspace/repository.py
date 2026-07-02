@@ -171,6 +171,7 @@ class WorkspaceRepository:
                     (node_id, guideword, deviation, cause, consequence, safeguard,
                      severity, likelihood, status)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                RETURNING id
                 """,
                 (
                     node_id,
@@ -184,9 +185,10 @@ class WorkspaceRepository:
                     payload.status,
                 ),
             )
-            if cursor.lastrowid is None:
-                raise RuntimeError("SQLite did not return a row id.")
-            row_id = int(cursor.lastrowid)
+            created = cursor.fetchone()
+            if created is None:
+                raise RuntimeError("The database did not return a row id.")
+            row_id = int(created["id"])
             audit(database, "row", str(row_id), "created")
         return self.get_row(row_id) or {}
 
@@ -397,7 +399,7 @@ class WorkspaceRepository:
                     low_max = excluded.low_max,
                     medium_max = excluded.medium_max,
                     high_max = excluded.high_max,
-                    revision = revision + 1,
+                    revision = mvp_risk_matrix.revision + 1,
                     updated_at = CURRENT_TIMESTAMP
                 """,
                 (study_id, payload.low_max, payload.medium_max, payload.high_max),

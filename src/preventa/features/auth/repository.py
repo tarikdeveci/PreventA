@@ -2,7 +2,6 @@ import base64
 import hashlib
 import hmac
 import os
-import sqlite3
 import time
 from datetime import UTC, datetime, timedelta
 from typing import Any, cast
@@ -10,7 +9,12 @@ from typing import Any, cast
 from preventa.core.config import get_settings
 from preventa.features.auth.schemas import AuthUser, Role, UserCreate
 from preventa.features.auth.security import hash_password, hash_session_token, verify_password
-from preventa.features.workspace.store import connection, initialize_store, new_id
+from preventa.features.workspace.store import (
+    INTEGRITY_ERRORS,
+    connection,
+    initialize_store,
+    new_id,
+)
 
 ROLE_PERMISSIONS: dict[Role, list[str]] = {
     "viewer": ["workspace:read", "report:read"],
@@ -202,7 +206,7 @@ class AuthRepository:
                         hash_password(payload.password),
                     ),
                 )
-        except sqlite3.IntegrityError as exc:
+        except INTEGRITY_ERRORS as exc:
             raise ValueError("A user with this email already exists.") from exc
         return AuthUser(
             id=user_id,

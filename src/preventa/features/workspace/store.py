@@ -1,10 +1,55 @@
+from __future__ import annotations
+
 import os
+import re
 import sqlite3
-from collections.abc import Iterator
+from collections.abc import Iterator, Sequence
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
+
+# Unique/constraint violations surface as different exception types per backend;
+# callers catch this tuple to stay backend-agnostic.
+INTEGRITY_ERRORS: tuple[type[Exception], ...] = (sqlite3.IntegrityError,)
+try:  # psycopg2 ships with the Postgres backend; absent in SQLite-only setups.
+    import psycopg2 as _psycopg2
+
+    INTEGRITY_ERRORS = (*INTEGRITY_ERRORS, _psycopg2.IntegrityError)
+except ImportError:  # pragma: no cover - SQLite-only environments
+    _psycopg2 = None
+
+
+def _sync_dsn(url: str) -> str:
+    """Normalise a DSN for psycopg2 (a sync driver): drop any ``+asyncpg`` marker."""
+    return re.sub(r"^(postgres(?:ql)?)\+\w+://", r"\1://", url)
+
+
+def _store_dsn() -> str | None:
+    """Postgres DSN for durable storage, or ``None`` to use local SQLite.
+
+    Resolution order:
+
+    1. ``PREVENTA_STORE_DSN`` — explicit opt-in that works anywhere (e.g. pointing
+       local runs or tests at a managed Postgres).
+    2. On Vercel (``VERCEL`` set), the ``DATABASE_URL`` / ``POSTGRES_URL`` injected
+       by the Neon–Vercel integration, so durability needs no extra config.
+
+    Unset in every other case → a local SQLite file (the development/test default).
+    """
+    explicit = os.getenv("PREVENTA_STORE_DSN")
+    if explicit:
+        return _sync_dsn(explicit)
+    if os.getenv("VERCEL"):
+        for var in ("DATABASE_URL", "POSTGRES_URL"):
+            injected = os.getenv(var)
+            if injected:
+                return _sync_dsn(injected)
+    return None
+
+
+def _use_postgres() -> bool:
+    return _store_dsn() is not None
 
 
 def _database_path() -> Path:
@@ -16,24 +61,103 @@ def _database_path() -> Path:
     return Path(".data/preventa-mvp.db")
 
 
+# --- Postgres compatibility shim -------------------------------------------- #
+# The repositories were written against sqlite3's DB-API (``?`` placeholders,
+# ``INSERT OR IGNORE`` / ``OR REPLACE``, ``connection.execute`` shortcuts). This
+# shim lets the exact same SQL run on Postgres so the storage engine can be
+# swapped by configuration alone (``PREVENTA_STORE_DSN``).
+
+_INSERT_IGNORE = re.compile(r"INSERT\s+OR\s+IGNORE", re.IGNORECASE)
+_INSERT_REPLACE = re.compile(r"INSERT\s+OR\s+REPLACE", re.IGNORECASE)
+
+
+def _to_postgres(sql: str) -> str:
+    """Translate the SQLite-flavoured SQL used by the repositories to Postgres."""
+    upper = sql.upper()
+    if "OR REPLACE" in upper:  # only the mvp_imports upsert uses this
+        sql = _INSERT_REPLACE.sub("INSERT", sql).rstrip().rstrip(";")
+        sql += (
+            " ON CONFLICT (content_hash) DO UPDATE SET "
+            "study_id = excluded.study_id, result_json = excluded.result_json"
+        )
+    elif "OR IGNORE" in upper:
+        sql = _INSERT_IGNORE.sub("INSERT", sql).rstrip().rstrip(";")
+        sql += " ON CONFLICT DO NOTHING"
+    # created_at/updated_at are TEXT columns, so CURRENT_TIMESTAMP needs a cast.
+    sql = sql.replace("CURRENT_TIMESTAMP", "CURRENT_TIMESTAMP::text")
+    return sql.replace("?", "%s")
+
+
+class _PgCursor:
+    def __init__(self, cursor: Any) -> None:
+        self._cursor = cursor
+
+    def fetchone(self) -> Any:
+        return self._cursor.fetchone()
+
+    def fetchall(self) -> list[Any]:
+        return list(self._cursor.fetchall())
+
+    @property
+    def rowcount(self) -> int:
+        return int(self._cursor.rowcount)
+
+
+class _PgConnection:
+    """A minimal ``sqlite3.Connection``-compatible wrapper over psycopg2."""
+
+    def __init__(self, raw: Any) -> None:
+        self._raw = raw
+
+    def execute(self, sql: str, params: Sequence[Any] = ()) -> _PgCursor:
+        from psycopg2.extras import RealDictCursor
+
+        cursor = self._raw.cursor(cursor_factory=RealDictCursor)
+        cursor.execute(_to_postgres(sql), tuple(params))
+        return _PgCursor(cursor)
+
+    def executemany(self, sql: str, seq_of_params: Any) -> _PgCursor:
+        cursor = self._raw.cursor()
+        cursor.executemany(_to_postgres(sql), [tuple(p) for p in seq_of_params])
+        return _PgCursor(cursor)
+
+    def executescript(self, script: str) -> _PgCursor:
+        cursor = self._raw.cursor()
+        cursor.execute(script)  # psycopg2 runs multiple ;-separated statements
+        return _PgCursor(cursor)
+
+    def commit(self) -> None:
+        self._raw.commit()
+
+    def close(self) -> None:
+        self._raw.close()
+
+
 @contextmanager
-def connection() -> Iterator[sqlite3.Connection]:
-    path = _database_path()
-    path.parent.mkdir(parents=True, exist_ok=True)
-    database = sqlite3.connect(path)
-    database.row_factory = sqlite3.Row
-    database.execute("PRAGMA foreign_keys = ON")
-    try:
-        yield database
-        database.commit()
-    finally:
-        database.close()
+def connection() -> Iterator[Any]:
+    if _use_postgres():
+        assert _psycopg2 is not None  # guaranteed once a DSN is configured
+        raw = _psycopg2.connect(_store_dsn())
+        database: Any = _PgConnection(raw)
+        try:
+            yield database
+            raw.commit()
+        finally:
+            raw.close()
+    else:
+        path = _database_path()
+        path.parent.mkdir(parents=True, exist_ok=True)
+        database = sqlite3.connect(path)
+        database.row_factory = sqlite3.Row
+        database.execute("PRAGMA foreign_keys = ON")
+        try:
+            yield database
+            database.commit()
+        finally:
+            database.close()
 
 
-def initialize_store() -> None:
-    with connection() as database:
-        database.executescript(
-            """
+_SCHEMA_SQL = """
             CREATE TABLE IF NOT EXISTS mvp_studies (
                 id TEXT PRIMARY KEY,
                 title TEXT NOT NULL,
@@ -145,13 +269,28 @@ def initialize_store() -> None:
                 created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             """
-        )
+
+
+def _schema_sql() -> str:
+    """Return the schema DDL, translated to Postgres when a DSN is configured."""
+    if not _use_postgres():
+        return _SCHEMA_SQL
+    return (
+        _SCHEMA_SQL.replace("INTEGER PRIMARY KEY AUTOINCREMENT", "BIGSERIAL PRIMARY KEY")
+        .replace(" REAL ", " DOUBLE PRECISION ")
+        .replace("DEFAULT CURRENT_TIMESTAMP", "DEFAULT CURRENT_TIMESTAMP::text")
+    )
+
+
+def initialize_store() -> None:
+    with connection() as database:
+        database.executescript(_schema_sql())
         # Use INSERT OR IGNORE to be safe in multi-process deployments
         _seed(database)
         _seed_reference_data(database)
 
 
-def _seed_reference_data(database: sqlite3.Connection) -> None:
+def _seed_reference_data(database: Any) -> None:
     database.executemany(
         """
         INSERT OR IGNORE INTO mvp_library
@@ -236,7 +375,7 @@ def _seed_reference_data(database: sqlite3.Connection) -> None:
         )
 
 
-def _seed(database: sqlite3.Connection) -> None:
+def _seed(database: Any) -> None:
     already = database.execute(
         "SELECT 1 FROM mvp_studies WHERE id = 'study-reactor-2026'"
     ).fetchone()
@@ -572,7 +711,7 @@ def risk_label(severity: int, likelihood: int) -> str:
     return "Düşük"
 
 
-def audit(database: sqlite3.Connection, entity_type: str, entity_id: str, action: str) -> None:
+def audit(database: Any, entity_type: str, entity_id: str, action: str) -> None:
     database.execute(
         """
         INSERT INTO mvp_audit (entity_type, entity_id, action, detail)
@@ -582,7 +721,7 @@ def audit(database: sqlite3.Connection, entity_type: str, entity_id: str, action
     )
 
 
-def row_dict(row: sqlite3.Row) -> dict[str, Any]:
+def row_dict(row: Any) -> dict[str, Any]:
     return dict(row)
 
 

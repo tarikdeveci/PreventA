@@ -7,6 +7,7 @@ from preventa.features.workspace.schemas import (
     WorkspaceRow,
     WorkspaceStudy,
 )
+from preventa.features.workspace.store import _use_postgres
 
 
 def get_workspace(repository: WorkspaceRepository) -> WorkspaceResponse:
@@ -50,12 +51,36 @@ def get_workspace(repository: WorkspaceRepository) -> WorkspaceResponse:
 
 
 def get_product_status() -> ProductStatusResponse:
+    durable = _use_postgres()
+    if durable:
+        database_module = DeliveryModule(
+            id="database",
+            name="Production persistence",
+            status="complete",
+            progress=100,
+            detail=(
+                "Durable managed PostgreSQL persistence is active: all studies, "
+                "scenarios, LOPA layers, imports and accounts survive restarts."
+            ),
+        )
+    else:
+        database_module = DeliveryModule(
+            id="database",
+            name="Production persistence",
+            status="in_progress",
+            progress=35,
+            detail=(
+                "SQLite persistence is volatile on serverless (/tmp is per-instance "
+                "and reset on cold start), so imported studies are not durable. Set "
+                "PREVENTA_STORE_DSN to a managed PostgreSQL to make storage durable."
+            ),
+        )
     return ProductStatusResponse(
         release="MVP beta",
         stage="Operational workspace",
-        overall_progress=62,
+        overall_progress=78 if durable else 62,
         api_connected=True,
-        persistence="volatile_sqlite",
+        persistence="postgresql" if durable else "volatile_sqlite",
         ai_runtime="contract_ready",
         deployment="Vercel frontend + serverless API",
         modules=[
@@ -79,17 +104,7 @@ def get_product_status() -> ProductStatusResponse:
                     "clients are connected."
                 ),
             ),
-            DeliveryModule(
-                id="database",
-                name="Production persistence",
-                status="in_progress",
-                progress=35,
-                detail=(
-                    "SQLite persistence is volatile on serverless (/tmp is per-instance "
-                    "and reset on cold start), so imported studies are not durable. A "
-                    "managed PostgreSQL migration is required for production."
-                ),
-            ),
+            database_module,
             DeliveryModule(
                 id="rag",
                 name="Grounded RAG suggestions",
