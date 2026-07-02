@@ -28,6 +28,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+import preventa.db.models.rag  # noqa: F401  (registers the RAG tables so create_all/drop_all cover the full schema)
 from preventa.db.base import Base
 from preventa.db.models import (  # noqa: F401  (import registers every table on Base.metadata)
     Cause,
@@ -59,6 +60,8 @@ async def engine() -> AsyncIterator[AsyncEngine]:
         # The RAG embeddings table needs pgvector; the schema is created directly
         # (not via alembic) so we ensure the extension ourselves.
         await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+        # Start from a clean slate regardless of any prior (e.g. alembic) state.
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     try:
         yield eng
