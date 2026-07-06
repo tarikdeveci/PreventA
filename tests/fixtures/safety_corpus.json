@@ -1,0 +1,79 @@
+{
+  "documents": [
+    {
+      "title": "Centrifugal pump deviations (generic HAZOP patterns)",
+      "source_type": "public_example",
+      "source_ref": "generic/pump-deviations",
+      "version": "1.0",
+      "chunks": [
+        {
+          "ordinal": 0,
+          "section_ref": "No flow",
+          "content": "Centrifugal pump, No flow: a closed suction isolation valve, loss of prime, low vessel level, or a blocked strainer stops delivery. Consequences include loss of downstream feed, unplanned shutdown, pump overheating and potential seal failure with loss of containment. Typical safeguards: low-flow alarm (FAL), minimum-flow recirculation line, standby pump auto-start, and an operator response procedure. As an independent protection layer a low-flow trip on the pump can be credited."
+        },
+        {
+          "ordinal": 1,
+          "section_ref": "Low flow / cavitation",
+          "content": "Centrifugal pump, Low flow: partial suction strainer blockage, low tank level, or high suction lift reduces NPSH available and causes cavitation. Consequences include impeller damage, vibration, seal failure and flammable fluid release. Safeguards: low tank level alarm (LAL), vibration monitoring, and NPSH margin in design."
+        }
+      ]
+    },
+    {
+      "title": "Pressure vessel overpressure (generic HAZOP/LOPA patterns)",
+      "source_type": "public_example",
+      "source_ref": "generic/vessel-overpressure",
+      "version": "1.0",
+      "chunks": [
+        {
+          "ordinal": 0,
+          "section_ref": "High pressure",
+          "content": "Pressure vessel, High pressure: a blocked outlet, external fire, runaway reaction, or failure of the pressure control loop raises pressure above the design limit. Consequences include loss of containment, vessel rupture, personnel exposure and a flammable cloud. Safeguards: pressure safety valve (PSV) sized for the credible relief case, high-pressure alarm (PAH), and an independent high-pressure shutdown (SIS) trip. The PSV and the SIS trip are independent protection layers with their own PFD."
+        }
+      ]
+    },
+    {
+      "title": "Atmospheric storage tank overfill (generic HAZOP patterns)",
+      "source_type": "public_example",
+      "source_ref": "generic/tank-overfill",
+      "version": "1.0",
+      "chunks": [
+        {
+          "ordinal": 0,
+          "section_ref": "High level / overflow",
+          "content": "Storage tank, High level: a failed-open level control valve with delayed operator response, or a failed level indication, leads to tank overflow. Consequences include a flammable liquid spill, environmental contamination and fire risk in the bund. Safeguards: high-level alarm (LAH), an independent high-high level switch (LSHH) that trips the filling valve, and a bund sized for the tank contents."
+        },
+        {
+          "ordinal": 1,
+          "section_ref": "Vacuum / low pressure",
+          "content": "Storage tank, Vacuum: a blocked vacuum breaker during rapid draining or nitrogen supply loss pulls the tank below atmospheric pressure. Consequence: tank shell buckling and mechanical damage. Safeguards: pressure/vacuum relief valve (PVRV) and periodic testing of the vacuum breaker."
+        }
+      ]
+    },
+    {
+      "title": "Exothermic reactor high temperature (generic HAZOP/LOPA patterns)",
+      "source_type": "public_example",
+      "source_ref": "generic/reactor-runaway",
+      "version": "1.0",
+      "chunks": [
+        {
+          "ordinal": 0,
+          "section_ref": "High temperature / runaway",
+          "content": "Agitated reactor, High temperature: loss of cooling water, agitator failure, or feed maldistribution allows reaction heat to accumulate, driving a runaway exothermic reaction. Consequences: overpressure, vessel rupture, thermal explosion and toxic or flammable release. Safeguards: high-temperature alarm (TAH), independent high-temperature shutdown (TSHH) as a SIS trip, emergency quench/dump system and reliable cooling. The SIS trip and the emergency quench are independent protection layers."
+        }
+      ]
+    },
+    {
+      "title": "Shell-and-tube heat exchanger tube rupture (generic HAZOP patterns)",
+      "source_type": "public_example",
+      "source_ref": "generic/exchanger-tube-leak",
+      "version": "1.0",
+      "chunks": [
+        {
+          "ordinal": 0,
+          "section_ref": "Cross contamination / tube leak",
+          "content": "Shell-and-tube heat exchanger, Tube rupture: corrosion, vibration, or differential pressure perforates the tube bundle so the higher-pressure fluid enters the low-pressure side. Consequences: cross contamination, overpressure of the low-pressure side and possible loss of containment. Safeguards: leak detection (conductivity or pressure), periodic tube thickness inspection and relief protection on the low-pressure side."
+        }
+      ]
+    }
+  ]
+}

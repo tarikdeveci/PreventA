@@ -1,3 +1,6 @@
+import hashlib
+import math
+import re
 from typing import Any, Protocol
 
 import httpx
@@ -33,6 +36,35 @@ class Reranker(Protocol):
         *,
         limit: int,
     ) -> list[RetrievedChunk]: ...
+
+
+class HashingEmbedder(Embedder):
+    """Deterministic, dependency-free embedder using signed feature hashing.
+
+    It is NOT a semantic model — it captures lexical overlap (token unigrams and
+    bigrams hashed into a fixed vector) so the hybrid retrieval pipeline can be
+    exercised, tested and demoed against real pgvector without a model host or
+    API key. Swap for a hosted embedding provider in production; the interface
+    (``Embedder``) is identical, so nothing else changes.
+    """
+
+    def __init__(self, dimensions: int = 768) -> None:
+        self._dimensions = dimensions
+
+    async def embed(self, text: str) -> list[float]:
+        vector = [0.0] * self._dimensions
+        tokens = re.findall(r"[a-z0-9]+", text.lower())
+        grams = [*tokens, *(f"{a}_{b}" for a, b in zip(tokens, tokens[1:], strict=False))]
+        for token in grams:
+            digest = hashlib.blake2b(token.encode("utf-8"), digest_size=8).digest()
+            value = int.from_bytes(digest, "big")
+            bucket = value % self._dimensions
+            sign = 1.0 if (value >> 63) & 1 else -1.0
+            vector[bucket] += sign
+        norm = math.sqrt(sum(component * component for component in vector))
+        if norm > 0.0:
+            vector = [component / norm for component in vector]
+        return vector
 
 
 class PassthroughReranker(Reranker):
