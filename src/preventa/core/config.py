@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     ollama_base_url: str = "http://localhost:11434"
     ollama_chat_model: str = "qwen2.5:7b"
     ollama_embed_model: str = "nomic-embed-text"
+    # Which embedding backend to use. "hashing" is dependency-free and runs
+    # in-process (keyless, works on serverless); "ollama" uses a self-hosted open
+    # model for higher-quality semantic retrieval when a model host is available.
+    rag_embedder: str = "hashing"
 
     rag_dense_limit: int = Field(default=30, ge=1, le=100)
     rag_sparse_limit: int = Field(default=30, ge=1, le=100)
