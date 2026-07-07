@@ -2,6 +2,7 @@ import type {
   AuthUser,
   DeviationAssistRequest,
   DeviationAssistResponse,
+  RetrievedChunk,
   HazopRow,
   LopaLayer,
   ProductStatus,
@@ -112,6 +113,13 @@ export function fetchDeviationAssist(
   payload: DeviationAssistRequest,
 ): Promise<DeviationAssistResponse> {
   return sendJson("/api/v1/rag/deviation-assist", "POST", payload);
+}
+
+// Keyless retrieval: cited evidence for a deviation, no generation model needed.
+export function fetchDeviationEvidence(
+  payload: DeviationAssistRequest,
+): Promise<RetrievedChunk[]> {
+  return sendJson("/api/v1/rag/deviation-evidence", "POST", payload);
 }
 
 export function fetchStudies(): Promise<StudyListItem[]> {

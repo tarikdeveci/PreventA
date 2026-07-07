@@ -74,6 +74,20 @@ export type DeviationAssistResponse = {
   disclaimer: string;
 };
 
+// Keyless retrieval-only evidence (POST /api/v1/rag/deviation-evidence):
+// hybrid dense+sparse search returns cited source passages, no LLM generation.
+export type RetrievedChunk = {
+  chunk_id: string;
+  document_id: string;
+  source_ref: string;
+  section_ref: string | null;
+  content: string;
+  dense_rank: number | null;
+  sparse_rank: number | null;
+  fused_score: number;
+  rerank_score: number | null;
+};
+
 export type WorkspaceStudy = {
   id: string;
   title: string;

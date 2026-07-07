@@ -48,7 +48,7 @@ import {
   importOphaStudy,
   deleteHazopRow,
   deleteLopaLayer,
-  fetchDeviationAssist,
+  fetchDeviationEvidence,
   fetchLopaLayers,
   fetchNodes,
   fetchProductStatus,
@@ -707,14 +707,14 @@ function EvidencePanel({
         {state === "idle" && (
           <div className="functional-empty">
             <Sparkles size={26} />
-            <strong>Generate grounded candidates for the selected deviation</strong>
-            <p>The request uses equipment, design intent, guideword and existing safeguards.</p>
+            <strong>Retrieve cited evidence for the selected deviation</strong>
+            <p>Hybrid search over indexed standards and past studies — every passage is source-cited, nothing is generated.</p>
             <button
               className="primary-button"
               onClick={onRequest}
               disabled={!selectedRow || !canRequest}
             >
-              Generate suggestions
+              Retrieve evidence
             </button>
           </div>
         )}
@@ -724,7 +724,7 @@ function EvidencePanel({
         {state === "error" && (
           <div className="functional-empty">
             <AlertTriangle size={26} />
-            <strong>Grounded suggestions could not be generated</strong>
+            <strong>Grounded evidence could not be retrieved</strong>
             <p>{error}</p>
             <button className="secondary-button" onClick={onRequest} disabled={!canRequest}>
               Try again
@@ -741,11 +741,9 @@ function EvidencePanel({
         {suggestions.map((suggestion) => (
           <article className="suggestion-item" key={suggestion.id}>
             <div className="suggestion-meta">
-              <span className={`suggestion-kind kind-${suggestion.target}`}>
-                {{ Neden: "Cause", Sonuç: "Consequence", Önlem: "Safeguard" }[suggestion.kind]}
-              </span>
+              <span className="suggestion-kind kind-cause">Cited evidence</span>
               <span className="confidence">
-                {{ Düşük: "Low", Orta: "Medium", Yüksek: "High" }[suggestion.confidence]} match
+                {{ Düşük: "Low", Orta: "Medium", Yüksek: "High" }[suggestion.confidence]} relevance
               </span>
             </div>
             <p>{suggestion.text}</p>
@@ -2025,7 +2023,9 @@ function WorkspaceApp({
     setEvidenceState("loading");
     setEvidenceError(null);
     try {
-      const response = await fetchDeviationAssist({
+      // Keyless retrieval-only path: hybrid dense+sparse search returns cited
+      // source passages with no LLM generation, so it runs live on serverless.
+      const chunks = await fetchDeviationEvidence({
         study_id: study.id,
         node_id: activeNode.id,
         equipment_type: activeNode.equipment_type,
@@ -2035,24 +2035,24 @@ function WorkspaceApp({
         deviation: selected.deviation.trim() || `${selected.guideword} deviation`,
         existing_safeguards: selected.safeguard.trim() ? [selected.safeguard.trim()] : [],
       });
-      const kindLabel = {
-        cause: "Neden",
-        consequence: "Sonuç",
-        safeguard: "Önlem",
-      } as const;
-      const confidenceLabel = {
-        low: "Düşük",
-        medium: "Orta",
-        high: "Yüksek",
-      } as const;
+      // Rank order → relevance label (top hits = high-confidence grounding).
+      const confidenceForRank = (index: number): Suggestion["confidence"] =>
+        index < 2 ? "Yüksek" : index < 4 ? "Orta" : "Düşük";
       setWorkspaceSuggestions(
-        response.candidates.map((candidate, index) => ({
-          id: `${response.suggestion_id}-${index}`,
-          kind: kindLabel[candidate.kind],
-          text: candidate.text,
-          confidence: confidenceLabel[candidate.confidence],
-          citations: candidate.citations,
-          target: candidate.kind,
+        chunks.map((chunk, index) => ({
+          id: chunk.chunk_id,
+          kind: "Neden",
+          text: chunk.content,
+          confidence: confidenceForRank(index),
+          citations: [
+            {
+              chunk_id: chunk.chunk_id,
+              source_ref: chunk.source_ref,
+              section_ref: chunk.section_ref,
+              excerpt: chunk.content.slice(0, 320),
+            },
+          ],
+          target: "cause",
         })),
       );
       setEvidenceState("ready");
@@ -2061,9 +2061,9 @@ function WorkspaceApp({
       setWorkspaceSuggestions([]);
       setEvidenceState("error");
       setEvidenceError(
-        error instanceof ApiError && error.code === "ungrounded_suggestion"
-          ? "The model could not produce sufficient verifiable citations, so the safety rule blocked the response."
-          : "The RAG service is unavailable. Check PostgreSQL, corpus and Ollama connectivity.",
+        error instanceof ApiError && error.status === 401
+          ? "Your session expired. Sign in again to retrieve grounded evidence."
+          : "No grounded evidence is available yet. The safety corpus must be indexed for this deployment.",
       );
     }
   };
