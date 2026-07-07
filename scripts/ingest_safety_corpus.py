@@ -27,7 +27,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from preventa.api.dependencies import get_embedder
 from preventa.core.config import get_settings
-from preventa.core.database import _async_url
+from preventa.core.database import _async_url, async_connect_args
 from preventa.db.models.rag import KnowledgeChunk, KnowledgeDocument
 from preventa.features.rag.repository import CorpusIngestionRepository
 from preventa.features.rag.schemas import ChunkInput
@@ -40,7 +40,10 @@ DEFAULT_CORPUS = (
 async def main(payload: dict[str, Any]) -> None:
     settings = get_settings()
     embedder = get_embedder(settings)
-    engine = create_async_engine(_async_url(settings.database_url))
+    engine = create_async_engine(
+        _async_url(settings.database_url),
+        connect_args=async_connect_args(settings.database_url),
+    )
 
     async with engine.begin() as conn:
         await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
