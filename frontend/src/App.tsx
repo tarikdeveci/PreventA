@@ -691,7 +691,11 @@ function EvidencePanel({
             <Sparkles size={18} />
             <h2>Grounded suggestions</h2>
           </div>
-          <p>Selected row: {selectedRow?.deviation || "No deviation selected"}</p>
+          <p>
+            {state === "ready" && suggestions.length > 0
+              ? `${suggestions.length} cited passage${suggestions.length > 1 ? "s" : ""} · ${selectedRow?.deviation ?? ""}`
+              : `Selected row: ${selectedRow?.deviation || "No deviation selected"}`}
+          </p>
         </div>
         <button className="icon-button" onClick={onClose} aria-label="Close suggestion panel">
           <PanelRightClose size={19} />
@@ -738,10 +742,10 @@ function EvidencePanel({
             <p>Uncited content was withheld. Expand the corpus and try again.</p>
           </div>
         )}
-        {suggestions.map((suggestion) => (
+        {suggestions.map((suggestion, index) => (
           <article className="suggestion-item" key={suggestion.id}>
             <div className="suggestion-meta">
-              <span className="suggestion-kind kind-cause">Cited evidence</span>
+              <span className="suggestion-kind kind-cause">Cited evidence · #{index + 1}</span>
               <span className="confidence">
                 {{ Düşük: "Low", Orta: "Medium", Yüksek: "High" }[suggestion.confidence]} relevance
               </span>
@@ -769,9 +773,13 @@ function EvidencePanel({
               >
                 Open source
               </button>
-              <button className="apply-button" onClick={() => onApply(suggestion.id)}>
+              <button
+                className="apply-button"
+                onClick={() => onApply(suggestion.id)}
+                title="Append this passage to the Cause field with its source reference"
+              >
                 <Plus size={15} />
-                Add to draft
+                Add as reference
               </button>
             </div>
           </article>
@@ -2003,14 +2011,21 @@ function WorkspaceApp({
   const applySuggestion = (suggestionId: string) => {
     const suggestion = workspaceSuggestions.find((item) => item.id === suggestionId);
     if (!suggestion || !selected) return;
+    // Preserve traceability: every imported passage carries its source ref so
+    // the worksheet entry stays auditable back to the standard/past study.
+    const sourceRef = suggestion.citations[0]?.source_ref;
+    const cited = sourceRef ? `${suggestion.text} [Kaynak: ${sourceRef}]` : suggestion.text;
     const existing = selected[suggestion.target];
     updateRow(
       selected.id,
       suggestion.target,
-      existing ? `${existing}\n${suggestion.text}` : suggestion.text,
+      existing ? `${existing}\n${cited}` : cited,
     );
-    const kind = { Neden: "Cause", Sonuç: "Consequence", Önlem: "Safeguard" }[suggestion.kind];
-    notify(`${kind} suggestion added to row ${selected.id}.`);
+    notify(
+      sourceRef
+        ? `Cited evidence added to row ${selected.id} (source: ${sourceRef}).`
+        : `Cited evidence added to row ${selected.id}.`,
+    );
   };
 
   const requestSuggestions = async () => {
