@@ -15,6 +15,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from preventa.features.opha.export import orm_to_opha
 from preventa.features.opha.model import OphaStudy
 from preventa.features.opha.orm_mapping import to_orm
 
@@ -24,6 +25,7 @@ __all__ = [
     "dumps_opha",
     "load_opha",
     "loads_opha",
+    "orm_to_opha",
     "to_orm",
 ]
 

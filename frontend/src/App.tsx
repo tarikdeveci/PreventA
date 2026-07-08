@@ -524,11 +524,103 @@ function WorksheetToolbar({
   );
 }
 
+// Group worksheet rows by their cause, preserving first-appearance order, so the
+// grid can render the Cause -> Consequence hierarchy (review item 7a): each cause
+// appears once with its consequence rows beneath it, instead of being repeated.
+function groupRowsByCause(rows: HazopRow[]): { key: string; rows: HazopRow[] }[] {
+  const groups: { key: string; rows: HazopRow[] }[] = [];
+  const indexByKey = new Map<string, number>();
+  for (const row of rows) {
+    const key = row.cause.trim() ? `cause:${row.cause.trim()}` : `row:${row.id}`;
+    const existing = indexByKey.get(key);
+    if (existing === undefined) {
+      indexByKey.set(key, groups.length);
+      groups.push({ key, rows: [row] });
+    } else {
+      groups[existing].rows.push(row);
+    }
+  }
+  return groups;
+}
+
+function HazopConsequenceCells({
+  row,
+  displayIndex,
+  readOnly,
+  hiddenColumns,
+  onUpdateRow,
+}: {
+  row: HazopRow;
+  displayIndex: number;
+  readOnly: boolean;
+  hiddenColumns: Set<string>;
+  onUpdateRow: (id: number, field: keyof HazopRow, value: string) => void;
+}) {
+  // The cells to the right of the (grouped) Cause column — one set per consequence.
+  return (
+    <>
+      {!hiddenColumns.has("consequence") && <td>
+        <textarea
+          aria-label={`${displayIndex}. row consequence`}
+          value={row.consequence}
+          readOnly={readOnly}
+          onChange={(event) => onUpdateRow(row.id, "consequence", event.target.value)}
+        />
+      </td>}
+      {!hiddenColumns.has("safeguard") && <td>
+        <textarea
+          aria-label={`${displayIndex}. row existing safeguards`}
+          value={row.safeguard}
+          readOnly={readOnly}
+          onChange={(event) => onUpdateRow(row.id, "safeguard", event.target.value)}
+        />
+      </td>}
+      {!hiddenColumns.has("scores") && <><td className="score-cell">
+        <select
+          aria-label={`${displayIndex}. row severity`}
+          value={row.severity}
+          disabled={readOnly}
+          onChange={(event) => onUpdateRow(row.id, "severity", event.target.value)}
+        >
+          {[1, 2, 3, 4, 5].map((v) => <option key={v} value={v}>{v}</option>)}
+        </select>
+      </td>
+      <td className="score-cell">
+        <select
+          aria-label={`${displayIndex}. row likelihood`}
+          value={row.likelihood}
+          disabled={readOnly}
+          onChange={(event) => onUpdateRow(row.id, "likelihood", event.target.value)}
+        >
+          {[1, 2, 3, 4, 5].map((v) => <option key={v} value={v}>{v}</option>)}
+        </select>
+      </td>
+      <td>
+        <RiskBadge level={row.risk} />
+      </td></>}
+      {!hiddenColumns.has("status") && <td>
+        <select
+          aria-label={`${displayIndex}. row review status`}
+          value={row.status}
+          disabled={readOnly}
+          className={`status-select status-${row.status.toLocaleLowerCase("tr")}`}
+          onChange={(event) => onUpdateRow(row.id, "status", event.target.value)}
+        >
+          <option value="Eksik">Incomplete</option>
+          <option value="Taslak">Draft</option>
+          <option value="İncelendi">Reviewed</option>
+        </select>
+      </td>}
+    </>
+  );
+}
+
 function HazopTable({
   rows,
   selectedRow,
   onSelectRow,
   onUpdateRow,
+  onAddConsequence,
   readOnly,
   hiddenColumns,
 }: {
@@ -536,9 +628,13 @@ function HazopTable({
   selectedRow: number;
   onSelectRow: (id: number) => void;
   onUpdateRow: (id: number, field: keyof HazopRow, value: string) => void;
+  onAddConsequence: (fromRow: HazopRow) => void;
   readOnly: boolean;
   hiddenColumns: Set<string>;
 }) {
+  const showCause = !hiddenColumns.has("cause");
+  const groups = showCause ? groupRowsByCause(rows) : [{ key: "flat", rows }];
+  let counter = 0;
   return (
     <div className="table-frame">
       <table className="hazop-table">
@@ -547,114 +643,94 @@ function HazopTable({
             <th className="row-index">#</th>
             <th className="col-guideword">Guideword</th>
             <th className="col-deviation">Deviation</th>
-            {!hiddenColumns.has("cause") && <th className="col-text">Cause</th>}
+            {showCause && <th className="col-text">Cause</th>}
             {!hiddenColumns.has("consequence") && <th className="col-text">Consequence</th>}
             {!hiddenColumns.has("safeguard") && <th className="col-text">Existing safeguards</th>}
             {!hiddenColumns.has("scores") && <><th className="col-score">S</th><th className="col-score">O</th><th className="col-risk">Risk</th></>}
             {!hiddenColumns.has("status") && <th className="col-status">Review</th>}
           </tr>
         </thead>
-        <tbody>
-          {rows.map((row, index) => (
-            <tr
-              key={row.id}
-              className={row.id === selectedRow ? "is-selected" : ""}
-              onClick={() => onSelectRow(row.id)}
-            >
-              <td className="row-index">
-                <button
-                  className="row-selector"
-                  aria-label={`${index + 1}. select row`}
-                  aria-pressed={row.id === selectedRow}
+        {groups.map((group) => (
+          <tbody key={group.key} className={showCause ? "cause-group" : undefined}>
+            {group.rows.map((row, rowInGroup) => {
+              const displayIndex = ++counter;
+              const isFirstInGroup = rowInGroup === 0;
+              return (
+                <tr
+                  key={row.id}
+                  className={row.id === selectedRow ? "is-selected" : ""}
+                  onClick={() => onSelectRow(row.id)}
                 >
-                  {index + 1}
-                </button>
-              </td>
-              <td>
-                <select
-                  aria-label={`${index + 1}. row guideword`}
-                  value={row.guideword}
-                  disabled={readOnly}
-                  onChange={(event) => onUpdateRow(row.id, "guideword", event.target.value)}
-                >
-                  <option value="Yok">No</option>
-                  <option value="Fazla">More</option>
-                  <option value="Az">Less</option>
-                  <option value="Ters">Reverse</option>
-                  <option value="Başka">Other</option>
-                </select>
-              </td>
-              <td>
-                <textarea
-                  aria-label={`${index + 1}. row deviation`}
-                  value={row.deviation}
-                  readOnly={readOnly}
-                  onChange={(event) => onUpdateRow(row.id, "deviation", event.target.value)}
-                />
-              </td>
-              {!hiddenColumns.has("cause") && <td>
-                <textarea
-                  aria-label={`${index + 1}. row cause`}
-                  value={row.cause}
-                  readOnly={readOnly}
-                  onChange={(event) => onUpdateRow(row.id, "cause", event.target.value)}
-                />
-              </td>}
-              {!hiddenColumns.has("consequence") && <td>
-                <textarea
-                  aria-label={`${index + 1}. row consequence`}
-                  value={row.consequence}
-                  readOnly={readOnly}
-                  onChange={(event) => onUpdateRow(row.id, "consequence", event.target.value)}
-                />
-              </td>}
-              {!hiddenColumns.has("safeguard") && <td>
-                <textarea
-                  aria-label={`${index + 1}. row existing safeguards`}
-                  value={row.safeguard}
-                  readOnly={readOnly}
-                  onChange={(event) => onUpdateRow(row.id, "safeguard", event.target.value)}
-                />
-              </td>}
-              {!hiddenColumns.has("scores") && <><td className="score-cell">
-                <select
-                  aria-label={`${index + 1}. row severity`}
-                  value={row.severity}
-                  disabled={readOnly}
-                  onChange={(event) => onUpdateRow(row.id, "severity", event.target.value)}
-                >
-                  {[1, 2, 3, 4, 5].map((v) => <option key={v} value={v}>{v}</option>)}
-                </select>
-              </td>
-              <td className="score-cell">
-                <select
-                  aria-label={`${index + 1}. row likelihood`}
-                  value={row.likelihood}
-                  disabled={readOnly}
-                  onChange={(event) => onUpdateRow(row.id, "likelihood", event.target.value)}
-                >
-                  {[1, 2, 3, 4, 5].map((v) => <option key={v} value={v}>{v}</option>)}
-                </select>
-              </td>
-              <td>
-                <RiskBadge level={row.risk} />
-              </td></>}
-              {!hiddenColumns.has("status") && <td>
-                <select
-                  aria-label={`${index + 1}. row review status`}
-                  value={row.status}
-                  disabled={readOnly}
-                  className={`status-select status-${row.status.toLocaleLowerCase("tr")}`}
-                  onChange={(event) => onUpdateRow(row.id, "status", event.target.value)}
-                >
-                  <option value="Eksik">Incomplete</option>
-                  <option value="Taslak">Draft</option>
-                  <option value="İncelendi">Reviewed</option>
-                </select>
-              </td>}
-            </tr>
-          ))}
-        </tbody>
+                  <td className="row-index">
+                    <button
+                      className="row-selector"
+                      aria-label={`${displayIndex}. select row`}
+                      aria-pressed={row.id === selectedRow}
+                    >
+                      {displayIndex}
+                    </button>
+                  </td>
+                  <td>
+                    <select
+                      aria-label={`${displayIndex}. row guideword`}
+                      value={row.guideword}
+                      disabled={readOnly}
+                      onChange={(event) => onUpdateRow(row.id, "guideword", event.target.value)}
+                    >
+                      <option value="Yok">No</option>
+                      <option value="Fazla">More</option>
+                      <option value="Az">Less</option>
+                      <option value="Ters">Reverse</option>
+                      <option value="Başka">Other</option>
+                    </select>
+                  </td>
+                  <td>
+                    <textarea
+                      aria-label={`${displayIndex}. row deviation`}
+                      value={row.deviation}
+                      readOnly={readOnly}
+                      onChange={(event) => onUpdateRow(row.id, "deviation", event.target.value)}
+                    />
+                  </td>
+                  {/* Cause spans its consequence rows (item 7a): render once per group. */}
+                  {showCause && isFirstInGroup && (
+                    <td className="cause-cell" rowSpan={group.rows.length}>
+                      <textarea
+                        aria-label={`${displayIndex}. cause`}
+                        value={row.cause}
+                        readOnly={readOnly}
+                        onChange={(event) =>
+                          // Keep the group coherent: edit the cause on every
+                          // consequence that shares it.
+                          group.rows.forEach((r) => onUpdateRow(r.id, "cause", event.target.value))
+                        }
+                      />
+                      {!readOnly && (
+                        <button
+                          type="button"
+                          className="add-consequence"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            onAddConsequence(row);
+                          }}
+                        >
+                          ＋ consequence
+                        </button>
+                      )}
+                    </td>
+                  )}
+                  <HazopConsequenceCells
+                    row={row}
+                    displayIndex={displayIndex}
+                    readOnly={readOnly}
+                    hiddenColumns={hiddenColumns}
+                    onUpdateRow={onUpdateRow}
+                  />
+                </tr>
+              );
+            })}
+          </tbody>
+        ))}
       </table>
     </div>
   );
@@ -1913,6 +1989,32 @@ function WorkspaceApp({
     }
   };
 
+  // Add another consequence beneath an existing cause (item 7a): the new row
+  // inherits the cause's guideword/deviation/cause so it joins the same group.
+  const addConsequence = async (fromRow: HazopRow) => {
+    if (!activeNodeId) {
+      notify("Create a node before adding a consequence.", "error");
+      return;
+    }
+    try {
+      const created = await createHazopRow(activeNodeId, {
+        guideword: fromRow.guideword,
+        deviation: fromRow.deviation,
+        cause: fromRow.cause,
+        consequence: "",
+        safeguard: "",
+        severity: 1,
+        likelihood: 1,
+        status: "Eksik",
+      });
+      setRows((current) => [...current, created]);
+      setSelectedRow(created.id);
+      notify("A consequence was added under the cause.");
+    } catch {
+      notify("The consequence could not be added. Check the API connection.", "error");
+    }
+  };
+
   const addFromLibrary = async (entry: LibraryEntry) => {
     if (!activeNodeId) {
       notify("Select a node before applying a library entry.", "error");
@@ -2200,6 +2302,7 @@ function WorkspaceApp({
                   selectedRow={selectedRow}
                   onSelectRow={setSelectedRow}
                   onUpdateRow={updateRow}
+                  onAddConsequence={addConsequence}
                   readOnly={!canWrite}
                   hiddenColumns={hiddenColumns}
                 />}

@@ -1310,6 +1310,41 @@ select:focus-visible {
   box-shadow: inset 3px 0 0 var(--primary);
 }
 
+/* Cause -> Consequence hierarchy (item 7a): a cause spans its consequence rows,
+   and each cause group is separated by a heavier top border. */
+.hazop-table tbody.cause-group {
+  border-top: 2px solid var(--line);
+}
+
+.hazop-table td.cause-cell {
+  background: oklch(0.985 0.006 120);
+  vertical-align: top;
+  position: relative;
+}
+
+.hazop-table td.cause-cell textarea {
+  min-height: 72px;
+}
+
+.add-consequence {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0.25rem 0.5rem 0.5rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: transparent;
+  border: 1px dashed var(--primary);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.add-consequence:hover {
+  background: oklch(0.965 0.02 120);
+}
+
 .hazop-table textarea,
 .hazop-table select {
   width: 100%;

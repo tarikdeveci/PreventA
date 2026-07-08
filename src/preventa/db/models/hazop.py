@@ -22,6 +22,7 @@ adapted to PreventA's conventions and integrated with the existing RAG models
 
 from datetime import date
 from enum import StrEnum
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from sqlalchemy import (
@@ -40,6 +41,18 @@ from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from preventa.db.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
+
+if TYPE_CHECKING:
+    from preventa.db.models.registers import (
+        Checklist,
+        Drawing,
+        Incident,
+        Moc,
+        ParkingLotItem,
+        Scai,
+        Session,
+        TeamMember,
+    )
 
 # --------------------------------------------------------------------------- #
 # Enums
@@ -97,6 +110,33 @@ consequence_safeguard = Table(
 
 
 # --------------------------------------------------------------------------- #
+# m2m link: a recommendation may be referenced by many consequences and a
+# consequence may carry many recommendations (OpenPHA
+# ``Consequence.Pha_Recommendation_IDs`` / ``Lopa_Recommendation_IDs``).  A
+# single FK would silently attach a shared recommendation to only the first
+# scenario, losing the rest on export -- so recommendations get the same
+# link-table treatment as safeguards.
+# --------------------------------------------------------------------------- #
+
+consequence_recommendation = Table(
+    "consequence_recommendation",
+    Base.metadata,
+    Column(
+        "consequence_id",
+        PGUUID(as_uuid=True),
+        ForeignKey("consequences.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    Column(
+        "recommendation_id",
+        PGUUID(as_uuid=True),
+        ForeignKey("recommendations.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+)
+
+
+# --------------------------------------------------------------------------- #
 # Study (OpenPHA Overview + Settings)
 # --------------------------------------------------------------------------- #
 
@@ -137,6 +177,10 @@ class Study(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     lopa_enabled: Mapped[bool] = mapped_column(
         Boolean, default=True, nullable=False
     )  # Settings.Lopa_Mode
+    # OpenPHA data-structure revision the file was written with. Recorded so an
+    # import can branch on it (item 5) instead of silently mis-reading a file
+    # from a newer/older OpenPHA version where fields were renamed.
+    ds_rev: Mapped[str | None] = mapped_column(String(32))  # Settings.Ds_Rev
 
     nodes: Mapped[list["Node"]] = relationship(
         back_populates="study", cascade="all, delete-orphan"
@@ -149,6 +193,30 @@ class Study(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     )
     risk_matrix: Mapped["RiskMatrix | None"] = relationship(
         back_populates="study", cascade="all, delete-orphan", uselist=False
+    )
+
+    # Supporting registers (item 6) live in ``registers.py``; related here so a
+    # study owns and cascades them. One-directional (no back_populates) keeps the
+    # register module free of a dependency back on this one.
+    team_members: Mapped[list["TeamMember"]] = relationship(
+        "TeamMember", cascade="all, delete-orphan"
+    )
+    sessions: Mapped[list["Session"]] = relationship(
+        "Session", cascade="all, delete-orphan"
+    )
+    drawings: Mapped[list["Drawing"]] = relationship(
+        "Drawing", cascade="all, delete-orphan"
+    )
+    parking_lot: Mapped[list["ParkingLotItem"]] = relationship(
+        "ParkingLotItem", cascade="all, delete-orphan"
+    )
+    mocs: Mapped[list["Moc"]] = relationship("Moc", cascade="all, delete-orphan")
+    scais: Mapped[list["Scai"]] = relationship("Scai", cascade="all, delete-orphan")
+    incidents: Mapped[list["Incident"]] = relationship(
+        "Incident", cascade="all, delete-orphan"
+    )
+    checklists: Mapped[list["Checklist"]] = relationship(
+        "Checklist", cascade="all, delete-orphan"
     )
 
 
@@ -272,6 +340,12 @@ class Consequence(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     likelihood_after_recs: Mapped[int | None] = mapped_column(Integer)
     risk_rank_after_recs: Mapped[str | None] = mapped_column(String(32))
 
+    # Multi-category severity (item 3 / worked example): a rich client matrix
+    # scores a scenario on several categories (Safety, Environment, Asset, ...)
+    # at once, so a single severity int is not enough. JSON maps category ->
+    # {"code", "ordinal", "name"} for the current state.
+    severity_by_category: Mapped[str | None] = mapped_column(Text)
+
     review_status: Mapped[ReviewStatus] = mapped_column(
         Enum(ReviewStatus, name="review_status"),
         default=ReviewStatus.DRAFT,
@@ -286,7 +360,7 @@ class Consequence(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         back_populates="consequence", cascade="all, delete-orphan", uselist=False
     )
     recommendations: Mapped[list["Recommendation"]] = relationship(
-        back_populates="consequence"
+        secondary=consequence_recommendation, back_populates="consequences"
     )
 
 
@@ -355,10 +429,42 @@ class Lopa(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     lopa_ratio: Mapped[float | None] = mapped_column(Float)  # Lopa_Ratio
     rrf: Mapped[float | None] = mapped_column(Float)  # Rrf (risk reduction factor)
     alarp_required: Mapped[bool | None] = mapped_column(Boolean)  # Alarp_Required
-    # Conditional_Modifiers -> own child rows if you need probabilities itemised
+    # Conditional_Modifiers are itemised into ``LopaModifier`` child rows so the
+    # LOPA arithmetic can be recomputed; the raw JSON is kept for lossless export.
     conditional_modifiers: Mapped[str | None] = mapped_column(Text)
 
+    # --- Recomputed on import (item 4: LOPA as a check, not just storage) --- #
+    # mel_calc = initiating frequency x product(IPL PFDs) x product(modifiers).
+    mel_calc: Mapped[float | None] = mapped_column(Float)
+    # Whether the recomputed MEL meets the target (mel_calc <= tmel).
+    meets_tmel: Mapped[bool | None] = mapped_column(Boolean)
+
     consequence: Mapped[Consequence] = relationship(back_populates="lopa")
+    modifiers: Mapped[list["LopaModifier"]] = relationship(
+        back_populates="lopa", cascade="all, delete-orphan"
+    )
+
+
+# --------------------------------------------------------------------------- #
+# LopaModifier (OpenPHA Consequence.Conditional_Modifiers[]) -- an itemised
+# conditional-modifier probability feeding the LOPA arithmetic.
+# --------------------------------------------------------------------------- #
+
+
+class LopaModifier(UUIDPrimaryKeyMixin, TimestampMixin, Base):
+    __tablename__ = "lopa_modifiers"
+
+    lopa_id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True),
+        ForeignKey("lopa.id", ondelete="CASCADE"),
+        index=True,
+        nullable=False,
+    )
+    opha_id: Mapped[str | None] = mapped_column(String(64), index=True)  # CM ID
+    description: Mapped[str | None] = mapped_column(Text)  # CM_Description
+    probability: Mapped[float | None] = mapped_column(Float)  # CM_Probability
+
+    lopa: Mapped[Lopa] = relationship(back_populates="modifiers")
 
 
 # --------------------------------------------------------------------------- #
@@ -375,12 +481,6 @@ class Recommendation(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         index=True,
         nullable=False,
     )
-    # Recommendations attach to a scenario in OpenPHA via Consequence.*_IDs
-    consequence_id: Mapped[UUID | None] = mapped_column(
-        PGUUID(as_uuid=True),
-        ForeignKey("consequences.id", ondelete="SET NULL"),
-        index=True,
-    )
     opha_id: Mapped[str | None] = mapped_column(
         String(64), index=True
     )  # OpenPHA Pha_/Lopa_Recommendations[].ID
@@ -396,8 +496,8 @@ class Recommendation(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     comments: Mapped[str | None] = mapped_column(Text)
 
     study: Mapped[Study] = relationship(back_populates="recommendations")
-    consequence: Mapped[Consequence | None] = relationship(
-        back_populates="recommendations"
+    consequences: Mapped[list[Consequence]] = relationship(
+        secondary=consequence_recommendation, back_populates="recommendations"
     )
 
 

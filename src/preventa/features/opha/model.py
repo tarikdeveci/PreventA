@@ -50,6 +50,46 @@ class Consequence(_Wrapper):
     def consequence_type(self) -> str | None:
         return as_str(self.raw.get("Consequence_Type_ID"))
 
+    # Coded references into Risk_Criteria for the three risk states. OpenPHA
+    # suffixes the before/after states; the "current" state is unsuffixed.
+    def likelihood_code(self, state: str = "current") -> str | None:
+        key = {
+            "current": "Likelihood_ID",
+            "before": "Likelihood_ID_Before_Safeguards",
+            "after": "Likelihood_ID_After_Recommendations",
+        }[state]
+        return as_str(self.raw.get(key))
+
+    def severity_code(self, state: str = "current") -> str | None:
+        key = {
+            "current": "Consequence_Severity_ID",
+            "before": "Consequence_Severity_ID_Before_Safeguards",
+            "after": "Consequence_Severity_ID_After_Recommendations",
+        }[state]
+        return as_str(self.raw.get(key))
+
+    @property
+    def classifications(self) -> list[dict[str, str | None]]:
+        """Per-category severity codes (``Consequence_Classifications[]``).
+
+        A rich client matrix scores a scenario on several severity categories at
+        once; each classification names a category and its severity code.  Empty
+        placeholder rows are dropped.
+        """
+        out: list[dict[str, str | None]] = []
+        raw = self.raw.get("Consequence_Classifications")
+        if not isinstance(raw, list):
+            return out
+        for item in raw:
+            if not isinstance(item, dict):
+                continue
+            severity = as_str(item.get("Consequence_Severity_ID") or item.get("Magnitude_ID"))
+            category = as_str(item.get("Category") or item.get("Category_Name"))
+            if severity is None and category is None:
+                continue
+            out.append({"category": category, "severity_code": severity})
+        return out
+
     @property
     def lopa_required(self) -> bool | None:
         return as_bool(self.raw.get("Lopa_Required"))
@@ -74,6 +114,34 @@ class Consequence(_Wrapper):
     def recommended_sil(self) -> str | None:
         # OpenPHA stores e.g. "SIL 3" — a label, not an int.
         return as_str(self.raw.get("Recommended_Sil"))
+
+    @property
+    def conditional_modifiers(self) -> list[dict[str, Any]]:
+        """Itemised LOPA conditional modifiers (``Conditional_Modifiers[]``).
+
+        Each entry is normalised to ``{"id", "description", "probability"}``;
+        OpenPHA placeholder rows (blank description *and* probability) are
+        dropped so they do not distort the LOPA arithmetic.
+        """
+        out: list[dict[str, Any]] = []
+        raw = self.raw.get("Conditional_Modifiers")
+        if not isinstance(raw, list):
+            return out
+        for item in raw:
+            if not isinstance(item, dict):
+                continue
+            description = as_str(item.get("CM_Description"))
+            probability = as_float(item.get("CM_Probability"))
+            if description is None and probability is None:
+                continue
+            out.append(
+                {
+                    "id": as_str(item.get("ID")),
+                    "description": description,
+                    "probability": probability,
+                }
+            )
+        return out
 
     @property
     def safeguard_ids(self) -> list[str]:
@@ -196,6 +264,15 @@ class OphaStudy:
     @property
     def facility(self) -> str | None:
         return as_str(self.overview.get("Facility"))
+
+    @property
+    def ds_rev(self) -> str | None:
+        """OpenPHA data-structure revision (``Settings.Ds_Rev``).
+
+        Identifies the schema version the file was written with.  Kept so import
+        can branch on it rather than silently mis-reading a renamed field.
+        """
+        return as_str(self.settings.get("Ds_Rev"))
 
     # --- tree ------------------------------------------------------------ #
     @property

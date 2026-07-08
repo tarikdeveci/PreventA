@@ -9,14 +9,18 @@
   },
   "Settings": {
     "Analysis_Mode": "HAZOP",
-    "Lopa_Mode": "true"
+    "Lopa_Mode": "true",
+    "Ds_Rev": "5"
   },
   "Team_Members": [
     {"ID": "tm1", "Name": "Alice"},
     {"ID": "tm2", "Name": "Bob"}
   ],
   "Sessions": [
-    {"ID": "ses1", "Date": "2026-01-01"}
+    {"ID": "ses1", "Date": "2026-01-01", "Team_Member_IDs": [{"ID": "tm1"}, {"ID": "tm2"}]}
+  ],
+  "Drawings": [
+    {"ID": "dwg1", "Drawing_Number": "P-001", "Drawing_Title": "Process Flow Diagram"}
   ],
   "Nodes": [
     {
@@ -45,6 +49,11 @@
                   "Lopa_Required": "true",
                   "Recommended_Sil": "SIL 2",
                   "Likelihood_ID": "lk1",
+                  "Consequence_Severity_ID": "sevS3",
+                  "Consequence_Classifications": [
+                    {"Category": "Safety", "Consequence_Severity_ID": "sevS3"},
+                    {"Category": "Environment", "Consequence_Severity_ID": "sevE2"}
+                  ],
                   "Risk_Rank_ID": "Yuksek",
                   "Tmel": "1E-5",
                   "Mel": "1E-2",
@@ -54,7 +63,10 @@
                   "Safeguard_IDs": [{"ID": "sg1"}, {"ID": "sg2"}],
                   "Pha_Recommendation_IDs": [{"ID": "phar1"}],
                   "Lopa_Recommendation_IDs": [{"ID": "lopar1"}],
-                  "Conditional_Modifiers": [{"ID": "empty", "CM_Description": "", "CM_Probability": ""}]
+                  "Conditional_Modifiers": [
+                    {"ID": "empty", "CM_Description": "", "CM_Probability": ""},
+                    {"ID": "cm1", "CM_Description": "Probability of ignition", "CM_Probability": "1E-1"}
+                  ]
                 }
               ]
             }
@@ -75,7 +87,8 @@
                   "ID": "con2",
                   "Consequence": "Overpressure and loss of containment",
                   "Lopa_Required": "false",
-                  "Safeguard_IDs": [{"ID": "sg2"}]
+                  "Safeguard_IDs": [{"ID": "sg2"}],
+                  "Pha_Recommendation_IDs": [{"ID": "phar1"}]
                 }
               ]
             }
@@ -107,8 +120,16 @@
     {"ID": "lopar1", "Lopa_Recommendation": "Add SIL-2 pressure trip", "Lopa_Recommendation_Pfd": "1E-2"}
   ],
   "Risk_Criteria": {
-    "Likelihoods": [{"ID": "lk1", "Name": "Occasional"}],
-    "Severities": [],
-    "Intersections": []
+    "Likelihoods": [{"ID": "lk1", "Name": "Occasional", "Level": "3"}],
+    "Severities": [
+      {"ID": "sevS3", "Name": "Major", "Category": "Safety", "Level": "3"},
+      {"ID": "sevE2", "Name": "Moderate", "Category": "Environment", "Level": "2"}
+    ],
+    "Intersections": [
+      {"Likelihood_ID": "lk1", "Severity_ID": "sevS3", "Risk_Rank_ID": "rrHigh"}
+    ],
+    "Risk_Rankings": [
+      {"ID": "rrHigh", "Name": "Yuksek", "Color": "#e11d48", "Priority": "2", "Required_Lopa_Credits": "1"}
+    ]
   }
 }

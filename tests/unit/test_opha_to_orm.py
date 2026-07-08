@@ -28,6 +28,7 @@ def test_study_header_mapped() -> None:
     assert study.unit == "Demo Unit"
     assert study.analysis_mode is AnalysisMode.HAZOP
     assert study.lopa_enabled is True
+    assert study.ds_rev == "5"  # Settings.Ds_Rev recorded (item 5)
 
 
 def test_tree_shape_and_counts() -> None:
@@ -56,9 +57,10 @@ def test_scenario_typed_fields_and_lopa() -> None:
     assert con.consequence == "Loss of feed and pump damage"
     assert con.consequence_type_id == "Safety"
     assert con.risk_rank_current == "Yuksek"
-    # Severity/likelihood are OpenPHA ID refs, not 1-5 ints -> left unset.
-    assert con.severity_current is None
-    assert con.likelihood_current is None
+    # Severity/likelihood codes are now resolved into ordinals via the matrix
+    # (item 3): Likelihood lk1 -> level 3, Severity sevS3 -> level 3.
+    assert con.severity_current == 3
+    assert con.likelihood_current == 3
     assert con.lopa is not None
     assert con.lopa.lopa_required is True
     assert con.lopa.tmel == pytest.approx(1e-5)
@@ -107,8 +109,17 @@ def test_recommendations_mapped_and_attached() -> None:
     lopa_rec = next(r for r in study.recommendations if r.opha_id == "lopar1")
     assert lopa_rec.pfd == pytest.approx(1e-2)
     # Both are referenced by con1, so they attach to that scenario.
-    con1_recs = {r.opha_id for r in study.recommendations if r.consequence is not None}
-    assert con1_recs == {"phar1", "lopar1"}
+    attached = {r.opha_id for r in study.recommendations if r.consequences}
+    assert attached == {"phar1", "lopar1"}
+
+
+def test_recommendation_many_to_many() -> None:
+    """A shared recommendation attaches to every referencing consequence (item 2)."""
+    study = _study()
+    phar1 = next(r for r in study.recommendations if r.opha_id == "phar1")
+    # phar1 is referenced by both con1 and con2 in the fixture.
+    linked = sorted(c.opha_id or "" for c in phar1.consequences)
+    assert linked == ["con1", "con2"]
 
 
 def test_cause_frequency_and_risk_matrix() -> None:

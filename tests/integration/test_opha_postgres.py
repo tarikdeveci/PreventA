@@ -41,7 +41,7 @@ from preventa.db.models import (  # noqa: F401  (import registers every table on
     Study,
 )
 from preventa.features.opha import load_opha
-from preventa.features.opha.repository import persist_opha_study
+from preventa.features.opha.repository import export_opha_study, persist_opha_study
 
 FIXTURE = Path(__file__).resolve().parents[1] / "fixtures" / "synthetic.opha"
 TEST_DB_URL = os.getenv("PREVENTA_TEST_DATABASE_URL")
@@ -106,3 +106,40 @@ async def test_persist_opha_study_is_durable(engine: AsyncEngine) -> None:
         # PHA + LOPA recommendations both persisted.
         recs = await _count(session, Recommendation)
         assert recs == expected["pha_recommendations"] + expected["lopa_recommendations"]
+
+
+async def test_export_roundtrips_through_database(engine: AsyncEngine) -> None:
+    """import -> Postgres -> export -> compare, the real proof for review item 1."""
+    original = load_opha(FIXTURE)
+    expected = original.summary()
+
+    write_factory = async_sessionmaker(engine, expire_on_commit=False)
+    async with write_factory() as session:
+        study = await persist_opha_study(session, original)
+        await session.commit()
+        study_id = study.id
+
+    # Rebuild the .opha from the persisted database in a brand-new session.
+    read_factory = async_sessionmaker(engine)
+    async with read_factory() as session:
+        exported = await export_opha_study(session, study_id)
+
+    rebuilt = load_opha(exported)
+    rebuilt_summary = rebuilt.summary()
+    for key in (
+        "nodes",
+        "deviations",
+        "causes",
+        "consequences",
+        "safeguards",
+        "pha_recommendations",
+        "lopa_recommendations",
+        "team_members",
+        "sessions",
+    ):
+        assert rebuilt_summary[key] == expected[key], key
+
+    # A shared recommendation must reappear on every consequence that referenced
+    # it (item 2 preserved through persistence + export).
+    con2 = next(c for c in rebuilt.iter_consequences() if c.id == "con2")
+    assert con2.pha_recommendation_ids == ["phar1"]
