@@ -1,15 +1,20 @@
 # PreventA — Yol Haritası (Roadmap)
 
-> Durum tarihi: 2026-06-13. Bu doküman, ürünü "kutu işaretleme %72"den
-> **uçtan uca çalışan, bütünlüklü bir ürüne** taşıyan görev-görev plandır.
-> Onaylandıktan sonra fazlar sırayla uygulanır; her görevin bir kabul kriteri (AC) vardır.
+> Durum tarihi: 2026-06-13 (son güncelleme: 2026-07-09). Bu doküman, ürünü
+> "kutu işaretleme %72"den **uçtan uca çalışan, bütünlüklü bir ürüne** taşıyan
+> görev-görev plandır. Onaylandıktan sonra fazlar sırayla uygulanır; her görevin
+> bir kabul kriteri (AC) vardır.
+>
+> **2026-07-09 notu:** OpenPHA uyumluluk incelemesinin 7 maddesi tamamlandı ve
+> production'a deploy edildi (bkz. **Faz 5**). Canlı: **`prevent-a.vercel.app`**.
 
 ## 0. Mevcut durum (dürüst başlangıç çizgisi)
 
 **Çalışan:**
-- Deploy sağlam: `preventa-nu.vercel.app` + `preventa-api.vercel.app` (frontend + serverless API, same-origin).
-- Workspace CRUD (SQLite, geçici) — studies/nodes/rows/LOPA API'leri çalışıyor.
-- Backend testleri yeşil: `pytest` 10/10, `ruff`, `mypy --strict` temiz.
+- Deploy sağlam: `prevent-a.vercel.app` (frontend + serverless API same-origin; `vercel --prod` CLI ile).
+- Workspace CRUD (SQLite/Postgres, geçici) — studies/nodes/rows/LOPA API'leri çalışıyor.
+- **OpenPHA `.opha` import/export** — gerçek studies'i yükler ve düzenlenmiş çalışmayı `.opha` olarak yeniden üretir (Faz 5).
+- Backend testleri yeşil: `pytest` 82/82 (+gated Postgres entegrasyon), `ruff`, `mypy --strict` temiz.
 - Risk matrisi ACWA 5×5 (Kritik≥12 / Yüksek≥8 / Orta≥4) — backend `risk_label` ↔ frontend `RiskMatrix` senkron.
 
 **Yüzeysel / eksik (gerçek bütünlük açıkları):**
@@ -90,13 +95,41 @@
 
 ---
 
+## Faz 5 — OpenPHA Uyumluluğu (TAMAM ✅ · 2026-07-09)
+
+İşveren incelemesi (`openpha-mapping/` Drive klasörü: karşılaştırma + 7 maddelik
+öneri listesi, commit `0cdb973` temelli) doğrultusunda PreventA "OpenPHA dosyası
+okuyan araç"tan "**bir OpenPHA aracı**"na taşındı. Gerçek çalışma dosyası
+(ANAGOLD `.opha`) ile kayıpsıza yakın round-trip hedeflenir.
+
+| # | Madde | Ne yapıldı | AC | Durum |
+|---|-------|-----------|----|-------|
+| 1 | Ters export ORM→`.opha` | `features/opha/export.py::orm_to_opha` DB'den `.opha` yeniden kurar; async eager-load `repository.py::export_opha_study` | import→DB→export→compare testi geçer | ✅ |
+| 2 | Recommendations m2m | `consequence_recommendation` link tablosu (tek FK kaldırıldı) | Paylaşılan öneri tüm senaryolara bağlanır | ✅ |
+| 3 | Severity/likelihood → sayı | `features/opha/risk.py::RiskMatrixResolver` kodları ordinal'e çözer + çok-kategorili severity JSON | Sayısal risk hesaplanır/sıralanır | ✅ |
+| 4 | LOPA doğrulayıcı | `features/opha/lopa_check.py::recompute_lopa` (freq×IPL PFD×modifiers vs TMEL); `LopaModifier` tablosu; `mel_calc`/`meets_tmel` | Import'ta LOPA aritmetiği yeniden hesaplanır | ✅ |
+| 5 | `Ds_Rev` sürümleme | `Study.ds_rev` + `features/opha/versioning.py::check_ds_rev` | Bilinmeyen sürümde sessiz kırılma yok | ✅ |
+| 6 | Destek register'ları | `db/models/registers.py`: Team, Session(+attendance), Drawing, ParkingLot, MOC, SCAI, Incident, Checklist — her biri `raw` JSON ile kayıpsız | Register'lar DB'de + export'ta korunur | ✅ |
+| 7a | Worksheet hiyerarşisi | Cause `rowSpan` ile gruplanır → consequence'lar altında; "＋ consequence" aksiyonu | Cause tekrar edilmez; consequence eklenir | ✅ |
+| 7b | Üç-durumlu risk | Flat grid'de Before/Current/After sütun-grupları; `mvp_rows` 4 kolon + idempotent `_migrate_mvp_rows` (Postgres `ADD COLUMN IF NOT EXISTS`) | Grid üç risk durumunu gösterir | ✅ (canlı doğrulandı) |
+
+Migration: `migrations/versions/20260708_0004_opha_review_items.py` (yapısal ORM
+şeması). Flat MVP store kolonları cold-start'ta `initialize_store` içinde
+idempotent eklenir.
+
+**Faz 5 doğrulama:** 82 unit test + gated Postgres entegrasyon testi; canlı
+production'da `.opha` import → grid con1'i **Critical → High → Low** (üç durum)
+render eder; ruff+mypy+frontend `tsc`/`vite build` temiz.
+
+---
+
 ## Çapraz kesen işler (cross-cutting)
 
 | # | Görev | AC |
 |---|-------|----|
-| C1 | Vercel↔GitHub Git entegrasyonunu yeniden bağla (repo `dev-chron→tarikdeveci` taşınınca koptu) → `git push` otomatik deploy | Push deploy tetikler |
+| C1 | Vercel↔GitHub Git entegrasyonunu yeniden bağla (repo `dev-chron→tarikdeveci` taşınınca koptu) → `git push` otomatik deploy | ⚠️ Hâlâ kopuk; deploy `vercel --prod` CLI ile yapılıyor |
 | C2 | Risk matrisi eşiklerini senkron tut (store.py ↔ App.tsx) | ✅ Tamam (12/8/4) |
-| C3 | `pytest`+`ruff`+`mypy` yeşil kalsın; Faz 2'den itibaren frontend testleri ekle | CI yeşil |
+| C3 | `pytest`+`ruff`+`mypy` yeşil kalsın; Faz 2'den itibaren frontend testleri ekle | ✅ Backend 82/82 + ruff + mypy yeşil; frontend `tsc`/`vite build` yeşil (birim testleri hâlâ eksik) |
 | C4 | `/api/v1/status`'u gerçek tamamlanmayı yansıtacak şekilde dürüstleştir | Status şişirilmemiş |
 
 ---
