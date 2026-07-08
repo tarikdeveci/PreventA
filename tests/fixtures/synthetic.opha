@@ -54,7 +54,9 @@
                     {"Category": "Safety", "Consequence_Severity_ID": "sevS3"},
                     {"Category": "Environment", "Consequence_Severity_ID": "sevE2"}
                   ],
+                  "Risk_Rank_ID_Before_Safeguards": "Kritik",
                   "Risk_Rank_ID": "Yuksek",
+                  "Risk_Rank_ID_After_Recommendations": "Dusuk",
                   "Tmel": "1E-5",
                   "Mel": "1E-2",
                   "Lopa_Ratio": "1E-3",

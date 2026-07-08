@@ -169,8 +169,10 @@ class WorkspaceRepository:
                 """
                 INSERT INTO mvp_rows
                     (node_id, guideword, deviation, cause, consequence, safeguard,
-                     severity, likelihood, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     severity, likelihood, status,
+                     severity_before, likelihood_before,
+                     severity_after, likelihood_after)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 RETURNING id
                 """,
                 (
@@ -183,6 +185,10 @@ class WorkspaceRepository:
                     payload.severity,
                     payload.likelihood,
                     payload.status,
+                    payload.severity_before,
+                    payload.likelihood_before,
+                    payload.severity_after,
+                    payload.likelihood_after,
                 ),
             )
             created = cursor.fetchone()
@@ -205,6 +211,10 @@ class WorkspaceRepository:
             "severity",
             "likelihood",
             "status",
+            "severity_before",
+            "likelihood_before",
+            "severity_after",
+            "likelihood_after",
         }
         values = {k: v for k, v in values.items() if k in _ALLOWED_ROW_FIELDS}
         if not values:
@@ -505,5 +515,14 @@ class WorkspaceRepository:
     @staticmethod
     def _serialize_row(row: Any) -> dict[str, Any]:
         result = row_dict(row)
+        # Current state (with existing safeguards) is always scored.
         result["risk"] = risk_label(result["severity"], result["likelihood"])
+        # Before-safeguards and after-recommendations states are optional; label
+        # them only when both axes are scored, else leave null (not graded).
+        for state in ("before", "after"):
+            severity = result.get(f"severity_{state}")
+            likelihood = result.get(f"likelihood_{state}")
+            result[f"risk_{state}"] = (
+                risk_label(severity, likelihood) if severity and likelihood else None
+            )
         return result

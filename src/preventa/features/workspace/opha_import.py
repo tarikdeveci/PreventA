@@ -34,26 +34,38 @@ def _atleast(value: str | None, fallback: str, *, limit: int = 160) -> str:
     return text[:limit]
 
 
-def _risk_from_rank(label: str | None) -> tuple[int, int, str]:
-    """Map an OpenPHA risk-rank label to a 5x5 severity/likelihood + row status.
+def _scores_from_rank(label: str | None) -> tuple[int, int] | None:
+    """Map an OpenPHA risk-rank label to a representative 5x5 severity/likelihood.
 
     OpenPHA stores risk as a rank label (localised, e.g. "Yüksek"/"Aşırı") rather
-    than a 1-5 pair, so a defaulted (1, 1) would misrepresent critical scenarios
-    as low risk — unacceptable in a safety tool. Unmapped/blank ranks are marked
-    "Eksik" (ungraded) rather than shown as genuinely low.
+    than a 1-5 pair. Returns ``None`` for a blank/unmapped rank so the caller can
+    treat it as ungraded rather than a defaulted low risk — unacceptable in a
+    safety tool.
     """
     text = (label or "").strip().lower()
     if not text:
-        return 1, 1, "Eksik"
+        return None
     if any(k in text for k in ("kritik", "aşırı", "asiri", "extreme", "critical")):
-        return 5, 5, "Taslak"
+        return 5, 5
     if any(k in text for k in ("yüksek", "yuksek", "high")):
-        return 4, 2, "Taslak"
+        return 4, 2
     if any(k in text for k in ("orta", "medium", "moderate")):
-        return 2, 2, "Taslak"
+        return 2, 2
     if any(k in text for k in ("düşük", "dusuk", "low")):
-        return 1, 1, "Taslak"
-    return 1, 1, "Eksik"
+        return 1, 1
+    return None
+
+
+def _risk_from_rank(label: str | None) -> tuple[int, int, str]:
+    """Current-state scores + row status from an OpenPHA risk-rank label.
+
+    Blank/unmapped ranks default to (1, 1) but are flagged "Eksik" (ungraded) so
+    a critical scenario is never silently shown as genuinely low risk.
+    """
+    scores = _scores_from_rank(label)
+    if scores is None:
+        return 1, 1, "Eksik"
+    return scores[0], scores[1], "Taslak"
 
 
 def import_opha_study(
@@ -125,6 +137,10 @@ def import_opha_study(
                     )
                     if row_status == "Eksik":
                         dropped["Scenarios with an unmapped risk rank"] += 1
+                    # Three-state risk (item 7b): map the before-safeguards and
+                    # after-recommendations ranks too, when the file carries them.
+                    before = _scores_from_rank(con.raw.get("Risk_Rank_ID_Before_Safeguards"))
+                    after = _scores_from_rank(con.raw.get("Risk_Rank_ID_After_Recommendations"))
                     row = repo.create_row(
                         node_id,
                         RowCreate(
@@ -136,6 +152,10 @@ def import_opha_study(
                             severity=severity,
                             likelihood=likelihood,
                             status=row_status,
+                            severity_before=before[0] if before else None,
+                            likelihood_before=before[1] if before else None,
+                            severity_after=after[0] if after else None,
+                            likelihood_after=after[1] if after else None,
                         ),
                     )
                     rows_created += 1

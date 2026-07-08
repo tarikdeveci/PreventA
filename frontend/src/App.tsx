@@ -543,6 +543,59 @@ function groupRowsByCause(rows: HazopRow[]): { key: string; rows: HazopRow[] }[]
   return groups;
 }
 
+// One (severity, likelihood, risk) column-group for a single risk state. The
+// before/after states are optional (`allowEmpty`), so a "—" option lets a
+// facilitator leave them ungraded (review item 7b).
+function RiskScoreGroup({
+  displayIndex,
+  label,
+  severity,
+  likelihood,
+  risk,
+  readOnly,
+  allowEmpty,
+  onSeverity,
+  onLikelihood,
+}: {
+  displayIndex: number;
+  label: string;
+  severity: number | null | undefined;
+  likelihood: number | null | undefined;
+  risk: HazopRow["risk"] | null | undefined;
+  readOnly: boolean;
+  allowEmpty: boolean;
+  onSeverity: (value: string) => void;
+  onLikelihood: (value: string) => void;
+}) {
+  return (
+    <>
+      <td className="score-cell group-start">
+        <select
+          aria-label={`${displayIndex}. ${label} severity`}
+          value={severity ?? ""}
+          disabled={readOnly}
+          onChange={(event) => onSeverity(event.target.value)}
+        >
+          {allowEmpty && <option value="">—</option>}
+          {[1, 2, 3, 4, 5].map((v) => <option key={v} value={v}>{v}</option>)}
+        </select>
+      </td>
+      <td className="score-cell">
+        <select
+          aria-label={`${displayIndex}. ${label} likelihood`}
+          value={likelihood ?? ""}
+          disabled={readOnly}
+          onChange={(event) => onLikelihood(event.target.value)}
+        >
+          {allowEmpty && <option value="">—</option>}
+          {[1, 2, 3, 4, 5].map((v) => <option key={v} value={v}>{v}</option>)}
+        </select>
+      </td>
+      <td>{risk ? <RiskBadge level={risk} /> : <span className="risk-empty">—</span>}</td>
+    </>
+  );
+}
+
 function HazopConsequenceCells({
   row,
   displayIndex,
@@ -575,29 +628,41 @@ function HazopConsequenceCells({
           onChange={(event) => onUpdateRow(row.id, "safeguard", event.target.value)}
         />
       </td>}
-      {!hiddenColumns.has("scores") && <><td className="score-cell">
-        <select
-          aria-label={`${displayIndex}. row severity`}
-          value={row.severity}
-          disabled={readOnly}
-          onChange={(event) => onUpdateRow(row.id, "severity", event.target.value)}
-        >
-          {[1, 2, 3, 4, 5].map((v) => <option key={v} value={v}>{v}</option>)}
-        </select>
-      </td>
-      <td className="score-cell">
-        <select
-          aria-label={`${displayIndex}. row likelihood`}
-          value={row.likelihood}
-          disabled={readOnly}
-          onChange={(event) => onUpdateRow(row.id, "likelihood", event.target.value)}
-        >
-          {[1, 2, 3, 4, 5].map((v) => <option key={v} value={v}>{v}</option>)}
-        </select>
-      </td>
-      <td>
-        <RiskBadge level={row.risk} />
-      </td></>}
+      {!hiddenColumns.has("scores") && <>
+        <RiskScoreGroup
+          displayIndex={displayIndex}
+          label="before-safeguards"
+          allowEmpty
+          readOnly={readOnly}
+          severity={row.severity_before}
+          likelihood={row.likelihood_before}
+          risk={row.risk_before}
+          onSeverity={(v) => onUpdateRow(row.id, "severity_before", v)}
+          onLikelihood={(v) => onUpdateRow(row.id, "likelihood_before", v)}
+        />
+        <RiskScoreGroup
+          displayIndex={displayIndex}
+          label="current"
+          allowEmpty={false}
+          readOnly={readOnly}
+          severity={row.severity}
+          likelihood={row.likelihood}
+          risk={row.risk}
+          onSeverity={(v) => onUpdateRow(row.id, "severity", v)}
+          onLikelihood={(v) => onUpdateRow(row.id, "likelihood", v)}
+        />
+        <RiskScoreGroup
+          displayIndex={displayIndex}
+          label="after-recommendations"
+          allowEmpty
+          readOnly={readOnly}
+          severity={row.severity_after}
+          likelihood={row.likelihood_after}
+          risk={row.risk_after}
+          onSeverity={(v) => onUpdateRow(row.id, "severity_after", v)}
+          onLikelihood={(v) => onUpdateRow(row.id, "likelihood_after", v)}
+        />
+      </>}
       {!hiddenColumns.has("status") && <td>
         <select
           aria-label={`${displayIndex}. row review status`}
@@ -646,7 +711,17 @@ function HazopTable({
             {showCause && <th className="col-text">Cause</th>}
             {!hiddenColumns.has("consequence") && <th className="col-text">Consequence</th>}
             {!hiddenColumns.has("safeguard") && <th className="col-text">Existing safeguards</th>}
-            {!hiddenColumns.has("scores") && <><th className="col-score">S</th><th className="col-score">O</th><th className="col-risk">Risk</th></>}
+            {!hiddenColumns.has("scores") && <>
+              <th className="col-score group-start" title="Before safeguards (inherent risk)">S⁰</th>
+              <th className="col-score" title="Before safeguards (inherent risk)">O⁰</th>
+              <th className="col-risk" title="Risk before safeguards">Risk⁰</th>
+              <th className="col-score group-start" title="With existing safeguards (current risk)">S</th>
+              <th className="col-score" title="With existing safeguards (current risk)">O</th>
+              <th className="col-risk" title="Current risk">Risk</th>
+              <th className="col-score group-start" title="After recommendations (residual risk)">S′</th>
+              <th className="col-score" title="After recommendations (residual risk)">O′</th>
+              <th className="col-risk" title="Risk after recommendations">Risk′</th>
+            </>}
             {!hiddenColumns.has("status") && <th className="col-status">Review</th>}
           </tr>
         </thead>
@@ -1962,7 +2037,13 @@ function WorkspaceApp({
         setRows((current) =>
           current.map((row) =>
             row.id === id
-              ? { ...row, [field]: saved[field], risk: saved.risk }
+              ? {
+                  ...row,
+                  [field]: saved[field],
+                  risk: saved.risk,
+                  risk_before: saved.risk_before,
+                  risk_after: saved.risk_after,
+                }
               : row,
           ),
         );

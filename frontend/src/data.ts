@@ -30,10 +30,19 @@ export type HazopRow = {
   cause: string;
   consequence: string;
   safeguard: string;
+  // Current state: risk with existing safeguards (always scored).
   severity: number;
   likelihood: number;
   risk: RiskLevel;
   status: "İncelendi" | "Taslak" | "Eksik";
+  // Three-state risk (item 7b): before safeguards and after recommendations.
+  // Null when the state has not been graded.
+  severity_before?: number | null;
+  likelihood_before?: number | null;
+  risk_before?: RiskLevel | null;
+  severity_after?: number | null;
+  likelihood_after?: number | null;
+  risk_after?: RiskLevel | null;
 };
 
 export type Suggestion = {

@@ -186,6 +186,10 @@ _SCHEMA_SQL = """
                 severity INTEGER NOT NULL DEFAULT 1,
                 likelihood INTEGER NOT NULL DEFAULT 1,
                 status TEXT NOT NULL DEFAULT 'Eksik',
+                severity_before INTEGER,
+                likelihood_before INTEGER,
+                severity_after INTEGER,
+                likelihood_after INTEGER,
                 updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             CREATE TABLE IF NOT EXISTS mvp_lopa_layers (
@@ -282,9 +286,51 @@ def _schema_sql() -> str:
     )
 
 
+# Columns added after the flat store first shipped; ``initialize_store`` adds any
+# that a pre-existing database is missing so upgrades need no manual migration.
+_MVP_ROWS_ADDED_COLUMNS = (
+    "severity_before",
+    "likelihood_before",
+    "severity_after",
+    "likelihood_after",
+)
+
+
+def _existing_columns(database: Any, table: str) -> set[str]:
+    """Return the column names of ``table`` for the active dialect."""
+    if _use_postgres():
+        rows = database.execute(
+            "SELECT column_name FROM information_schema.columns WHERE table_name = ?",
+            (table,),
+        ).fetchall()
+        return {row["column_name"] for row in rows}
+    rows = database.execute(f"PRAGMA table_info({table})").fetchall()  # noqa: S608
+    return {row["name"] for row in rows}
+
+
+def _migrate_mvp_rows(database: Any) -> None:
+    """Add the three-state risk columns to an existing ``mvp_rows`` (idempotent).
+
+    Postgres uses ``ADD COLUMN IF NOT EXISTS`` so concurrent serverless cold
+    starts cannot race into a duplicate-column error; SQLite has no such clause,
+    so there we check the column list first (single-process by nature).
+    """
+    if _use_postgres():
+        for column in _MVP_ROWS_ADDED_COLUMNS:
+            database.execute(
+                f"ALTER TABLE mvp_rows ADD COLUMN IF NOT EXISTS {column} INTEGER"  # noqa: S608
+            )
+        return
+    existing = _existing_columns(database, "mvp_rows")
+    for column in _MVP_ROWS_ADDED_COLUMNS:
+        if column not in existing:
+            database.execute(f"ALTER TABLE mvp_rows ADD COLUMN {column} INTEGER")  # noqa: S608
+
+
 def initialize_store() -> None:
     with connection() as database:
         database.executescript(_schema_sql())
+        _migrate_mvp_rows(database)
         # Use INSERT OR IGNORE to be safe in multi-process deployments
         _seed(database)
         _seed_reference_data(database)

@@ -1345,6 +1345,22 @@ select:focus-visible {
   background: oklch(0.965 0.02 120);
 }
 
+/* Three-state risk column-groups (item 7b): a heavier left border marks where
+   each state (before / current / after) begins. */
+.hazop-table th.group-start,
+.hazop-table td.group-start {
+  border-left: 2px solid var(--line);
+}
+
+.hazop-table .risk-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--muted, #94a3b8);
+  font-size: 0.85rem;
+}
+
 .hazop-table textarea,
 .hazop-table select {
   width: 100%;

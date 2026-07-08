@@ -109,6 +109,28 @@ def test_import_maps_risk_rank_not_flat_low(
     assert result["dropped"]["Scenarios with an unmapped risk rank"] == 1
 
 
+def test_import_populates_three_state_risk(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Before/after risk ranks flow into the flat grid's three-state columns (7b)."""
+    monkeypatch.setenv("PREVENTA_DB_PATH", str(tmp_path / "preventa.db"))
+    repo = WorkspaceRepository()
+    result = import_opha_study(repo, load_opha(FIXTURE))
+    nodes = repo.list_nodes(result["study_id"])
+    rows = repo.list_rows(str(nodes[0]["id"]))
+    con1 = next(r for r in rows if r["consequence"].startswith("Loss of feed"))
+    # Before safeguards: "Kritik" -> (5, 5) -> Kritik.
+    assert con1["severity_before"] == 5
+    assert con1["likelihood_before"] == 5
+    assert con1["risk_before"] == "Kritik"
+    # After recommendations: "Dusuk" -> (1, 1) -> Düşük.
+    assert con1["risk_after"] == "Düşük"
+    # con2 has no before/after ranks -> ungraded (null).
+    con2 = next(r for r in rows if r["consequence"].startswith("Overpressure"))
+    assert con2["risk_before"] is None
+    assert con2["risk_after"] is None
+
+
 def test_import_scenario_cap_rejects_large_study(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:

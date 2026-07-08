@@ -42,9 +42,15 @@ class RowCreate(BaseModel):
     cause: str = ""
     consequence: str = ""
     safeguard: str = ""
+    # Current state: risk with existing safeguards (always present).
     severity: int = Field(default=1, ge=1, le=5)
     likelihood: int = Field(default=1, ge=1, le=5)
     status: str = "Eksik"
+    # Optional before-safeguards and after-recommendations states (item 7b).
+    severity_before: int | None = Field(default=None, ge=1, le=5)
+    likelihood_before: int | None = Field(default=None, ge=1, le=5)
+    severity_after: int | None = Field(default=None, ge=1, le=5)
+    likelihood_after: int | None = Field(default=None, ge=1, le=5)
 
 
 class RowUpdate(BaseModel):
@@ -56,6 +62,10 @@ class RowUpdate(BaseModel):
     severity: int | None = Field(default=None, ge=1, le=5)
     likelihood: int | None = Field(default=None, ge=1, le=5)
     status: str | None = None
+    severity_before: int | None = Field(default=None, ge=1, le=5)
+    likelihood_before: int | None = Field(default=None, ge=1, le=5)
+    severity_after: int | None = Field(default=None, ge=1, le=5)
+    likelihood_after: int | None = Field(default=None, ge=1, le=5)
 
 
 class LopaLayerCreate(BaseModel):
