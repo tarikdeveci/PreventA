@@ -228,7 +228,9 @@ def orm_to_opha(study: Study) -> _OphaDict:
     def recs_for(con: Consequence) -> dict[str, list[str]]:
         by_kind: dict[str, list[str]] = {"pha": [], "lopa": []}
         for rec in con.recommendations:
-            by_kind[rec.kind.value].append(rec_ids[id(rec)])
+            rec_id = rec_ids.get(id(rec))
+            if rec_id is not None:
+                by_kind[rec.kind.value].append(rec_id)
         return by_kind
 
     doc: _OphaDict = {}

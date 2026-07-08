@@ -105,6 +105,7 @@ import {
   type ReportEntry,
   unavailableStatus,
 } from "./data";
+import { groupRowsByCause } from "./hazopTableUtils";
 
 type WorkspaceTab = "HAZOP" | "LOPA" | "Risk matrix" | "Sources" | "Product status";
 
@@ -524,25 +525,6 @@ function WorksheetToolbar({
   );
 }
 
-// Group worksheet rows by their cause, preserving first-appearance order, so the
-// grid can render the Cause -> Consequence hierarchy (review item 7a): each cause
-// appears once with its consequence rows beneath it, instead of being repeated.
-function groupRowsByCause(rows: HazopRow[]): { key: string; rows: HazopRow[] }[] {
-  const groups: { key: string; rows: HazopRow[] }[] = [];
-  const indexByKey = new Map<string, number>();
-  for (const row of rows) {
-    const key = row.cause.trim() ? `cause:${row.cause.trim()}` : `row:${row.id}`;
-    const existing = indexByKey.get(key);
-    if (existing === undefined) {
-      indexByKey.set(key, groups.length);
-      groups.push({ key, rows: [row] });
-    } else {
-      groups[existing].rows.push(row);
-    }
-  }
-  return groups;
-}
-
 // One (severity, likelihood, risk) column-group for a single risk state. The
 // before/after states are optional (`allowEmpty`), so a "—" option lets a
 // facilitator leave them ungraded (review item 7b).
@@ -680,7 +662,7 @@ function HazopConsequenceCells({
   );
 }
 
-function HazopTable({
+export function HazopTable({
   rows,
   selectedRow,
   onSelectRow,
