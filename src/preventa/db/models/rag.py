@@ -2,7 +2,7 @@ from enum import StrEnum
 from typing import Any
 from uuid import UUID
 
-from pgvector.sqlalchemy import Vector  # type: ignore[import-untyped]
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import Boolean, Computed, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import JSONB, TSVECTOR
 from sqlalchemy.dialects.postgresql import UUID as PGUUID

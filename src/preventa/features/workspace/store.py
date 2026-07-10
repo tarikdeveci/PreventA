@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 import re
 import sqlite3
@@ -190,6 +191,9 @@ _SCHEMA_SQL = """
                 likelihood_before INTEGER,
                 severity_after INTEGER,
                 likelihood_after INTEGER,
+                initiating_frequency REAL,
+                tmel REAL,
+                category_severities TEXT,
                 updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             CREATE TABLE IF NOT EXISTS mvp_lopa_layers (
@@ -237,7 +241,18 @@ _SCHEMA_SQL = """
                 medium_max INTEGER NOT NULL DEFAULT 7,
                 high_max INTEGER NOT NULL DEFAULT 11,
                 revision INTEGER NOT NULL DEFAULT 1,
+                criteria_json TEXT,
                 updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS mvp_registers (
+                id TEXT PRIMARY KEY,
+                study_id TEXT NOT NULL REFERENCES mvp_studies(id) ON DELETE CASCADE,
+                kind TEXT NOT NULL,
+                title TEXT NOT NULL,
+                reference TEXT NOT NULL DEFAULT '',
+                detail TEXT NOT NULL DEFAULT '',
+                status TEXT NOT NULL DEFAULT '',
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             CREATE TABLE IF NOT EXISTS mvp_reports (
                 id TEXT PRIMARY KEY,
@@ -294,6 +309,13 @@ _MVP_ROWS_ADDED_COLUMNS = (
     "severity_after",
     "likelihood_after",
 )
+# LOPA verifier inputs (item 4): the initiating-event frequency and the tolerable
+# target (TMEL) a scenario's protection layers must bring the risk down to. Stored
+# as REAL, unlike the INTEGER risk columns above, so they migrate separately.
+_MVP_ROWS_ADDED_REAL_COLUMNS = (
+    "initiating_frequency",
+    "tmel",
+)
 
 
 def _existing_columns(database: Any, table: str) -> set[str]:
@@ -315,25 +337,46 @@ def _migrate_mvp_rows(database: Any) -> None:
     starts cannot race into a duplicate-column error; SQLite has no such clause,
     so there we check the column list first (single-process by nature).
     """
+    real_type = "DOUBLE PRECISION" if _use_postgres() else "REAL"
     if _use_postgres():
         for column in _MVP_ROWS_ADDED_COLUMNS:
             database.execute(
                 f"ALTER TABLE mvp_rows ADD COLUMN IF NOT EXISTS {column} INTEGER"  # noqa: S608
+            )
+        for column in _MVP_ROWS_ADDED_REAL_COLUMNS:
+            database.execute(
+                f"ALTER TABLE mvp_rows ADD COLUMN IF NOT EXISTS {column} {real_type}"  # noqa: S608
             )
         return
     existing = _existing_columns(database, "mvp_rows")
     for column in _MVP_ROWS_ADDED_COLUMNS:
         if column not in existing:
             database.execute(f"ALTER TABLE mvp_rows ADD COLUMN {column} INTEGER")  # noqa: S608
+    for column in _MVP_ROWS_ADDED_REAL_COLUMNS:
+        if column not in existing:
+            database.execute(f"ALTER TABLE mvp_rows ADD COLUMN {column} {real_type}")  # noqa: S608
 
 
 def initialize_store() -> None:
     with connection() as database:
         database.executescript(_schema_sql())
         _migrate_mvp_rows(database)
+        _migrate_add_column(database, "mvp_rows", "category_severities", "TEXT")
+        _migrate_add_column(database, "mvp_risk_matrix", "criteria_json", "TEXT")
         # Use INSERT OR IGNORE to be safe in multi-process deployments
         _seed(database)
         _seed_reference_data(database)
+
+
+def _migrate_add_column(database: Any, table: str, column: str, coltype: str) -> None:
+    """Idempotently add ``column`` to ``table`` for the active dialect."""
+    if _use_postgres():
+        database.execute(
+            f"ALTER TABLE {table} ADD COLUMN IF NOT EXISTS {column} {coltype}"  # noqa: S608
+        )
+        return
+    if column not in _existing_columns(database, table):
+        database.execute(f"ALTER TABLE {table} ADD COLUMN {column} {coltype}")  # noqa: S608
 
 
 def _seed_reference_data(database: Any) -> None:
@@ -393,6 +436,16 @@ def _seed_reference_data(database: Any) -> None:
             """,
             (study["id"],),
         )
+    # Native client risk matrix (item 3): seed the demo study's real OpenPHA
+    # Risk_Criteria so the app renders the client's own cells/colours/ranks
+    # instead of a synthetic 5x5. Only when unset, so imports/edits are kept.
+    database.execute(
+        """
+        UPDATE mvp_risk_matrix SET criteria_json = ?
+        WHERE study_id = 'study-reactor-2026' AND criteria_json IS NULL
+        """,
+        (json.dumps(_sample_risk_criteria()),),
+    )
     for study in studies:
         database.executemany(
             """
@@ -707,8 +760,37 @@ def _seed(database: Any) -> None:
 
     # Attach LOPA / IPL layers to the highest-risk scenarios (severity*likelihood >= 12).
     critical = database.execute(
-        "SELECT id FROM mvp_rows WHERE severity * likelihood >= 12 ORDER BY id"
+        "SELECT id, severity FROM mvp_rows WHERE severity * likelihood >= 12 ORDER BY id"
     ).fetchall()
+    # Seed the LOPA verifier inputs (item 4) so the check shows real arithmetic:
+    # a typical 1e-1/yr initiating frequency and a severity-scaled tolerable target
+    # (TMEL = 10^-severity /yr). With two IPLs at PFD 1e-2 a severity-5 scenario
+    # (TMEL 1e-5) is adequately protected, while a single-IPL severity-4 scenario
+    # (TMEL 1e-4) fails and needs a recommendation -- a realistic mixed result.
+    lopa_inputs = [(0.1, 10.0 ** -int(row["severity"]), int(row["id"])) for row in critical]
+    database.executemany(
+        "UPDATE mvp_rows SET initiating_frequency = ?, tmel = ? WHERE id = ?",
+        lopa_inputs,
+    )
+    # Multi-category severity (item 4): score the critical scenarios on more than
+    # one client category (Safety + Environment) so the worksheet shows the
+    # governing case, not a single number.
+    category_inputs = [
+        (
+            json.dumps(
+                {
+                    "Safety": min(3, int(row["severity"]) - 1) or 1,
+                    "Environment": min(3, max(1, int(row["severity"]) - 2)),
+                }
+            ),
+            int(row["id"]),
+        )
+        for row in critical
+    ]
+    database.executemany(
+        "UPDATE mvp_rows SET category_severities = ? WHERE id = ?",
+        category_inputs,
+    )
     lopa: list[tuple[str, int, str, float, int, str]] = []
     for index, row in enumerate(critical):
         row_id = int(row["id"])
@@ -740,6 +822,96 @@ def _seed(database: Any) -> None:
         """,
         lopa,
     )
+
+    # Supporting registers (OpenPHA review item 6): seed a couple of items per
+    # kind on the primary study so the Registers screen is populated out of the box.
+    # (kind, title, reference, detail, status)
+    registers = [
+        ("team", "Ayşe Yılmaz", "Process Safety Lead", "HAZOP chair; 12 yr", "chair"),
+        ("team", "Mehmet Demir", "Operations Engineer", "Unit 200 ops rep", "member"),
+        ("session", "Session 1 — N-01..N-03", "2026-03-04", "Full-day HAZOP", "closed"),
+        ("session", "Session 2 — N-04..N-05", "2026-03-05", "Reactor & separator", "closed"),
+        ("drawing", "P&ID Unit 200 Rev C", "DWG-200-PID-003", "Feed & separation", "current"),
+        ("drawing", "PFD Unit 200 Rev B", "DWG-200-PFD-001", "Process flow diagram", "current"),
+        ("moc", "Independent LSHH-100 trip", "MOC-2026-014", "New level trip on T-100", "open"),
+        ("scai", "SIF-201 pressure trip", "SIF-201", "SIL-2 TSHH-201→SDV-201", "verified"),
+        ("incident", "2019 pump seal release", "INC-2019-07", "Feed pump seal LOC", "closed"),
+        ("checklist", "Inherent safety review", "CL-INH-01", "Minimize/substitute", "in_progress"),
+        ("parking_lot", "Confirm PSV-201 sizing", "PL-01", "Fire vs blocked outlet", "open"),
+    ]
+    database.executemany(
+        """
+        INSERT INTO mvp_registers (id, study_id, kind, title, reference, detail, status)
+        VALUES (?, 'study-reactor-2026', ?, ?, ?, ?, ?)
+        """,
+        [(new_id("reg"), *item) for item in registers],
+    )
+
+
+def _sample_risk_criteria() -> dict[str, Any]:
+    """A compact but real multi-category OpenPHA ``Risk_Criteria`` object.
+
+    Four likelihood levels, two parallel severity categories (Safety and
+    Environment) with three levels each, full intersection cells and four
+    coloured risk ranks -- the shape a real client matrix (e.g. ENTEK DRES) has.
+    """
+    likelihoods: list[dict[str, Any]] = [
+        {"ID": "L1", "Name": "Rare", "Level": 1},
+        {"ID": "L2", "Name": "Unlikely", "Level": 2},
+        {"ID": "L3", "Name": "Possible", "Level": 3},
+        {"ID": "L4", "Name": "Frequent", "Level": 4},
+    ]
+    # (ID, Name, Color, Priority, Required_Lopa_Credits)
+    rank_specs = [
+        ("RK_LOW", "Low", "#2e7d46", 4, 0),
+        ("RK_MED", "Medium", "#b3771a", 3, 1),
+        ("RK_HIGH", "High", "#d9822b", 2, 2),
+        ("RK_CRIT", "Critical", "#b3261e", 1, 3),
+    ]
+    ranks: list[dict[str, Any]] = [
+        {
+            "ID": rid,
+            "Name": name,
+            "Color": color,
+            "Priority": prio,
+            "Required_Lopa_Credits": credits,
+        }
+        for rid, name, color, prio, credits in rank_specs
+    ]
+
+    def rank_for(score: int) -> str:
+        if score >= 9:
+            return "RK_CRIT"
+        if score >= 6:
+            return "RK_HIGH"
+        if score >= 3:
+            return "RK_MED"
+        return "RK_LOW"
+
+    severities: list[dict[str, Any]] = []
+    intersections: list[dict[str, Any]] = []
+    for category in ("Safety", "Environment"):
+        prefix = category[0]
+        for level in (1, 2, 3):
+            sev_id = f"{prefix}{level}"
+            severities.append(
+                {"ID": sev_id, "Name": f"{category} {level}", "Level": level, "Category": category}
+            )
+            for likelihood in likelihoods:
+                score = level * int(likelihood["Level"])
+                intersections.append(
+                    {
+                        "Likelihood_ID": likelihood["ID"],
+                        "Severity_ID": sev_id,
+                        "Risk_Rank_ID": rank_for(score),
+                    }
+                )
+    return {
+        "Likelihoods": likelihoods,
+        "Severities": severities,
+        "Intersections": intersections,
+        "Risk_Rankings": ranks,
+    }
 
 
 def risk_label(severity: int, likelihood: int) -> str:

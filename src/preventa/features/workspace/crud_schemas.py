@@ -51,6 +51,13 @@ class RowCreate(BaseModel):
     likelihood_before: int | None = Field(default=None, ge=1, le=5)
     severity_after: int | None = Field(default=None, ge=1, le=5)
     likelihood_after: int | None = Field(default=None, ge=1, le=5)
+    # LOPA verifier inputs (item 4): initiating-event frequency (/yr) and the
+    # tolerable target the protection layers must achieve (TMEL, /yr).
+    initiating_frequency: float | None = Field(default=None, gt=0)
+    tmel: float | None = Field(default=None, gt=0)
+    # Multi-category severity (item 4): a severity level per client category,
+    # e.g. {"Safety": 3, "Environment": 2}. The governing case is the max.
+    category_severities: dict[str, int] | None = None
 
 
 class RowUpdate(BaseModel):
@@ -66,6 +73,9 @@ class RowUpdate(BaseModel):
     likelihood_before: int | None = Field(default=None, ge=1, le=5)
     severity_after: int | None = Field(default=None, ge=1, le=5)
     likelihood_after: int | None = Field(default=None, ge=1, le=5)
+    initiating_frequency: float | None = Field(default=None, gt=0)
+    tmel: float | None = Field(default=None, gt=0)
+    category_severities: dict[str, int] | None = None
 
 
 class LopaLayerCreate(BaseModel):
@@ -109,3 +119,26 @@ class RiskMatrixUpdate(BaseModel):
     low_max: int = Field(ge=1, le=24)
     medium_max: int = Field(ge=2, le=24)
     high_max: int = Field(ge=3, le=24)
+
+
+# Supporting registers (item 6): the eight OpenPHA register kinds, stored in one
+# discriminated table on the live store.
+RegisterKind = Literal[
+    "team",
+    "session",
+    "drawing",
+    "moc",
+    "scai",
+    "incident",
+    "checklist",
+    "parking_lot",
+]
+
+
+class RegisterCreate(BaseModel):
+    study_id: str
+    kind: RegisterKind
+    title: str = Field(min_length=1, max_length=240)
+    reference: str = Field(default="", max_length=240)
+    detail: str = Field(default="", max_length=2000)
+    status: str = Field(default="", max_length=64)

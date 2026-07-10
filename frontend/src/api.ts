@@ -5,7 +5,9 @@ import type {
   RetrievedChunk,
   HazopRow,
   LopaLayer,
+  LopaVerification,
   ProductStatus,
+  RegisterItem,
   StudyListItem,
   WorkspaceNode,
   WorkspaceResponse,
@@ -183,6 +185,10 @@ export function fetchLopaLayers(rowId: number): Promise<LopaLayer[]> {
   return getJson(`/api/v1/rows/${rowId}/lopa`);
 }
 
+export function verifyLopa(rowId: number): Promise<LopaVerification> {
+  return getJson(`/api/v1/rows/${rowId}/lopa/verify`);
+}
+
 export function addLopaLayer(
   rowId: number,
   payload: { description: string; pfd: number; is_valid: boolean; note: string },
@@ -272,6 +278,18 @@ export function updateRiskMatrix(
   payload: Pick<RiskMatrixSettings, "low_max" | "medium_max" | "high_max">,
 ): Promise<RiskMatrixSettings> {
   return sendJson(`/api/v1/studies/${studyId}/risk-matrix`, "PUT", payload);
+}
+
+export function fetchRegisters(studyId: string, kind = ""): Promise<RegisterItem[]> {
+  return getJson(`/api/v1/studies/${studyId}/registers${kind ? `?kind=${kind}` : ""}`);
+}
+
+export function createRegister(payload: Omit<RegisterItem, "id">): Promise<RegisterItem> {
+  return sendJson("/api/v1/registers", "POST", payload);
+}
+
+export function deleteRegister(registerId: string): Promise<void> {
+  return sendJson(`/api/v1/registers/${registerId}`, "DELETE");
 }
 
 export function fetchAudit(): Promise<AuditEntry[]> {

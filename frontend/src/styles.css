@@ -1998,6 +1998,115 @@ kbd {
   background: var(--danger);
 }
 
+.register-kinds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 4px 0 14px;
+}
+
+.category-severity {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.cat-governing {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.cat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin-top: 10px;
+}
+
+.cat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.74rem;
+}
+
+.cat-row > span {
+  color: var(--muted);
+  min-width: 92px;
+}
+
+.cat-row select {
+  font-size: 0.74rem;
+  padding: 5px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.client-matrix-scroll {
+  overflow-x: auto;
+}
+
+.client-matrix-table {
+  border-collapse: collapse;
+  font-size: 0.72rem;
+  min-width: 420px;
+}
+
+.client-matrix-table th,
+.client-matrix-table td {
+  border: 1px solid var(--line);
+  padding: 8px 10px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.client-matrix-table thead th,
+.client-matrix-table tbody th {
+  background: var(--surface-strong);
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.client-matrix-table td {
+  font-weight: 600;
+  min-width: 84px;
+}
+
+.client-matrix-table .cm-corner {
+  background: transparent;
+  border: none;
+}
+
+.chip-button {
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 160ms ease-out, color 160ms ease-out, border-color 160ms ease-out;
+}
+
+.chip-button:hover {
+  border-color: oklch(0.7 0.015 120);
+  color: var(--ink);
+}
+
+.chip-button.is-active {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
 .source-row {
   display: grid;
   grid-template-columns: 38px minmax(220px, 1fr) 120px 190px 40px;

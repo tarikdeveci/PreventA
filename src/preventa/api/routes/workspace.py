@@ -17,6 +17,7 @@ from preventa.features.workspace.crud_schemas import (
     LopaLayerCreate,
     NodeCreate,
     NodeUpdate,
+    RegisterCreate,
     RiskMatrixUpdate,
     RowCreate,
     RowUpdate,
@@ -196,6 +197,15 @@ async def list_lopa_layers(row_id: int) -> list[dict[str, object]]:
     return repository.list_lopa_layers(row_id)
 
 
+@router.get("/rows/{row_id}/lopa/verify")
+async def verify_lopa(row_id: int) -> dict[str, object]:
+    """Recompute the scenario's LOPA arithmetic and return the pass/fail check."""
+    result = repository.verify_lopa(row_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="HAZOP row not found")
+    return result
+
+
 @router.post("/rows/{row_id}/lopa", status_code=status.HTTP_201_CREATED)
 async def add_lopa_layer(
     row_id: int,
@@ -277,6 +287,27 @@ async def update_risk_matrix(
         return repository.update_risk_matrix(study_id, payload)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@router.get("/studies/{study_id}/registers")
+async def list_registers(study_id: str, kind: str = "") -> list[dict[str, object]]:
+    if repository.get_study(study_id) is None:
+        raise HTTPException(status_code=404, detail="Study not found")
+    return repository.list_registers(study_id, kind or None)
+
+
+@router.post("/registers", status_code=status.HTTP_201_CREATED)
+async def create_register(payload: RegisterCreate, _: WriteUserDep) -> dict[str, object]:
+    if repository.get_study(payload.study_id) is None:
+        raise HTTPException(status_code=404, detail="Study not found")
+    return repository.create_register(payload)
+
+
+@router.delete("/registers/{register_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_register(register_id: str, _: DeleteUserDep) -> Response:
+    if not repository.delete_register(register_id):
+        raise HTTPException(status_code=404, detail="Register item not found")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.get("/audit")

@@ -34,6 +34,11 @@ class WorkspaceRow(BaseModel):
     likelihood: int
     risk: Literal["Düşük", "Orta", "Yüksek", "Kritik"]
     status: Literal["İncelendi", "Taslak", "Eksik"]
+    # Multi-category severity (item 4): carried on the initial load too, so the
+    # category-severity editor is populated without a second fetch.
+    category_severities: dict[str, int] = {}
+    governing_category: str | None = None
+    governing_severity: int | None = None
 
 
 class WorkspaceSuggestion(BaseModel):
