@@ -50,6 +50,10 @@ import {
   deleteLopaLayer,
   fetchDeviationEvidence,
   fetchLopaLayers,
+  verifyLopa,
+  fetchRegisters,
+  createRegister,
+  deleteRegister,
   fetchNodes,
   fetchProductStatus,
   fetchRows,
@@ -93,7 +97,10 @@ import {
   type AuthUser,
   type HazopRow,
   type LopaLayer,
+  type LopaVerification,
   type ProductStatus,
+  type RegisterItem,
+  type RegisterKind,
   type StudyListItem,
   type Suggestion,
   type WorkspaceNode,
@@ -101,19 +108,27 @@ import {
   type LibraryEntry,
   type StudySource,
   type RiskMatrixSettings,
+  type ClientMatrix,
   type AuditEntry,
   type ReportEntry,
   unavailableStatus,
 } from "./data";
 import { groupRowsByCause } from "./hazopTableUtils";
 
-type WorkspaceTab = "HAZOP" | "LOPA" | "Risk matrix" | "Sources" | "Product status";
+type WorkspaceTab =
+  | "HAZOP"
+  | "LOPA"
+  | "Risk matrix"
+  | "Registers"
+  | "Sources"
+  | "Product status";
 
 function workspaceTabs(rowCount: number, lopaCount: number): { label: WorkspaceTab; count?: number }[] {
   return [
     { label: "HAZOP", count: rowCount || undefined },
     { label: "LOPA", count: lopaCount || undefined },
     { label: "Risk matrix" },
+    { label: "Registers" },
     { label: "Sources" },
     { label: "Product status" },
   ];
@@ -938,14 +953,22 @@ function LopaWorkspace({
   readOnly: boolean;
 }) {
   const [layers, setLayers] = useState<LopaLayer[]>([]);
+  const [check, setCheck] = useState<LopaVerification | null>(null);
   const [loading, setLoading] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [form, setForm] = useState({ description: "", pfd: "1.0e-2", is_valid: true, note: "" });
   const selectedRowId = selectedRow?.id;
 
+  // Recompute the verdict from the server (item 4): a single source of truth for
+  // MEL = frequency x product(valid IPL PFDs) versus the scenario's TMEL.
+  const refreshCheck = useCallback((rowId: number) => {
+    verifyLopa(rowId).then(setCheck).catch(() => setCheck(null));
+  }, []);
+
   useEffect(() => {
     if (!selectedRowId) {
       setLayers([]);
+      setCheck(null);
       return;
     }
     setLoading(true);
@@ -953,7 +976,8 @@ function LopaWorkspace({
       .then(setLayers)
       .catch(() => setLayers([]))
       .finally(() => setLoading(false));
-  }, [selectedRowId]);
+    refreshCheck(selectedRowId);
+  }, [selectedRowId, refreshCheck]);
 
   const handleAdd = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -967,38 +991,56 @@ function LopaWorkspace({
     setLayers((current) => [...current, layer]);
     setForm({ description: "", pfd: "1.0e-2", is_valid: true, note: "" });
     setAddOpen(false);
+    refreshCheck(selectedRow.id);
   };
 
   const handleDelete = async (layerId: string) => {
     if (!window.confirm("Delete this IPL record?")) return;
     await deleteLopaLayer(layerId);
     setLayers((current) => current.filter((l) => l.id !== layerId));
+    if (selectedRow) refreshCheck(selectedRow.id);
   };
 
-  const initiatorFreq = 0.1;
-  const totalReduction = layers.filter((l) => l.is_valid).reduce((acc, l) => acc * l.pfd, 1);
-  const outcomeFreq = initiatorFreq * totalReduction;
+  const exp = (value: number | null | undefined) =>
+    value === null || value === undefined ? "—" : value.toExponential(1);
+  const graded = check?.mel_calc != null && check?.tmel != null;
+  const meets = check?.meets_tmel;
 
   return (
     <section className="lopa-workspace">
       <div className="lopa-summary">
         <div>
-          <span>Initiating event frequency</span>
-          <strong className="mono">{initiatorFreq.toExponential(1)} /year</strong>
+          <span>Initiating frequency</span>
+          <strong className="mono">{exp(check?.initiating_frequency)} /year</strong>
         </div>
         <ChevronRight size={18} />
         <div>
-          <span>Total risk reduction</span>
-          <strong className="mono">{totalReduction.toExponential(1)}</strong>
+          <span>IPL risk reduction ({check?.ipl_count ?? 0})</span>
+          <strong className="mono">{exp(check?.ipl_pfd_product)}</strong>
         </div>
         <ChevronRight size={18} />
         <div>
-          <span>Outcome frequency</span>
-          <strong className="mono">{outcomeFreq.toExponential(1)} /year</strong>
+          <span>Mitigated event likelihood</span>
+          <strong className="mono">{exp(check?.mel_calc)} /year</strong>
+        </div>
+        <ChevronRight size={18} />
+        <div>
+          <span>Target (TMEL)</span>
+          <strong className="mono">{exp(check?.tmel)} /year</strong>
         </div>
         <div className="sil-result">
-          <span>Selected scenario</span>
-          <strong>{selectedRow ? `Row ${selectedRow.id}` : "—"}</strong>
+          <span>LOPA verdict</span>
+          {!graded ? (
+            <strong>Set frequency &amp; TMEL</strong>
+          ) : meets ? (
+            <strong className="ipl-valid">
+              <CheckCircle2 size={15} /> Target met
+            </strong>
+          ) : (
+            <strong className="ipl-invalid">
+              <AlertTriangle size={15} /> Gap · RRF {exp(check?.required_rrf)}
+            </strong>
+          )}
         </div>
       </div>
       <div className="section-heading">
@@ -1082,6 +1124,147 @@ function LopaWorkspace({
     </section>
   );
 }
+// Multi-category severity (item 4): score the selected scenario on each client
+// severity category (Safety AND Environment ...); the worst category governs and
+// its rank/colour is resolved from the client matrix.
+function CategorySeverityEditor({ studyId, row, canWrite, onSaved }: {
+  studyId: string;
+  row: HazopRow;
+  canWrite: boolean;
+  onSaved: (updated: HazopRow) => void;
+}) {
+  const [matrix, setMatrix] = useState<ClientMatrix | null>(null);
+  const [scores, setScores] = useState<Record<string, number>>(row.category_severities ?? {});
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    fetchRiskMatrix(studyId)
+      .then((m) => setMatrix(m.client_matrix ?? null))
+      .catch(() => setMatrix(null));
+  }, [studyId]);
+  useEffect(() => { setScores(row.category_severities ?? {}); }, [row.id, row.category_severities]);
+
+  // Multi-category scoring only makes sense against a client matrix's categories.
+  if (!matrix || matrix.grids.length === 0) return null;
+
+  const setScore = async (category: string, level: number) => {
+    const next = { ...scores };
+    if (level > 0) next[category] = level; else delete next[category];
+    setScores(next);
+    setSaving(true);
+    try {
+      const saved = await updateHazopRow(row.id, { category_severities: next });
+      onSaved(saved);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const governing = Object.entries(scores)
+    .filter(([, level]) => level > 0)
+    .sort((a, b) => b[1] - a[1])[0];
+  let resolved: { rank: string | null; color: string | null } | null = null;
+  if (governing) {
+    const grid = matrix.grids.find((g) => g.category === governing[0]);
+    if (grid) {
+      const nLik = grid.rows.length;
+      const k = Math.min(Math.max(row.likelihood, 1), nLik);
+      const cell = grid.rows[nLik - k]?.cells[governing[1] - 1]; // rows: highest likelihood first
+      if (cell) resolved = cell;
+    }
+  }
+
+  return (
+    <section className="category-severity">
+      <div className="section-heading">
+        <div>
+          <h2>Category severity</h2>
+          <p>Score this scenario on each client category — the worst governs.</p>
+        </div>
+        {governing && (
+          <span
+            className="cat-governing"
+            style={{ background: resolved?.color ?? "var(--surface-strong)", color: resolved?.color ? "#fff" : "inherit" }}
+          >
+            Governing: {governing[0]} · {resolved?.rank ?? `level ${governing[1]}`}
+          </span>
+        )}
+      </div>
+      <div className="cat-grid">
+        {matrix.grids.map((grid) => (
+          <label key={grid.category} className="cat-row">
+            <span>{grid.category}</span>
+            <select
+              value={scores[grid.category] ?? 0}
+              disabled={!canWrite || saving}
+              onChange={(e) => setScore(grid.category, Number(e.target.value))}
+            >
+              <option value={0}>—</option>
+              {grid.severities.map((severity, index) => (
+                <option key={severity} value={index + 1}>{severity}</option>
+              ))}
+            </select>
+          </label>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// Native client risk matrix (item 3): render the study's real OpenPHA
+// Risk_Criteria — the client's own severities, cells, colours and ranks.
+function ClientMatrixView({ matrix }: { matrix: ClientMatrix }) {
+  const [category, setCategory] = useState(0);
+  const grid = matrix.grids[category] ?? matrix.grids[0];
+  return (
+    <div className="client-matrix">
+      {matrix.grids.length > 1 && (
+        <div className="register-kinds" role="tablist" aria-label="Severity categories">
+          {matrix.grids.map((g, index) => (
+            <button
+              key={g.category}
+              role="tab"
+              aria-selected={index === category}
+              className={`chip-button ${index === category ? "is-active" : ""}`}
+              onClick={() => setCategory(index)}
+            >
+              {g.category}
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="client-matrix-scroll">
+        <table className="client-matrix-table">
+          <thead>
+            <tr>
+              <th className="cm-corner" aria-hidden="true" />
+              {grid.severities.map((severity) => (
+                <th key={severity} scope="col">{severity}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {grid.rows.map((row) => (
+              <tr key={row.likelihood}>
+                <th scope="row">{row.likelihood}</th>
+                {row.cells.map((cell, index) => (
+                  <td
+                    key={index}
+                    style={{ background: cell.color ?? "transparent", color: cell.color ? "#fff" : "inherit" }}
+                    title={cell.rank ?? "Not rated"}
+                  >
+                    {cell.rank ?? "—"}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 function RiskMatrix({ studyId, canWrite, onError }: {
   studyId: string;
   canWrite: boolean;
@@ -1099,15 +1282,31 @@ function RiskMatrix({ studyId, canWrite, onError }: {
   }, [studyId, onError]);
   const thresholds = settings ?? { low_max: 3, medium_max: 7, high_max: 11, revision: 1 };
   const riskZone = { low: "Low", medium: "Medium", high: "High", critical: "Critical" } as const;
+  const clientMatrix = settings?.client_matrix ?? null;
   return (
     <section className="matrix-workspace">
       <div className="section-heading">
         <div>
           <h2>Client risk matrix</h2>
-          <p>5 × 5 matrix · Revision {thresholds.revision} · controlled per study</p>
+          {clientMatrix ? (
+            <p>
+              Client-native matrix ·{" "}
+              {clientMatrix.categories.length > 1
+                ? `${clientMatrix.categories.length} severity categories`
+                : "single severity axis"}{" "}
+              · from the study's OpenPHA Risk_Criteria
+            </p>
+          ) : (
+            <p>5 × 5 matrix · Revision {thresholds.revision} · controlled per study</p>
+          )}
         </div>
-        <button className="secondary-button" onClick={() => setEditing(true)} disabled={!canWrite}>Edit matrix</button>
+        {!clientMatrix && (
+          <button className="secondary-button" onClick={() => setEditing(true)} disabled={!canWrite}>Edit matrix</button>
+        )}
       </div>
+      {clientMatrix ? (
+        <ClientMatrixView matrix={clientMatrix} />
+      ) : (
       <div className="matrix-layout">
         <div className="matrix-y-label">Likelihood</div>
         <div className="matrix-grid" role="grid" aria-label="5 by 5 risk matrix">
@@ -1131,6 +1330,7 @@ function RiskMatrix({ studyId, canWrite, onError }: {
         </div>
         <div className="matrix-x-label">Severity</div>
       </div>
+      )}
       {editing && <div className="modal-backdrop" role="presentation">
         <form className="form-dialog" onSubmit={async (event) => {
           event.preventDefault();
@@ -1151,6 +1351,130 @@ function RiskMatrix({ studyId, canWrite, onError }: {
           <div className="dialog-actions">
             <button type="button" className="secondary-button" onClick={() => setEditing(false)}>Cancel</button>
             <button className="primary-button">Save revision</button>
+          </div>
+        </form>
+      </div>}
+    </section>
+  );
+}
+
+const REGISTER_KINDS: { value: RegisterKind; label: string }[] = [
+  { value: "team", label: "Team" },
+  { value: "session", label: "Sessions" },
+  { value: "drawing", label: "Drawings" },
+  { value: "moc", label: "MOC" },
+  { value: "scai", label: "SCAI" },
+  { value: "incident", label: "Incidents" },
+  { value: "checklist", label: "Checklists" },
+  { value: "parking_lot", label: "Parking lot" },
+];
+
+// Supporting registers (item 6): view and edit the eight OpenPHA register kinds
+// in the running app, not just via the structured ORM import.
+function RegistersWorkspace({ studyId, canWrite, canDelete, onError }: {
+  studyId: string;
+  canWrite: boolean;
+  canDelete: boolean;
+  onError: (message: string) => void;
+}) {
+  const [kind, setKind] = useState<RegisterKind>("team");
+  const [items, setItems] = useState<RegisterItem[]>([]);
+  const [adding, setAdding] = useState(false);
+  const emptyForm = { title: "", reference: "", detail: "", status: "" };
+  const [form, setForm] = useState(emptyForm);
+
+  const load = useCallback(() => {
+    if (!studyId) return;
+    fetchRegisters(studyId, kind)
+      .then(setItems)
+      .catch(() => onError("Registers could not be loaded."));
+  }, [studyId, kind, onError]);
+  useEffect(() => { load(); }, [load]);
+
+  const activeLabel = REGISTER_KINDS.find((k) => k.value === kind)?.label ?? kind;
+
+  return (
+    <section className="sources-workspace">
+      <div className="section-heading">
+        <div>
+          <h2>Supporting registers</h2>
+          <p>Team, sessions, drawings, MOC, SCAI, incidents, checklists and parking lot for this study.</p>
+        </div>
+        <button className="secondary-button" onClick={() => setAdding(true)} disabled={!canWrite}>
+          <Plus size={16} />
+          Add {activeLabel.toLowerCase()}
+        </button>
+      </div>
+      <div className="register-kinds" role="tablist" aria-label="Register kinds">
+        {REGISTER_KINDS.map((k) => (
+          <button
+            key={k.value}
+            role="tab"
+            aria-selected={k.value === kind}
+            className={`chip-button ${k.value === kind ? "is-active" : ""}`}
+            onClick={() => setKind(k.value)}
+          >
+            {k.label}
+          </button>
+        ))}
+      </div>
+      {items.length === 0 ? (
+        <div className="table-empty">
+          <BookOpen size={28} />
+          <strong>No {activeLabel.toLowerCase()} records yet</strong>
+          <p>Use the add button to register an entry.</p>
+        </div>
+      ) : (
+        <div className="source-list">
+          {items.map((item) => (
+            <div className="source-row" key={item.id}>
+              <span className="source-icon"><BookOpen size={18} /></span>
+              <div>
+                <strong>{item.title}</strong>
+                <span>{item.reference || "—"}</span>
+              </div>
+              <span>{item.detail || "—"}</span>
+              <span>{item.status || "—"}</span>
+              {canDelete && (
+                <button
+                  className="icon-button"
+                  aria-label={`Delete ${item.title}`}
+                  onClick={async () => {
+                    if (!window.confirm(`Delete ${item.title}?`)) return;
+                    await deleteRegister(item.id);
+                    setItems((current) => current.filter((r) => r.id !== item.id));
+                  }}
+                >
+                  <Trash2 size={16} />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+      {adding && <div className="modal-backdrop" role="presentation">
+        <form className="form-dialog" onSubmit={async (event) => {
+          event.preventDefault();
+          try {
+            const created = await createRegister({ study_id: studyId, kind, ...form });
+            setItems((current) => [...current, created]);
+            setAdding(false);
+            setForm(emptyForm);
+          } catch {
+            onError("Register entry could not be added.");
+          }
+        }}>
+          <div className="dialog-heading">
+            <div><h2>Add {activeLabel.toLowerCase()}</h2><p>Register a supporting record for this study.</p></div>
+            <button type="button" className="icon-button" onClick={() => setAdding(false)}><X size={18} /></button>
+          </div>
+          <label>Title<input required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></label>
+          <label>Reference<input value={form.reference} onChange={(e) => setForm({ ...form, reference: e.target.value })} /></label>
+          <label>Detail<textarea value={form.detail} onChange={(e) => setForm({ ...form, detail: e.target.value })} /></label>
+          <label>Status<input value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} /></label>
+          <div className="dialog-actions">
+            <button type="button" className="secondary-button" onClick={() => setAdding(false)}>Cancel</button>
+            <button className="primary-button">Add entry</button>
           </div>
         </form>
       </div>}
@@ -2382,12 +2706,23 @@ function WorkspaceApp({
                   onOpenCitation={setOpenCitation}
                 />
               </div>
+              {selected && (
+                <CategorySeverityEditor
+                  studyId={study.id}
+                  row={selected}
+                  canWrite={canWrite}
+                  onSaved={(updated) =>
+                    setRows((current) => current.map((r) => (r.id === updated.id ? updated : r)))
+                  }
+                />
+              )}
             </>
           )}
           {activeTab === "LOPA" && (
             <LopaWorkspace selectedRow={selected} readOnly={!canWrite} />
           )}
           {activeTab === "Risk matrix" && <RiskMatrix studyId={study.id} canWrite={canWrite} onError={notifyError} />}
+          {activeTab === "Registers" && <RegistersWorkspace studyId={study.id} canWrite={canWrite} canDelete={canDelete} onError={notifyError} />}
           {activeTab === "Sources" && <SourcesWorkspace studyId={study.id} canWrite={canWrite} canDelete={canDelete} onError={notifyError} />}
           {activeTab === "Product status" && <ProductStatusWorkspace status={productStatus} />}
           </>

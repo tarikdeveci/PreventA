@@ -1,11 +1,15 @@
 import json
+from dataclasses import asdict
 from typing import Any, cast
 
+from preventa.features.opha.lopa_check import recompute_lopa
+from preventa.features.opha.matrix_view import build_client_matrix
 from preventa.features.workspace.crud_schemas import (
     LibraryEntryCreate,
     LopaLayerCreate,
     NodeCreate,
     NodeUpdate,
+    RegisterCreate,
     RiskMatrixUpdate,
     RowCreate,
     RowUpdate,
@@ -171,8 +175,9 @@ class WorkspaceRepository:
                     (node_id, guideword, deviation, cause, consequence, safeguard,
                      severity, likelihood, status,
                      severity_before, likelihood_before,
-                     severity_after, likelihood_after)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     severity_after, likelihood_after,
+                     initiating_frequency, tmel, category_severities)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 RETURNING id
                 """,
                 (
@@ -189,6 +194,11 @@ class WorkspaceRepository:
                     payload.likelihood_before,
                     payload.severity_after,
                     payload.likelihood_after,
+                    payload.initiating_frequency,
+                    payload.tmel,
+                    json.dumps(payload.category_severities)
+                    if payload.category_severities is not None
+                    else None,
                 ),
             )
             created = cursor.fetchone()
@@ -215,10 +225,16 @@ class WorkspaceRepository:
             "likelihood_before",
             "severity_after",
             "likelihood_after",
+            "initiating_frequency",
+            "tmel",
+            "category_severities",
         }
         values = {k: v for k, v in values.items() if k in _ALLOWED_ROW_FIELDS}
         if not values:
             return self.get_row(row_id)
+        # JSON columns must be serialised before binding to the SQL driver.
+        if "category_severities" in values:
+            values["category_severities"] = json.dumps(values["category_severities"])
         assignments = ", ".join(f"{field} = ?" for field in values)
         with connection() as database:
             cursor = database.execute(
@@ -273,6 +289,26 @@ class WorkspaceRepository:
                 (row_id,),
             ).fetchall()
             return [{**row_dict(row), "is_valid": bool(row["is_valid"])} for row in rows]
+
+    def verify_lopa(self, row_id: int) -> dict[str, Any] | None:
+        """Recompute a scenario's LOPA arithmetic (item 4) and return the check.
+
+        Turns the stored IPLs from a list into a verdict: MEL = initiating
+        frequency x product(valid IPL PFDs), compared against the scenario's
+        tolerable target (TMEL). ``None`` when the row does not exist.
+        """
+        row = self.get_row(row_id)
+        if row is None:
+            return None
+        layers = self.list_lopa_layers(row_id)
+        valid_pfds = [layer["pfd"] for layer in layers if layer["is_valid"]]
+        result = recompute_lopa(
+            initiating_frequency=row.get("initiating_frequency"),
+            ipl_pfds=valid_pfds,
+            modifier_probabilities=[],
+            tmel=row.get("tmel"),
+        )
+        return {**asdict(result), "ipl_count": len(valid_pfds)}
 
     def delete_lopa_layer(self, layer_id: str) -> bool:
         with connection() as database:
@@ -394,7 +430,25 @@ class WorkspaceRepository:
             row = database.execute(
                 "SELECT * FROM mvp_risk_matrix WHERE study_id = ?", (study_id,)
             ).fetchone()
-            return row_dict(row)
+            result = row_dict(row)
+        # Replace the raw criteria blob with a render-ready client matrix view
+        # (item 3): the app draws the client's own cells/colours when present.
+        raw = result.pop("criteria_json", None)
+        criteria = json.loads(raw) if raw else None
+        result["client_matrix"] = build_client_matrix(criteria)
+        return result
+
+    def set_risk_criteria(self, study_id: str, criteria: dict[str, Any]) -> None:
+        """Persist a study's native OpenPHA ``Risk_Criteria`` (used on import)."""
+        with connection() as database:
+            database.execute(
+                "INSERT OR IGNORE INTO mvp_risk_matrix (study_id) VALUES (?)",
+                (study_id,),
+            )
+            database.execute(
+                "UPDATE mvp_risk_matrix SET criteria_json = ? WHERE study_id = ?",
+                (json.dumps(criteria), study_id),
+            )
 
     def update_risk_matrix(self, study_id: str, payload: RiskMatrixUpdate) -> dict[str, Any]:
         if not payload.low_max < payload.medium_max < payload.high_max:
@@ -416,6 +470,53 @@ class WorkspaceRepository:
             )
             audit(database, "risk_matrix", study_id, "updated")
         return self.get_risk_matrix(study_id)
+
+    def list_registers(self, study_id: str, kind: str | None = None) -> list[dict[str, Any]]:
+        with connection() as database:
+            if kind:
+                rows = database.execute(
+                    """
+                    SELECT * FROM mvp_registers
+                    WHERE study_id = ? AND kind = ?
+                    ORDER BY kind, created_at
+                    """,
+                    (study_id, kind),
+                ).fetchall()
+            else:
+                rows = database.execute(
+                    "SELECT * FROM mvp_registers WHERE study_id = ? ORDER BY kind, created_at",
+                    (study_id,),
+                ).fetchall()
+            return [row_dict(row) for row in rows]
+
+    def create_register(self, payload: RegisterCreate) -> dict[str, Any]:
+        register_id = new_id("reg")
+        with connection() as database:
+            database.execute(
+                """
+                INSERT INTO mvp_registers
+                    (id, study_id, kind, title, reference, detail, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    register_id,
+                    payload.study_id,
+                    payload.kind,
+                    payload.title,
+                    payload.reference,
+                    payload.detail,
+                    payload.status,
+                ),
+            )
+            audit(database, "register", register_id, "created")
+        return {"id": register_id, **payload.model_dump()}
+
+    def delete_register(self, register_id: str) -> bool:
+        with connection() as database:
+            cursor = database.execute("DELETE FROM mvp_registers WHERE id = ?", (register_id,))
+            if cursor.rowcount:
+                audit(database, "register", register_id, "deleted")
+            return bool(cursor.rowcount)
 
     def list_audit(self, limit: int = 100) -> list[dict[str, Any]]:
         with connection() as database:
@@ -517,6 +618,18 @@ class WorkspaceRepository:
         result = row_dict(row)
         # Current state (with existing safeguards) is always scored.
         result["risk"] = risk_label(result["severity"], result["likelihood"])
+        # Multi-category severity (item 4): expose the per-category scores and the
+        # governing (worst) category so the app can score Safety AND Environment...
+        raw_categories = result.get("category_severities")
+        categories: dict[str, int] = json.loads(raw_categories) if raw_categories else {}
+        result["category_severities"] = categories
+        if categories:
+            governing = max(categories.items(), key=lambda kv: kv[1])
+            result["governing_category"] = governing[0]
+            result["governing_severity"] = governing[1]
+        else:
+            result["governing_category"] = None
+            result["governing_severity"] = None
         # Before-safeguards and after-recommendations states are optional; label
         # them only when both axes are scored, else leave null (not graded).
         for state in ("before", "after"):

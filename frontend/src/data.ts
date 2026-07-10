@@ -23,6 +23,41 @@ export type LopaLayer = {
   note: string;
 };
 
+// LOPA verifier result (item 4): the recomputed arithmetic and its verdict.
+export type LopaVerification = {
+  initiating_frequency: number | null;
+  ipl_pfd_product: number;
+  modifier_product: number;
+  mel_calc: number | null;
+  tmel: number | null;
+  meets_tmel: boolean | null;
+  required_rrf: number | null;
+  stored_mel: number | null;
+  mel_matches_stored: boolean | null;
+  ipl_count: number;
+};
+
+// Supporting registers (item 6): the eight OpenPHA register kinds.
+export type RegisterKind =
+  | "team"
+  | "session"
+  | "drawing"
+  | "moc"
+  | "scai"
+  | "incident"
+  | "checklist"
+  | "parking_lot";
+
+export type RegisterItem = {
+  id: string;
+  study_id: string;
+  kind: RegisterKind;
+  title: string;
+  reference: string;
+  detail: string;
+  status: string;
+};
+
 export type HazopRow = {
   id: number;
   guideword: string;
@@ -43,6 +78,14 @@ export type HazopRow = {
   severity_after?: number | null;
   likelihood_after?: number | null;
   risk_after?: RiskLevel | null;
+  // LOPA verifier inputs (item 4): initiating-event frequency and target (TMEL), /yr.
+  initiating_frequency?: number | null;
+  tmel?: number | null;
+  // Multi-category severity (item 4): a severity level per client category and the
+  // governing (worst) category derived from them.
+  category_severities?: Record<string, number> | null;
+  governing_category?: string | null;
+  governing_severity?: number | null;
 };
 
 export type Suggestion = {
@@ -141,6 +184,19 @@ export type StudySource = {
   indexed_at: string;
 };
 
+// Native client risk matrix (item 3): the render-ready view of the study's
+// real OpenPHA Risk_Criteria, or null when the study has no client matrix.
+export type ClientMatrixCell = { rank: string | null; color: string | null };
+export type ClientMatrixGrid = {
+  category: string;
+  severities: string[];
+  rows: { likelihood: string; cells: ClientMatrixCell[] }[];
+};
+export type ClientMatrix = {
+  categories: string[];
+  grids: ClientMatrixGrid[];
+};
+
 export type RiskMatrixSettings = {
   study_id: string;
   low_max: number;
@@ -148,6 +204,7 @@ export type RiskMatrixSettings = {
   high_max: number;
   revision: number;
   updated_at: string;
+  client_matrix?: ClientMatrix | null;
 };
 
 export type AuditEntry = {

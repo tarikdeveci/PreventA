@@ -175,6 +175,19 @@ class RiskMatrixResolver:
                 seen.append(level.category)
         return seen
 
+    def likelihood_levels(self) -> list[Level]:
+        """Likelihood axis levels, ascending by ordinal."""
+        return sorted(self._likelihoods.values(), key=lambda level: level.ordinal)
+
+    def severity_levels(self, category: str | None = None) -> list[Level]:
+        """Severity axis levels (optionally one category), ascending by ordinal."""
+        levels = [
+            level
+            for level in self._severities.values()
+            if category is None or level.category == category
+        ]
+        return sorted(levels, key=lambda level: level.ordinal)
+
     def likelihood_ordinal(self, code: str | None) -> int | None:
         level = self._likelihoods.get(code) if code else None
         return level.ordinal if level else None

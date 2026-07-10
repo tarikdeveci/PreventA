@@ -97,6 +97,12 @@ def import_opha_study(
     )
     study_id = str(study["id"])
 
+    # Native client risk matrix (item 3): keep the study's real Risk_Criteria so
+    # the app can render the client's own cells/colours instead of a synthetic 5x5.
+    criteria = opha.raw.get("Risk_Criteria")
+    if isinstance(criteria, dict) and criteria:
+        repo.set_risk_criteria(study_id, criteria)
+
     safeguards_by_id = opha.safeguards_by_id()
     if safeguards_by_id:
         dropped["Structured IPL/SIL safeguards flattened to text"] += len(safeguards_by_id)
